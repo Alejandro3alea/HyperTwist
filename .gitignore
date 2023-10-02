@@ -30,3 +30,9 @@
 *.exe
 *.out
 *.app
+
+# Custom Folders
+*/x64/*
+*/Debug/*
+*/Release/*
+*/.vs/*
