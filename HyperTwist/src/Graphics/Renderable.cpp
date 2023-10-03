@@ -1,5 +1,6 @@
 #include "Renderable.h"
 #include "GfxMgr.h"
+#include "Editor.h"
 
 Renderable::Renderable()
 {
@@ -20,6 +21,7 @@ void Renderable::Render(Shader* shader)
     currShader->Bind();
 
     currShader->SetUniform("uColor", mColor);
+    currShader->SetUniform("uZoom", Editor->mZoom);
 
     glActiveTexture(GL_TEXTURE1);
     mTexture->get()->Bind();
@@ -58,6 +60,7 @@ void TextureAtlas::Render(Shader* shader)
     currShader->SetUniform("uTextureOffset", mTextureOffset);
 
     currShader->SetUniform("uColor", mColor);
+    currShader->SetUniform("uZoom", Editor->mZoom);
 
     glActiveTexture(GL_TEXTURE1);
     mTexture->get()->Bind();
@@ -112,6 +115,7 @@ void LineList::Render(Shader* shader)
     currShader->Bind();
 
     currShader->SetUniform("uColor", mColor);
+    currShader->SetUniform("uZoom", Editor->mZoom);
 
     glBindVertexArray(mVAO);
 

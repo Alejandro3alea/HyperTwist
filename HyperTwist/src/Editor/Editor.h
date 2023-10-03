@@ -18,6 +18,7 @@ class ImGuiEditor
 {
 	Singleton(ImGuiEditor);
 
+	friend class GraphicsManager;
 	friend struct SceneNode;
 	friend struct Component;
 
@@ -60,6 +61,8 @@ public:
 	Resource<Song>* mSong = nullptr;
 	Resource<Audio>* mBeatTick = nullptr;
 	Resource<Audio>* mNoteTick = nullptr;
+
+	float mZoom = 2.0f;
 
 private:
 	std::map<std::string, Resource<Texture>*> mIcons;

@@ -6,6 +6,7 @@
 #include "Camera.h"
 #include "Editor.h"
 #include "InputMgr.h"
+#include "Timer.h"
 
 #include <algorithm>
 
@@ -54,6 +55,14 @@ void GraphicsManager::Update()
 		glm::ivec2 mouseMovement = InputMgr->GetMouseMovement();
 		Editor->mCam.Move({ 0.0f, mouseMovement.y * 0.05f });
 	}
+
+	if (InputMgr->isKeyDown(SDL_SCANCODE_N))
+		Editor->mZoom += Time->deltaTime;
+
+	if (InputMgr->isKeyDown(SDL_SCANCODE_M))
+		Editor->mZoom -= Time->deltaTime;
+
+	Editor->mReceptors.Update();
 }
 
 void GraphicsManager::Render()

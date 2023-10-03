@@ -9,6 +9,7 @@ uniform mat4 view;
 uniform mat4 proj;
 
 uniform vec3 uViewPos;
+uniform float uZoom;
 
 uniform vec2 uTextureScale;
 uniform vec2 uTextureOffset;
@@ -20,6 +21,8 @@ out OUT_IN_VARIABLES {
 
 void main()
 {
+    mat4 newModel = model;
+    newModel[3][1] *= uZoom;
     vs_out.TexUV = vTexCoord * uTextureScale + uTextureOffset;
-    gl_Position = proj * view * model * vec4(vPos, 1.0, 1.0);
+    gl_Position = proj * view * newModel * vec4(vPos, 1.0, 1.0);
 }

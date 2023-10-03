@@ -65,8 +65,24 @@ void InputManager::ProcessInput()
 
 	while (SDL_PollEvent(&event_sdl))
 	{
-		if (event_sdl.type == SDL_QUIT)
+
+		switch (event_sdl.type)
+		{
+		/*case SDL_MOUSEMOTION:
+			onMouseMove(event);
+			break;*/
+
+		case SDL_MOUSEWHEEL:
+			//onMouseWheelScroll(event);
+			break;
+
+		case SDL_QUIT:
 			WindowMgr->mCurrentWindow->Close();
+			break;
+
+		default:
+			break;
+		}
 
 		ImGui_ImplSDL2_ProcessEvent(&event_sdl);
 	}

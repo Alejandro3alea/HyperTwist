@@ -17,7 +17,7 @@ void main()
 {
 	vec4 texColor = texture(uTexture, fs_in.TexUV).rgba;
 	
-	if (texColor.a < 0.1)
+	if (texColor.a < 0.5)
 		discard;
 
     FragColor = vec4(texColor.rgb, texColor.a);

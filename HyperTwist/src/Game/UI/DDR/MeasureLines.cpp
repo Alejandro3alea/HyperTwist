@@ -21,11 +21,16 @@ void MeasureLines::OnSongChange(Song* InSong)
 	std::vector<glm::vec2> Positions;
 	for (unsigned i = 0; i < 1000; i++)
 	{
-		Positions.push_back({ -5.0f, i });
-		Positions.push_back({  5.0f, i });
+		int repetitions = (i % 4 == 0) ? 4 : 1;
 
-		Positions.push_back({  6.0f, i });
-		Positions.push_back({  7.5f, i });
+		for (unsigned j = 0; j < repetitions; j++)
+		{
+			Positions.push_back({ -5.0f, i * 2 });
+			Positions.push_back({ 5.0f, i * 2 });
+
+			Positions.push_back({ 6.0f, i * 2 });
+			Positions.push_back({ 7.5f, i * 2 });
+		}
 	}
 
 	mLineList = std::unique_ptr<LineList>(new LineList(Positions));
