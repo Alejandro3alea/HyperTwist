@@ -1,0 +1,4 @@
+VERTEX_SHADER:
+vert/HoldNoteBodyRenderer.vert
+FRAGMENT_SHADER:
+frag/HoldNoteBodyRenderer.frag

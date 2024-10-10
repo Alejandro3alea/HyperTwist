@@ -3,51 +3,45 @@
 #include "Resources/ResourceMgr.h"
 #include "Graphics/WindowMgr.h"
 #include "Graphics/GfxMgr.h"
-#include "Audio/AudioMgr.h"
 #include "Input/InputMgr.h"
 #include "Editor/Editor.h"
 #include "Misc/Timer.h"
 
 #include "Editor/Tools/Profiler/Profiler.h"
 
-#define MAX_FPS 60
-#define FRAME_DELAY 1.0f / MAX_FPS
+#include <imgui/imgui_impl_sdl.h>
 
 #undef main
 int main(void)
 {
 	ResourceMgr->Initialize();
-	WindowMgr->Initialize();
+	WindowMgr->Initialize("HyperTwist");
 	GfxMgr->Initialize();
-	AudioMgr->Initialize();
+	//AudioMgr->Initialize();
 	Editor->Initialize();
 	InputMgr->Initialize();
 
-	GfxMgr->Load();
 	Editor->Load();
 
-	while (!WindowMgr->mCurrentWindow->isClosed())
+	while (!WindowMgr->mCurrentWindow->IsClosed())
 	{
-		Time->StartFrame();
+		TimeMgr->StartFrame();
 
 		Profiler->FrameStart();
 
 		Profiler->ProfileStart("Input");
-		InputMgr->ProcessInput();
+		SDL_Event sdlEvent = InputMgr->ProcessInput();
+		// @TODO: On Input Process End event
+		ImGui_ImplSDL2_ProcessEvent(&sdlEvent);
 		Profiler->ProfileEnd("Input");
 
 		Profiler->ProfileStart("Graphics");
-		GfxMgr->Update();
 		GfxMgr->Render();
 		Profiler->ProfileEnd("Graphics");
 
 		Profiler->ProfileStart("Editor");
-		Editor->Update(Time->deltaTime);
+		Editor->Update(TimeMgr->deltaTime);
 		Profiler->ProfileEnd("Editor");
-
-		Profiler->ProfileStart("Audio");
-		AudioMgr->Update();
-		Profiler->ProfileEnd("Audio");
 
 		Profiler->ProfileStart("Swap");
 		SDL_GL_SwapWindow(*WindowMgr->mCurrentWindow);
@@ -55,22 +49,13 @@ int main(void)
 
 		Profiler->FrameEnd();
 
-		Time->EndFrame();
-
-		const float frameDelay = FRAME_DELAY;
-		const float frameTime = Time->deltaTime;
-		const float diff = FRAME_DELAY - Time->deltaTime;
-		/*if (FRAME_DELAY > Time->deltaTime)
-		{
-			SDL_Delay(FRAME_DELAY - Time->deltaTime);
-			Time->deltaTime = FRAME_DELAY;
-		}*/
+		TimeMgr->EndFrame();
 	}
 
 	InputMgr->Shutdown();
 	Editor->Shutdown();
 	WindowMgr->Shutdown();
-	AudioMgr->Shutdown();
+	//AudioMgr->Shutdown();
 	GfxMgr->Shutdown();
 	ResourceMgr->Shutdown();
 

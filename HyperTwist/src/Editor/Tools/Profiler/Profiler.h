@@ -1,6 +1,6 @@
 #pragma once
 #include "Editor/Tools/EditorTool.h"
-#include "Singleton.h"
+#include "Misc/Singleton.h"
 
 #include <map>
 #include <string>

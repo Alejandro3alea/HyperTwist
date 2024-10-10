@@ -8,7 +8,7 @@ uniform mat4 model;
 uniform mat4 view;
 uniform mat4 proj;
 
-uniform vec3 uViewPos;
+uniform float uZoom;
 
 // --------------------- OUT ---------------------
 out OUT_IN_VARIABLES {

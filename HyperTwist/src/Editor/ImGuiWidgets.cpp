@@ -25,18 +25,18 @@ namespace ImGui
 		return OnGuiBase(ImGui::Checkbox((label).c_str(), &val), []() {});
 	}
 
-	bool OnGui(const std::string& label, int& val)
+	bool OnGui(const std::string& label, int& val, const int min, const int max)
 	{
-		return OnGuiBase(ImGui::SliderInt((label).c_str(), &val, 0, 5000), []() {});
+		return OnGuiBase(ImGui::SliderInt((label).c_str(), &val, min, max), []() {});
 	}
 
-	bool OnGui(const std::string& label, unsigned& val)
+	bool OnGui(const std::string& label, unsigned& val, const unsigned min, const unsigned max)
 	{
 		int intVal = static_cast<int>(val);
-		return OnGuiBase(ImGui::SliderInt((label).c_str(), &intVal, 0, 5000), [&val, intVal]()
-			{
-				val = static_cast<unsigned>(intVal);
-			});
+		return OnGuiBase(ImGui::SliderInt((label).c_str(), &intVal, min, max), [&val, intVal]()
+		{
+			val = static_cast<unsigned>(intVal);
+		});
 	}
 
 	bool OnGui(const std::string& label, short& val)
@@ -44,7 +44,7 @@ namespace ImGui
 		int intVal = static_cast<int>(val);
 		return OnGuiBase(ImGui::SliderInt((label).c_str(), &intVal, 0, 5000), [&val, intVal]()
 			{
-				val = static_cast<unsigned>(intVal);
+				val = static_cast<short>(intVal);
 			});
 	}
 

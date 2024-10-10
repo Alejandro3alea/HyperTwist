@@ -17,5 +17,5 @@ out OUT_IN_VARIABLES {
 void main()
 {
     vs_out.AlphaVal = mod(vPos.y / 2, 4) != 0 ? 0.25 : 1.0;
-    gl_Position = proj * view * vec4(vPos.x, vPos.y * uZoom, 0.25, 1.0);
+    gl_Position = proj * view * vec4(vPos * uZoom, 0.25, 1.0);
 }

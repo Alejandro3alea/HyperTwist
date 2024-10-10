@@ -1,0 +1,184 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>17.0</VCProjectVersion>
+    <Keyword>Win32Proj</Keyword>
+    <ProjectGuid>{e8cf7c38-53de-48df-a1f4-26c657de738b}</ProjectGuid>
+    <RootNamespace>Game</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>TEST_MODE;WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>$(SolutionDir)Engine/src;$(SolutionDir)include;$(SolutionDir)include\AL;$(SolutionDir)include\GL;$(SolutionDir)include\glm;$(SolutionDir)include\gltf;$(SolutionDir)include\Json;$(SolutionDir)include\SDL2;$(SolutionDir)include\STB;$(SolutionDir)include\SFML;$(SolutionDir)include\freetype;$(ProjectDir)imgui;$(ProjectDir)src;$(ProjectDir)src/Editor;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>OpenAL32.lib;opengl32.lib;glew32.lib;SDL2.lib;SDL2_mixer.lib;freetype.lib;aubio.dll.a;libaubio.a;sfml-main-d.lib;sfml-system-d.lib;sfml-audio-d.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)lib\AL;$(SolutionDir)lib\GL;$(SolutionDir)lib\SDL2;$(SolutionDir)lib\freetype;$(SolutionDir)lib\SFML\Debug;$(SolutionDir)lib\aubio;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>TEST_MODE;WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>$(SolutionDir)Engine/src;$(SolutionDir)include;$(SolutionDir)include\AL;$(SolutionDir)include\GL;$(SolutionDir)include\glm;$(SolutionDir)include\gltf;$(SolutionDir)include\Json;$(SolutionDir)include\SDL2;$(SolutionDir)include\STB;$(SolutionDir)include\SFML;$(SolutionDir)include\freetype;$(ProjectDir)imgui;$(ProjectDir)src;$(ProjectDir)src/Editor;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(SolutionDir)lib\AL;$(SolutionDir)lib\GL;$(SolutionDir)lib\SDL2;$(SolutionDir)lib\freetype;$(SolutionDir)lib\SFML\Release;%(AdditionalLibraryDirectories);$(SolutionDir)lib\aubio</AdditionalLibraryDirectories>
+      <AdditionalDependencies>OpenAL32.lib;opengl32.lib;glew32.lib;SDL2.lib;SDL2_mixer.lib;freetype.lib;aubio.dll.a;libaubio.a;sfml-main.lib;sfml-system.lib;sfml-audio.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>TEST_MODE;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>$(SolutionDir)Engine/src;$(SolutionDir)include;$(SolutionDir)include\AL;$(SolutionDir)include\GL;$(SolutionDir)include\glm;$(SolutionDir)include\gltf;$(SolutionDir)include\Json;$(SolutionDir)include\SDL2;$(SolutionDir)include\STB;$(SolutionDir)include\SFML;$(SolutionDir)include\freetype;$(ProjectDir)imgui;$(ProjectDir)src;$(ProjectDir)src/Editor;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>OpenAL32.lib;opengl32.lib;glew32.lib;SDL2.lib;SDL2_mixer.lib;freetype.lib;aubio.dll.a;libaubio.a;sfml-main-d.lib;sfml-system-d.lib;sfml-audio-d.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)lib\AL;$(SolutionDir)lib\GL;$(SolutionDir)lib\SDL2;$(SolutionDir)lib\freetype;$(SolutionDir)lib\SFML\Debug;$(SolutionDir)lib\aubio;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>TEST_MODE;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>$(SolutionDir)Engine/src;$(SolutionDir)include;$(SolutionDir)include\AL;$(SolutionDir)include\GL;$(SolutionDir)include\glm;$(SolutionDir)include\gltf;$(SolutionDir)include\Json;$(SolutionDir)include\SDL2;$(SolutionDir)include\STB;$(SolutionDir)include\SFML;$(SolutionDir)include\freetype;$(ProjectDir)imgui;$(ProjectDir)src;$(ProjectDir)src/Editor;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(SolutionDir)lib\AL;$(SolutionDir)lib\GL;$(SolutionDir)lib\SDL2;$(SolutionDir)lib\freetype;$(SolutionDir)lib\SFML\Release;%(AdditionalLibraryDirectories);$(SolutionDir)lib\aubio</AdditionalLibraryDirectories>
+      <AdditionalDependencies>OpenAL32.lib;opengl32.lib;glew32.lib;SDL2.lib;SDL2_mixer.lib;freetype.lib;aubio.dll.a;libaubio.a;sfml-main.lib;sfml-system.lib;sfml-audio.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="src\Game\Account.cpp" />
+    <ClCompile Include="src\Game\Phases\AccountSelect\AccountSelectPhase.cpp" />
+    <ClCompile Include="src\Game\Phases\AccountSelect\AccountWindow.cpp" />
+    <ClCompile Include="src\Game\Phases\DevMenu\DevMenuActionLeaves.cpp" />
+    <ClCompile Include="src\Game\Phases\DevMenu\DevMenuNodes.cpp" />
+    <ClCompile Include="src\Game\Phases\DevMenu\DevMenuPhase.cpp" />
+    <ClCompile Include="src\Game\Phases\GameEnd\GameEndPhase.cpp" />
+    <ClCompile Include="src\Game\Phases\GameModeSelect\GameModeSelectPhase.cpp" />
+    <ClCompile Include="src\Game\Phases\Gameplay\GameplayPhase.cpp" />
+    <ClCompile Include="src\Game\Phases\GameResults\GameResultsPhase.cpp" />
+    <ClCompile Include="src\Game\Phases\IntroScreen\IntroScreenPhase.cpp" />
+    <ClCompile Include="src\Game\Phases\PhaseManager.cpp" />
+    <ClCompile Include="src\Game\Phases\SongSelect\SongSelectPhase.cpp" />
+    <ClCompile Include="src\Game\Phases\SongResults\SongResultsPhase.cpp" />
+    <ClCompile Include="src\main.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Engine\Engine.vcxproj">
+      <Project>{c2d981c1-db53-4891-8692-7081c5459303}</Project>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\Game\Account.h" />
+    <ClInclude Include="src\Game\Phases\AccountSelect\AccountSelectPhase.h" />
+    <ClInclude Include="src\Game\Phases\AccountSelect\AccountWindow.h" />
+    <ClInclude Include="src\Game\Phases\DevMenu\DevMenuActionLeaves.h" />
+    <ClInclude Include="src\Game\Phases\DevMenu\DevMenuItem.h" />
+    <ClInclude Include="src\Game\Phases\DevMenu\DevMenuNodes.h" />
+    <ClInclude Include="src\Game\Phases\DevMenu\DevMenuPhase.h" />
+    <ClInclude Include="src\Game\Phases\GameEnd\GameEndPhase.h" />
+    <ClInclude Include="src\Game\Phases\GameModeSelect\GameModeSelectPhase.h" />
+    <ClInclude Include="src\Game\Phases\Gameplay\GameplayPhase.h" />
+    <ClInclude Include="src\Game\Phases\GameResults\GameResultsPhase.h" />
+    <ClInclude Include="src\Game\Phases\IntroScreen\IntroScreenPhase.h" />
+    <ClInclude Include="src\Game\Phases\Phase.h" />
+    <ClInclude Include="src\Game\Phases\PhaseManager.h" />
+    <ClInclude Include="src\Game\Phases\SongResults\SongResultsPhase.h" />
+    <ClInclude Include="src\Game\Phases\SongSelect\SongSelectPhase.h" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

@@ -1,5 +1,5 @@
 #pragma once
-#include "Singleton.h"
+#include "Misc/Singleton.h"
 
 #include "Editor/imgui/imgui.h"
 

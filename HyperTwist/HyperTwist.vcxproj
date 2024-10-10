@@ -24,6 +24,7 @@
     <ProjectGuid>{78318bc7-c4cc-416c-8dc3-55980f9a00f6}</ProjectGuid>
     <RootNamespace>HyperTwist</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <ProjectName>ChartEditor</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -116,15 +117,15 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>PROJECT_DIR=R"($(ProjectDir))";SOLUTION_DIR=R"($(SolutionDir))";ENABLE_PROFILER;PROFILER_IMGUI;PROFILER_JSON;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)include;$(SolutionDir)include\GL;$(SolutionDir)include\glm;$(SolutionDir)include\gltf;$(SolutionDir)include\Json;$(SolutionDir)include\SDL2;$(SolutionDir)include\STB;$(ProjectDir)imgui;$(ProjectDir)src;$(ProjectDir)src\Composition;$(ProjectDir)src\Editor;$(ProjectDir)src\Graphics;$(ProjectDir)src\Misc;$(ProjectDir)src\Input;$(ProjectDir)src\Resources;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Engine/src;$(SolutionDir)include;$(SolutionDir)include\AL;$(SolutionDir)include\GL;$(SolutionDir)include\glm;$(SolutionDir)include\gltf;$(SolutionDir)include\Json;$(SolutionDir)include\SDL2;$(SolutionDir)include\STB;$(SolutionDir)include\SFML;$(SolutionDir)include\freetype;$(ProjectDir)imgui;$(ProjectDir)src;$(ProjectDir)src/Editor;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
-      <AdditionalLibraryDirectories>$(SolutionDir)lib\GL;$(SolutionDir)lib\SDL2;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>opengl32.lib;glew32.lib;SDL2.lib;SDL2_mixer.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)lib\AL;$(SolutionDir)lib\GL;$(SolutionDir)lib\SDL2;$(SolutionDir)lib\SFML\Debug;%(AdditionalLibraryDirectories);$(SolutionDir)lib\aubio;$(SolutionDir)lib\freetype</AdditionalLibraryDirectories>
+      <AdditionalDependencies>OpenAL32.lib;opengl32.lib;glew32.lib;SDL2.lib;SDL2_mixer.lib;freetype.lib;aubio.dll.a;libaubio.a;sfml-main-d.lib;sfml-system-d.lib;sfml-audio-d.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -135,7 +136,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>PROJECT_DIR=R"($(ProjectDir))";SOLUTION_DIR=R"($(SolutionDir))";ENABLE_PROFILER;PROFILER_IMGUI;PROFILER_JSON;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)include;$(SolutionDir)include\GL;$(SolutionDir)include\glm;$(SolutionDir)include\gltf;$(SolutionDir)include\Json;$(SolutionDir)include\SDL2;$(SolutionDir)include\STB;$(ProjectDir)imgui;$(ProjectDir)src;$(ProjectDir)src\Composition;$(ProjectDir)src\Editor;$(ProjectDir)src\Graphics;$(ProjectDir)src\Misc;$(ProjectDir)src\Input;$(ProjectDir)src\Resources;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Engine/src;$(SolutionDir)include;$(SolutionDir)include\AL;$(SolutionDir)include\GL;$(SolutionDir)include\glm;$(SolutionDir)include\gltf;$(SolutionDir)include\Json;$(SolutionDir)include\SDL2;$(SolutionDir)include\STB;$(SolutionDir)include\SFML;$(ProjectDir)imgui;$(ProjectDir)src;$(ProjectDir)src/Editor;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
@@ -144,21 +145,12 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
-      <AdditionalLibraryDirectories>$(SolutionDir)lib\GL;$(SolutionDir)lib\SDL2;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>opengl32.lib;glew32.lib;SDL2.lib;SDL2_mixer.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)lib\AL;$(SolutionDir)lib\GL;$(SolutionDir)lib\SDL2;$(SolutionDir)lib\SFML\Release;%(AdditionalLibraryDirectories);$(SolutionDir)lib\aubio</AdditionalLibraryDirectories>
+      <AdditionalDependencies>OpenAL32.lib;opengl32.lib;glew32.lib;SDL2.lib;SDL2_mixer.lib;aubio.dll.a;libaubio.a;sfml-main.lib;sfml-system.lib;sfml-audio.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="src\Audio\AudioMgr.cpp" />
-    <ClCompile Include="src\Audio\Audio.cpp" />
     <ClCompile Include="src\Editor\ImGuiWidgets.cpp" />
-    <ClCompile Include="src\Game\Chart.cpp" />
-    <ClCompile Include="src\Game\Note.cpp" />
-    <ClCompile Include="src\Game\Song.cpp" />
-    <ClCompile Include="src\Game\UI\DDR\MeasureLines.cpp" />
-    <ClCompile Include="src\Game\UI\DDR\Receptors.cpp" />
-    <ClCompile Include="src\Graphics\Renderable.cpp" />
-    <ClCompile Include="src\Composition\Transform.cpp" />
     <ClCompile Include="src\Editor\Editor.cpp" />
     <ClCompile Include="src\Editor\imgui\ImCurveEdit.cpp" />
     <ClCompile Include="src\Editor\imgui\ImGradient.cpp" />
@@ -171,27 +163,12 @@
     <ClCompile Include="src\Editor\imgui\imgui_widgets.cpp" />
     <ClCompile Include="src\Editor\imgui\ImSequencer.cpp" />
     <ClCompile Include="src\Editor\Tools\Profiler\Profiler.cpp" />
-    <ClCompile Include="src\Graphics\Camera.cpp" />
-    <ClCompile Include="src\Graphics\GfxMgr.cpp" />
-    <ClCompile Include="src\Graphics\Shader.cpp" />
-    <ClCompile Include="src\Graphics\Texture.cpp" />
-    <ClCompile Include="src\Graphics\WindowMgr.cpp" />
-    <ClCompile Include="src\Input\InputMgr.cpp" />
+    <ClCompile Include="src\Game\UI\DDR\DancingBot.cpp" />
+    <ClCompile Include="src\Game\UI\DDR\Snappers.cpp" />
     <ClCompile Include="src\main.cpp" />
-    <ClCompile Include="src\Misc\ColorConsole.cpp" />
-    <ClCompile Include="src\Misc\Timer.cpp" />
-    <ClCompile Include="src\Resources\ResourceMgr.cpp" />
-    <ClCompile Include="src\Utils\RNG.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\Audio\AudioMgr.h" />
-    <ClInclude Include="src\Audio\Audio.h" />
     <ClInclude Include="src\Editor\ImGuiWidgets.h" />
-    <ClInclude Include="src\Game\Song.h" />
-    <ClInclude Include="src\Game\UI\DDR\MeasureLines.h" />
-    <ClInclude Include="src\Game\UI\DDR\Receptors.h" />
-    <ClInclude Include="src\Graphics\Renderable.h" />
-    <ClInclude Include="src\Composition\Transform.h" />
     <ClInclude Include="src\Editor\Editor.h" />
     <ClInclude Include="src\Editor\imgui\ImApp.h" />
     <ClInclude Include="src\Editor\imgui\imconfig.h" />
@@ -208,24 +185,13 @@
     <ClInclude Include="src\Editor\imgui\imstb_truetype.h" />
     <ClInclude Include="src\Editor\Tools\EditorTool.h" />
     <ClInclude Include="src\Editor\Tools\Profiler\Profiler.h" />
-    <ClInclude Include="src\Graphics\Camera.h" />
-    <ClInclude Include="src\Graphics\GfxMgr.h" />
-    <ClInclude Include="src\Graphics\Shader.h" />
-    <ClInclude Include="src\Graphics\Texture.h" />
-    <ClInclude Include="src\Graphics\WindowMgr.h" />
-    <ClInclude Include="src\Input\InputMgr.h" />
-    <ClInclude Include="src\Misc\ColorConsole.h" />
-    <ClInclude Include="src\Misc\DataTypes.h" />
-    <ClInclude Include="src\Misc\Ensure.h" />
-    <ClInclude Include="src\Misc\Singleton.h" />
-    <ClInclude Include="src\Misc\Timer.h" />
-    <ClInclude Include="src\Resources\ResourceMgr.h" />
-    <ClInclude Include="src\Game\Note.h" />
-    <ClInclude Include="src\Game\Chart.h" />
-    <ClInclude Include="src\Utils\RNG.h" />
+    <ClInclude Include="src\Game\UI\DDR\DancingBot.h" />
+    <ClInclude Include="src\Game\UI\DDR\Snappers.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="data\engine\shaders\vert\Line.vert" />
+    <ProjectReference Include="..\Engine\Engine.vcxproj">
+      <Project>{c2d981c1-db53-4891-8692-7081c5459303}</Project>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
