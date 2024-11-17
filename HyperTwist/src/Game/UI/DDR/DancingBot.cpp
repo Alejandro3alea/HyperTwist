@@ -28,7 +28,7 @@ void DancingBot::UpdateDancingTex()
     glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    const Shader* quadShader = GfxMgr->GetQuadShader();
+    Shader* quadShader = GfxMgr->GetQuadShader();
     quadShader->Bind();
     glBindVertexArray(GfxMgr->GetQuad());
     glm::mat4 view = glm::mat4(1.0f);

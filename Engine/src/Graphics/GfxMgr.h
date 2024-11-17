@@ -30,9 +30,9 @@ public:
 
 	GLuint GetQuad() { return mQuad; }
 
-	const Shader* GetQuadShader() { return mQuadShader->get(); }
-	const Shader* GetBGShader()	  { return mBGShader->get();   }
-	const Shader* GetLineShader() { return mLineShader->get(); }
+	Shader* GetQuadShader() { return mQuadShader->get(); }
+	Shader* GetBGShader()	  { return mBGShader->get();   }
+	Shader* GetLineShader() { return mLineShader->get(); }
 
 	void SetBackgroundTexture(Resource<Texture>* tex);
 	void SetBackgroundShader(Resource<Shader>* shader);

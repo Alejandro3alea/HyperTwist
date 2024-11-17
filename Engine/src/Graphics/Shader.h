@@ -5,6 +5,7 @@
 
 #include <vector>
 #include <string>
+#include <map>
 
 struct Material;
 
@@ -32,25 +33,42 @@ public:
 	void Bind() const { glUseProgram(mID); }
 
 #pragma region SetUniform
-	void SetUniform(const std::string& name, const bool val) const noexcept;
-	void SetUniform(const std::string& name, const int val) const noexcept;
-	void SetUniform(const std::string& name, const GLuint val) const noexcept;
-	void SetUniform(const std::string& name, const float val) const noexcept;
-	void SetUniform(const std::string& name, const glm::vec2& vec) const noexcept;
-	void SetUniform(const std::string& name, const glm::vec3& vec) const noexcept;
-	void SetUniform(const std::string& name, const glm::vec4& vec) const noexcept;
-	void SetUniform(const std::string& name, const glm::mat3& mat) const noexcept;
-	void SetUniform(const std::string& name, const glm::mat4& mat) const noexcept;
-
-	void SetUniform(const GLuint loc, const bool val) const noexcept;
-	void SetUniform(const GLuint loc, const int val) const noexcept;
-	void SetUniform(const GLuint loc, const GLuint val) const noexcept;
-	void SetUniform(const GLuint loc, const float val) const noexcept;
-	void SetUniform(const GLuint loc, const glm::vec2& vec) const noexcept;
-	void SetUniform(const GLuint loc, const glm::vec3& vec) const noexcept;
-	void SetUniform(const GLuint loc, const glm::vec4& vec) const noexcept;
-	void SetUniform(const GLuint loc, const glm::mat3& mat) const noexcept;
-	void SetUniform(const GLuint loc, const glm::mat4& mat) const noexcept;
+	inline void SetUniform(const GLint loc, const bool& val) const noexcept
+	{
+		glUniform1i(loc, static_cast<int>(val));
+	}
+	inline void SetUniform(const GLint loc, const int& val) const noexcept
+	{
+		glUniform1i(loc, val);
+	}
+	inline void SetUniform(const GLint loc, const GLuint& val) const noexcept
+	{
+		glUniform1i(loc, val);
+	}
+	inline void SetUniform(const GLint loc, const float& val) const noexcept
+	{
+		glUniform1f(loc, val);
+	}
+	inline void SetUniform(const GLint loc, const glm::vec2& vec) const noexcept
+	{
+		glUniform2f(loc, vec.x, vec.y);
+	}
+	inline void SetUniform(const GLint loc, const glm::vec3& vec) const noexcept
+	{
+		glUniform3f(loc, vec.x, vec.y, vec.z);
+	}
+	inline void SetUniform(const GLint loc, const glm::vec4& vec) const noexcept
+	{
+		glUniform4f(loc, vec.x, vec.y, vec.z, vec.w);
+	}
+	inline void SetUniform(const GLint loc, const glm::mat3& mat) const noexcept
+	{
+		glUniformMatrix3fv(loc, 1, GL_FALSE, &mat[0][0]);
+	}
+	inline void SetUniform(const GLint loc, const glm::mat4& mat) const noexcept
+	{
+		glUniformMatrix4fv(loc, 1, GL_FALSE, &mat[0][0]);
+	}
 
 	template <typename T>
 	void SetUniform(const std::string& name, const std::vector<T>& vector)
@@ -69,6 +87,22 @@ public:
 			SetUniform(name + "[" + std::to_string(i) + "]", array[i]);
 		}
 	}
+
+	template <typename T>
+	inline void SetUniform(const std::string& name, const T& val) noexcept
+	{
+		auto it = mUniformLocations.find(name);
+		if (it != mUniformLocations.end())
+		{
+			SetUniform(it->second, val);
+		}
+		GLint uniformLoc = glGetUniformLocation(mID, name.c_str());
+		if (uniformLoc != -1)
+		{
+			SetUniform(uniformLoc, val);
+			mUniformLocations[name] = uniformLoc;
+		}
+	}
 #pragma endregion
 
 protected:
@@ -81,6 +115,9 @@ protected:
 //--------------------------------------------------------------------
 public:
 	GLuint mID;
+
+private:
+	std::map<std::string, GLint> mUniformLocations;
 };
 
 template<class T, class ...Ts>
