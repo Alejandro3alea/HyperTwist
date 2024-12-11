@@ -17,7 +17,8 @@ glm::mat4x4 Camera::GetViewMtx()
 
 glm::mat4x4 Camera::GetProjMtx()
 {
-	const glm::uvec2 winSize = WindowMgr->mCurrentWindow->Size();
+	//const glm::uvec2 winSize = WindowMgr->mCurrentWindow->Size();
+	const glm::uvec2 winSize = { 1920, 1080 };
 	glm::vec2 viewRectHalf = { winSize.x / 1.0f, winSize.y / 1.0f };
 	return glm::ortho(-viewRectHalf.x, viewRectHalf.x, -viewRectHalf.y, viewRectHalf.y, -100.0f, 1000.0f);
 }

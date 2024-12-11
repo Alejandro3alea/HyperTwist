@@ -28,7 +28,7 @@ void DevMenuPhase::OnTick(const float dt)
 	{
 		mCurrentNode->IncrementSelectedIdx();
 	}
-	else if (InputMgr->isKeyPressed(SDL_SCANCODE_T))
+	else if (InputMgr->isKeyPressed(SDL_SCANCODE_RETURN))
 	{
 		mCurrentNode->Select();
 	}

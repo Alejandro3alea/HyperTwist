@@ -10,7 +10,7 @@
 
 void IntroScreenPhase::OnEnter()
 {
-	GfxMgr->SetBackgroundTexture(ResourceMgr->Load<Texture>("data/textures/IntroBG.png"));
+	GfxMgr->SetBackgroundTexture(ResourceMgr->Load<Texture>("data/textures/NextageLogo.png"));
 	
 	glm::uvec2 windowSize = WindowMgr->mCurrentWindow->Size();
 	mIsTransitionTriggered = false;
