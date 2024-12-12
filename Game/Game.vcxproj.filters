@@ -60,6 +60,9 @@
     <ClCompile Include="src\Game\Phases\AccountSelect\AccountWindow.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\Game\Phases\SongSelect\SongSelectGroup.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Game\Phases\Phase.h">
@@ -108,6 +111,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Game\Phases\AccountSelect\AccountWindow.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\Phases\SongSelect\SongSelectGroup.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
