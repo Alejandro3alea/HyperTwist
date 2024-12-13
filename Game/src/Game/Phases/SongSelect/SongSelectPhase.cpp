@@ -4,7 +4,9 @@
 void SongSelectPhase::OnEnter()
 {
 	//GfxMgr->SetBackgroundShader(ResourceMgr->Load<Shader>("data/shaders/SongSelectBG.shader")); 
-	GfxMgr->SetBackgroundTexture(ResourceMgr->Load<Texture>("data/textures/NextageLogo.png"));
+	GfxMgr->SetBackgroundTexture(ResourceMgr->Load<Texture>("data/engine/texture/SongSelect/ReferenceDark.png"));
+
+	mRenderables = new SongSelectRenderables();
 }
 
 void SongSelectPhase::OnTick(const float dt)

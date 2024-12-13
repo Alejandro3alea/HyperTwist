@@ -151,7 +151,7 @@ private:
 #define FONTRENDERER_STRING_LIMIT 255
 struct FontRenderer : public Renderable
 {
-	FontRenderer(const std::string& text, Resource<Font>* font = ResourceMgr->Load<Font>("data/engine/fonts/Roboto-Medium.ttf"));
+	FontRenderer(const std::string& text = "", Resource<Font>* font = ResourceMgr->Load<Font>("data/engine/fonts/Roboto-Medium.ttf"));
 
 	virtual void Render(Shader* shader = nullptr) override;
 	Resource<Font>* SetFont(const std::string& path);

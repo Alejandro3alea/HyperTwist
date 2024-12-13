@@ -154,6 +154,7 @@
     <ClCompile Include="src\Game\Phases\SongSelect\SongSelectGroup.cpp" />
     <ClCompile Include="src\Game\Phases\SongSelect\SongSelectPhase.cpp" />
     <ClCompile Include="src\Game\Phases\SongResults\SongResultsPhase.cpp" />
+    <ClCompile Include="src\Game\Phases\SongSelect\SongSelectRenderables.cpp" />
     <ClCompile Include="src\main.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -179,6 +180,7 @@
     <ClInclude Include="src\Game\Phases\SongResults\SongResultsPhase.h" />
     <ClInclude Include="src\Game\Phases\SongSelect\SongSelectGroup.h" />
     <ClInclude Include="src\Game\Phases\SongSelect\SongSelectPhase.h" />
+    <ClInclude Include="src\Game\Phases\SongSelect\SongSelectRenderables.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

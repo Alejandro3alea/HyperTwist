@@ -17,7 +17,7 @@ struct SongSelectNode
 protected:
 	std::string mName;
 	bool mIsHovered = false;
-	std::shared_ptr<Renderable> mRenderable = nullptr;
+	std::shared_ptr<Renderable> mRenderable;
 };
 
 
@@ -40,7 +40,7 @@ struct SongSelectGroup : public SongSelectNode
 	virtual void GenerateChildren() {}
 
 protected:
-	std::vector<std::shared_ptr<SongSelectSongNode>> mChildren;
+	std::vector<std::shared_ptr<SongSelectNode>> mChildren;
 
 private:
 	unsigned mChildrenPerRow;
@@ -52,8 +52,6 @@ struct SongSelectFilter : public SongSelectGroup
 {
 	SongSelectFilter(const std::string& name) : SongSelectGroup(name, 1) {}
 
-	
-
 	virtual void OnOpen() = 0;
 };
 
@@ -64,7 +62,7 @@ struct SongSelectSortByName : public SongSelectFilter
 
 	virtual void GenerateChildren() override;
 
-	void OnOpen();
+	void OnOpen() {}
 
 	std::vector<Resource<Song>*> mSongs;
 };
