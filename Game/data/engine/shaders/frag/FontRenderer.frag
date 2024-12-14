@@ -19,5 +19,6 @@ out vec4 FragColor;
 void main()
 {    
     vec4 letterSample = vec4(1.0, 1.0, 1.0, texture(uText, vec3(fs_in.TexCoords.xy, uLetterMap[fs_in.index])).r);
-    FragColor = vec4(uTextColor, 1.0) * letterSample;
+
+    FragColor = vec4(uTextColor, 1.0 * letterSample.a) * letterSample;
 }

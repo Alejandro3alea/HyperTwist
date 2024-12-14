@@ -17,6 +17,5 @@ uniform vec4 uColor;
 void main()
 {
 	vec4 texColor = texture(uTexture, fs_in.TexUV).rgba;
-	
     FragColor = vec4(texColor.r * uColor.r, texColor.g * uColor.g, texColor.b * uColor.b, texColor.a * uColor.a);
 }

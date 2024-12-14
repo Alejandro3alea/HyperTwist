@@ -26,7 +26,7 @@ void GraphicsManager::Initialize()
 	else
 		std::cout << "OpenGL Version: " << version << std::endl << std::endl;
 
-	glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
+	glClearColor(1.0f, 0.2f, 1.0f, 1.0f);
 
 	// enable depth buffering & back-face removal
 	glEnable(GL_DEPTH_TEST);
@@ -151,6 +151,11 @@ void GraphicsManager::RenderScene(Camera* cam, Shader* shader)
 	glm::mat4x4 view_cam = cam->GetViewMtx();
 	glm::mat4x4 proj_cam = cam->GetProjMtx();
 	glm::vec3 offset = cam->mPos;
+
+	std::sort(mRenderComps.begin(), mRenderComps.end(), [](Renderable* lhs, Renderable* rhs)
+		{
+			return lhs->transform.pos.z < rhs->transform.pos.z;
+		});
 
 	std::for_each(mRenderComps.begin(), mRenderComps.end(), [this, &offset, &proj_cam, &view_cam](Renderable* comp)
 		{

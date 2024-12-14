@@ -4,7 +4,7 @@
 void SongSelectPhase::OnEnter()
 {
 	//GfxMgr->SetBackgroundShader(ResourceMgr->Load<Shader>("data/shaders/SongSelectBG.shader")); 
-	GfxMgr->SetBackgroundTexture(ResourceMgr->Load<Texture>("data/engine/texture/SongSelect/ReferenceDark.png"));
+	GfxMgr->SetBackgroundTexture(ResourceMgr->Load<Texture>("data/engine/texture/SongSelect/MainBG.png"));
 
 	mRenderables = new SongSelectRenderables();
 }

@@ -52,6 +52,8 @@ void Renderable::Render(Shader* shader)
     mTexture->get()->Bind();
     currShader->SetUniform("uTexture", 1);
 
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     GLuint quadVAO = GfxMgr->GetQuad();
     glBindVertexArray(quadVAO);
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
@@ -627,8 +629,10 @@ void FontRenderer::Render(Shader* shader)
     Shader* currShader = (shader != nullptr) ? shader : mShader->get();
     currShader->Bind();
 
-    glUniform3f(glGetUniformLocation(currShader->mID, "uTextColor"), mColor.x, mColor.y, mColor.z);
-    glActiveTexture(GL_TEXTURE0);
+    currShader->SetUniform("uTextColor", glm::vec3(mColor.x, mColor.y, mColor.z));
+    currShader->SetUniform("zLayer", transform.pos.z);
+    
+    glActiveTexture(GL_TEXTURE0); 
     mFont->get()->BindFontTexture();
     glBindVertexArray(mVAO);
     glBindBuffer(GL_ARRAY_BUFFER, mVBO);
