@@ -36,6 +36,11 @@ private:
 
 	Chart* ProcessSMChart(std::istringstream& file);
 	Chart* ProcessSSCChart(std::istringstream& file);
+	
+
+	void ProcessSMD(std::istringstream& file);
+	void ProcessSMN(std::istringstream& file);
+	Chart* ProcessSMNChart(std::istringstream& file);
 
 
 public:
@@ -64,22 +69,23 @@ public:
 	std::map<float, int> mTickCounts;
 	std::map<float, TimeSignatureValues> mTimeSignatures;
 	std::map<float, std::string> mLabels;
-	std::map<float, int> mCombos; // TODO: Figure out how this works
+	std::map<float, int> mCombos; // @TODO: Figure out how this works
 
 	float mDisplayBPM; 
 	
-	std::string mOrigin; // TODO: Figure out how this works   #ORIGIN:;
-	std::string mPreviewVID; // TODO: Figure out how this works   #PREVIEWVID:;
-	std::string mJacket; // TODO: Figure out how this works   #JACKET:;
-	std::string mCDImage; // TODO: Figure out how this works   #CDIMAGE:;
-	std::string mDiscImage; // TODO: Figure out how this works   #DISCIMAGE:;
-	std::map<float, std::string> mBGChanges; // TODO: Figure out how this works   #BGCHANGES:;
-	std::string mFGChanges; // TODO: Figure out how this works   #FGCHANGES:;
+	std::string mOrigin; // @TODO: Figure out how this works   #ORIGIN:;
+	std::string mPreviewVID; // @TODO: Figure out how this works   #PREVIEWVID:;
+	std::string mJacket; // @TODO: Figure out how this works   #JACKET:;
+	std::string mCDImage; // @TODO: Figure out how this works   #CDIMAGE:;
+	std::string mDiscImage; // @TODO: Figure out how this works   #DISCIMAGE:;
+	std::map<float, std::string> mBGChanges; // @TODO: Figure out how this works   #BGCHANGES:;
+	std::string mFGChanges; // @TODO: Figure out how this works   #FGCHANGES:;
 
 	std::map<ChartDifficulty, Chart*> mCharts;
 
 private:
 	std::string mPath;
+	std::string mNoteDataPath; // If main file is a data file and contains a note data file.
 	Resource<Audio>* mSong = nullptr;
 	Resource<Texture>* mBanner = nullptr;
 	Resource<Texture>* mBackground = nullptr;

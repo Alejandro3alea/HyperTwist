@@ -6,7 +6,6 @@
 
 Camera::Camera()
 {
-	mAspect = WindowMgr->mCurrentWindow->AspectRatio();
 	mPos	= glm::vec3(0.f, 0.0f, 0.f);
 }
 

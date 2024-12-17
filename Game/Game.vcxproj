@@ -77,6 +77,7 @@
       <PreprocessorDefinitions>TEST_MODE;WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)Engine/src;$(SolutionDir)include;$(SolutionDir)include\AL;$(SolutionDir)include\GL;$(SolutionDir)include\glm;$(SolutionDir)include\gltf;$(SolutionDir)include\Json;$(SolutionDir)include\SDL2;$(SolutionDir)include\STB;$(SolutionDir)include\SFML;$(SolutionDir)include\freetype;$(ProjectDir)imgui;$(ProjectDir)src;$(ProjectDir)src/Editor;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -94,6 +95,7 @@
       <PreprocessorDefinitions>TEST_MODE;WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)Engine/src;$(SolutionDir)include;$(SolutionDir)include\AL;$(SolutionDir)include\GL;$(SolutionDir)include\glm;$(SolutionDir)include\gltf;$(SolutionDir)include\Json;$(SolutionDir)include\SDL2;$(SolutionDir)include\STB;$(SolutionDir)include\SFML;$(SolutionDir)include\freetype;$(ProjectDir)imgui;$(ProjectDir)src;$(ProjectDir)src/Editor;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -111,6 +113,7 @@
       <PreprocessorDefinitions>TEST_MODE;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)Engine/src;$(SolutionDir)include;$(SolutionDir)include\AL;$(SolutionDir)include\GL;$(SolutionDir)include\glm;$(SolutionDir)include\gltf;$(SolutionDir)include\Json;$(SolutionDir)include\SDL2;$(SolutionDir)include\STB;$(SolutionDir)include\SFML;$(SolutionDir)include\freetype;$(ProjectDir)imgui;$(ProjectDir)src;$(ProjectDir)src/Editor;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -128,6 +131,7 @@
       <PreprocessorDefinitions>TEST_MODE;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)Engine/src;$(SolutionDir)include;$(SolutionDir)include\AL;$(SolutionDir)include\GL;$(SolutionDir)include\glm;$(SolutionDir)include\gltf;$(SolutionDir)include\Json;$(SolutionDir)include\SDL2;$(SolutionDir)include\STB;$(SolutionDir)include\SFML;$(SolutionDir)include\freetype;$(ProjectDir)imgui;$(ProjectDir)src;$(ProjectDir)src/Editor;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -151,7 +155,7 @@
     <ClCompile Include="src\Game\Phases\GameResults\GameResultsPhase.cpp" />
     <ClCompile Include="src\Game\Phases\IntroScreen\IntroScreenPhase.cpp" />
     <ClCompile Include="src\Game\Phases\PhaseManager.cpp" />
-    <ClCompile Include="src\Game\Phases\SongSelect\SongSelectGroup.cpp" />
+    <ClCompile Include="src\Game\Phases\SongSelect\SongSelectGroups.cpp" />
     <ClCompile Include="src\Game\Phases\SongSelect\SongSelectPhase.cpp" />
     <ClCompile Include="src\Game\Phases\SongResults\SongResultsPhase.cpp" />
     <ClCompile Include="src\Game\Phases\SongSelect\SongSelectRenderables.cpp" />
@@ -178,7 +182,7 @@
     <ClInclude Include="src\Game\Phases\Phase.h" />
     <ClInclude Include="src\Game\Phases\PhaseManager.h" />
     <ClInclude Include="src\Game\Phases\SongResults\SongResultsPhase.h" />
-    <ClInclude Include="src\Game\Phases\SongSelect\SongSelectGroup.h" />
+    <ClInclude Include="src\Game\Phases\SongSelect\SongSelectGroups.h" />
     <ClInclude Include="src\Game\Phases\SongSelect\SongSelectPhase.h" />
     <ClInclude Include="src\Game\Phases\SongSelect\SongSelectRenderables.h" />
   </ItemGroup>

@@ -88,6 +88,8 @@ Song::Song(const std::string& path)
         ProcessSMSong(cleanContents);
     else if (extension == "ssc")
         ProcessSSCSong(cleanContents);
+    else if (extension == "smd")
+        ProcessSMD(cleanContents);
 
 	file.close();
     
@@ -145,7 +147,7 @@ void Song::GetResources()
     if (!mBackgroundPath.empty())
     {
         mBackground = ResourceMgr->Load<Texture>(mPath + mBackgroundPath);
-        GfxMgr->SetBackgroundTexture(mBackground);
+        //GfxMgr->SetBackgroundTexture(mBackground);
     }
     if (!mCDTitlePath.empty())
         mCDTitle    = ResourceMgr->Load<Texture>(mPath + mCDTitlePath);
@@ -692,6 +694,358 @@ Chart* Song::ProcessSSCChart(std::istringstream& file)
             }
         }
     }
+}
+
+
+void Song::ProcessSMD(std::istringstream& file)
+{
+    std::string line;
+    while (std::getline(file, line))
+    {
+        if (line.empty() || line[0] == '/') // Ignore empty lines and comment lines
+            continue;
+
+        // Extract the key and value from each line
+        size_t colonPos = line.find(':');
+        if (colonPos != std::string::npos)
+        {
+            std::string key = line.substr(0, colonPos);
+            std::string value = line.substr(colonPos + 1);
+
+            bool isEoC = false;
+            if (value.find(';') != std::string::npos)
+            {
+                isEoC = true;
+                value.pop_back();
+            }
+
+            // Store the value in the appropriate member of the SongData struct
+            if (key == "#TITLE")
+                mTitle = value;
+            else if (key == "#SUBTITLE")
+                mSubtitle = value;
+            else if (key == "#ARTIST")
+                mArtist = value;
+            else if (key == "#TITLETRANSLIT")
+                mTitleTranslit = value;
+            else if (key == "#SUBTITLETRANSLIT")
+                mSubtitleTranslit = value;
+            else if (key == "#ARTISTTRANSLIT")
+                mArtistTranslit = value;
+            else if (key == "#GENRE")
+                mGenre = value;
+            else if (key == "#CREDIT")
+                mCredit = value;
+            else if (key == "#BANNER")
+                mBannerPath = value;
+            else if (key == "#BACKGROUND")
+                mBackgroundPath = value;
+            else if (key == "#CDTITLE")
+                mCDTitlePath = value;
+            else if (key == "#MUSIC")
+                mSongPath = value;
+            else if (key == "#OFFSET")
+                mOffset = std::stof(value);
+            else if (key == "#SAMPLESTART")
+                mSampleStart = std::stof(value);
+            else if (key == "#SAMPLELENGTH")
+                mSampleLength = std::stof(value);
+            else if (key == "#SELECTABLE")
+                mSelectable = value == "YES";
+            else if (key == "#BPMS")
+            {
+                while (!isEoC)
+                {
+                    std::string currLine;
+                    std::getline(file, currLine);
+                    value += currLine;
+                    isEoC |= currLine.find(';') != std::string::npos;
+
+                    if (isEoC)
+                        value.pop_back();
+                }
+
+                std::stringstream ss(value);
+                std::string part;
+
+                while (std::getline(ss, part, ','))
+                {
+                    size_t equalPos = part.find('=');
+                    if (equalPos != std::string::npos)
+                    {
+                        const float measurePos = std::stof(part.substr(0, equalPos));
+                        const float bpm = std::stof(part.substr(equalPos + 1));
+
+                        mBPMs[measurePos] = bpm;
+                    }
+                }
+            }
+            else if (key == "#STOPS")
+            {
+                while (!isEoC)
+                {
+                    std::string currLine;
+                    std::getline(file, currLine);
+                    value += currLine;
+                    isEoC |= currLine.find(';') != std::string::npos;
+
+                    if (isEoC)
+                        value.pop_back();
+                }
+
+                std::stringstream ss(value);
+                std::string part;
+
+                while (std::getline(ss, part, ','))
+                {
+                    size_t equalPos = part.find('=');
+                    if (equalPos != std::string::npos)
+                    {
+                        const float measurePos = std::stof(part.substr(0, equalPos));
+                        const float stopTime = std::stof(part.substr(equalPos + 1));
+
+                        mStops[measurePos] = stopTime;
+                    }
+                }
+            }
+            else if (key == "#SPEEDS")
+            {
+                while (!isEoC)
+                {
+                    std::string currLine;
+                    std::getline(file, currLine);
+                    value += currLine;
+                    isEoC |= currLine.find(';') != std::string::npos;
+
+                    if (isEoC)
+                        value.pop_back();
+                }
+
+                std::stringstream ss(value);
+                std::string part;
+
+                while (std::getline(ss, part, ','))
+                {
+                    size_t equalPos = part.find('=');
+                    if (equalPos != std::string::npos)
+                    {
+                        const float measurePos = std::stof(part.substr(0, equalPos));
+                        float speedVal = 1.0f;
+                        float speedTime = 1.0f;
+                        bool isBeatsOrSeconds = false;
+
+                        part = part.substr(equalPos + 1);
+                        equalPos = part.find('=');
+                        if (equalPos != std::string::npos)
+                        {
+                            speedVal = std::stof(part.substr(0, equalPos));
+                            part = part.substr(equalPos + 1);
+                            equalPos = part.find('=');
+                            if (equalPos != std::string::npos)
+                            {
+                                speedTime = std::stof(part.substr(0, equalPos));
+                                isBeatsOrSeconds = part.substr(equalPos + 1) != "0";
+                            }
+                        }
+
+                        mSpeeds[measurePos] = { speedVal, speedTime, isBeatsOrSeconds };
+                    }
+                }
+            }
+            else if (key == "#SCROLLS")
+            {
+                while (!isEoC)
+                {
+                    std::string currLine;
+                    std::getline(file, currLine);
+                    value += currLine;
+                    isEoC |= currLine.find(';') != std::string::npos;
+
+                    if (isEoC)
+                        value.pop_back();
+                }
+
+                std::stringstream ss(value);
+                std::string part;
+
+                while (std::getline(ss, part, ','))
+                {
+                    size_t equalPos = part.find('=');
+                    if (equalPos != std::string::npos)
+                    {
+                        const float measurePos = std::stof(part.substr(0, equalPos));
+                        const float scrollSpeed = std::stof(part.substr(equalPos + 1));
+
+                        mScrolls[measurePos] = scrollSpeed;
+                    }
+                }
+            }
+            else if (key == "#TICKCOUNTS")
+            {
+                while (!isEoC)
+                {
+                    std::string currLine;
+                    std::getline(file, currLine);
+                    value += currLine;
+                    isEoC |= currLine.find(';') != std::string::npos;
+
+                    if (isEoC)
+                        value.pop_back();
+                }
+
+                std::stringstream ss(value);
+                std::string part;
+
+                while (std::getline(ss, part, ','))
+                {
+                    size_t equalPos = part.find('=');
+                    if (equalPos != std::string::npos)
+                    {
+                        const float measurePos = std::stof(part.substr(0, equalPos));
+                        const int tickCount = std::stoi(part.substr(equalPos + 1));
+
+                        mTickCounts[measurePos] = tickCount;
+                    }
+                }
+            }
+            else if (key == "#TIMESIGNATURES")
+            {
+                while (!isEoC)
+                {
+                    std::string currLine;
+                    std::getline(file, currLine);
+                    value += currLine;
+                    isEoC |= currLine.find(';') != std::string::npos;
+
+                    if (isEoC)
+                        value.pop_back();
+                }
+
+                std::stringstream ss(value);
+                std::string part;
+
+                while (std::getline(ss, part, ','))
+                {
+                    size_t equalPos = part.find('=');
+                    if (equalPos != std::string::npos)
+                    {
+                        const float measurePos = std::stof(part.substr(0, equalPos));
+                        part = part.substr(equalPos + 1);
+
+                        equalPos = part.find('=');
+                        if (equalPos != std::string::npos)
+                        {
+                            mTimeSignatures[measurePos] = { std::stoi(part.substr(0, equalPos)),
+                                                            std::stoi(part.substr(equalPos + 1)) };
+                        }
+                    }
+                }
+            }
+            else if (key == "#LABELS")
+            {
+                while (!isEoC)
+                {
+                    std::string currLine;
+                    std::getline(file, currLine);
+                    value += currLine;
+                    isEoC |= currLine.find(';') != std::string::npos;
+
+                    if (isEoC)
+                        value.pop_back();
+                }
+
+                std::stringstream ss(value);
+                std::string part;
+
+                while (std::getline(ss, part, ','))
+                {
+                    size_t equalPos = part.find('=');
+                    if (equalPos != std::string::npos)
+                    {
+                        const float measurePos = std::stof(part.substr(0, equalPos));
+                        const std::string label = part.substr(equalPos + 1);
+
+                        mLabels[measurePos] = label;
+                    }
+                }
+            }
+            else if (key == "#COMBOS")
+            {
+                // @TODO
+            }
+            else if (key == "#DISPLAYBPM")
+            {
+                mDisplayBPM = std::stof(value);
+            }
+            else if (key == "#ORIGIN")
+            {
+                // @TODO
+            }
+            else if (key == "#PREVIEWVID")
+            {
+                // @TODO
+            }
+            else if (key == "#JACKET")
+            {
+                // @TODO
+            }
+            else if (key == "#CDIMAGE")
+            {
+                // @TODO
+            }
+            else if (key == "#DISCIMAGE")
+            {
+                // @TODO
+            }
+            else if (key == "#BGCHANGES")
+            {
+                while (!isEoC)
+                {
+                    std::string currLine;
+                    std::getline(file, currLine);
+                    value += currLine;
+                    isEoC |= currLine.find(';') != std::string::npos;
+
+                    if (isEoC)
+                        value.pop_back();
+                }
+
+                std::stringstream ss(value);
+                std::string part;
+
+                while (std::getline(ss, part, ','))
+                {
+                    size_t equalPos = part.find('=');
+                    if (equalPos != std::string::npos)
+                    {
+                        const float measurePos = std::stof(part.substr(0, equalPos));
+                        const std::string label = part.substr(equalPos + 1);
+
+                        mBGChanges[measurePos] = label;
+                    }
+                }
+            }
+            else if (key == "#FGCHANGES")
+            {
+                // @TODO
+            }
+            else if (key == "#NOTEDATA")
+            {
+                if (Chart* newChart = ProcessSSCChart(file))
+                    mCharts[newChart->mDifficulty] = newChart;
+            }
+        }
+    }
+}
+
+void Song::ProcessSMN(std::istringstream& file)
+{
+
+}
+
+Chart* Song::ProcessSMNChart(std::istringstream& file)
+{
+    return nullptr;
 }
 
 void Song::SaveAsSSCSong()

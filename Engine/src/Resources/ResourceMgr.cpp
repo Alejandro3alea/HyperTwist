@@ -23,6 +23,7 @@ void ResourceManager::Initialize()
 	mAllImporters["ogg"]	= std::shared_ptr<IResourceImporterBase>(new ResourceImporter<Audio>());
 	mAllImporters["ssc"]	= std::shared_ptr<IResourceImporterBase>(new ResourceImporter<Song>());
 	mAllImporters["sm"]		= std::shared_ptr<IResourceImporterBase>(new ResourceImporter<Song>());
+	mAllImporters["smd"]	= std::shared_ptr<IResourceImporterBase>(new ResourceImporter<Song>());
 	mAllImporters["ttf"]	= std::shared_ptr<IResourceImporterBase>(new ResourceImporter<Font>());
 
 	mBasePath = std::filesystem::current_path().string();

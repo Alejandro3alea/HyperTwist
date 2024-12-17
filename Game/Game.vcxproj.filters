@@ -60,7 +60,7 @@
     <ClCompile Include="src\Game\Phases\AccountSelect\AccountWindow.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Game\Phases\SongSelect\SongSelectGroup.cpp">
+    <ClCompile Include="src\Game\Phases\SongSelect\SongSelectGroups.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Game\Phases\SongSelect\SongSelectRenderables.cpp">
@@ -116,7 +116,7 @@
     <ClInclude Include="src\Game\Phases\AccountSelect\AccountWindow.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Game\Phases\SongSelect\SongSelectGroup.h">
+    <ClInclude Include="src\Game\Phases\SongSelect\SongSelectGroups.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Game\Phases\SongSelect\SongSelectRenderables.h">

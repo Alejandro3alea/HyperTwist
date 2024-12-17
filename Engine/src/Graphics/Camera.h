@@ -15,7 +15,6 @@ struct Camera
 	void SetPositionFromMeasure(const float measure);
 
 public:
-	float mAspect;
 	glm::vec3 mPos;
 	float mZoom = 25.0f;
 };

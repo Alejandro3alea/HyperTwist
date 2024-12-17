@@ -53,6 +53,9 @@ public:
 	OnPreRender mOnPreRender;
 	OnPostRender mOnPostRender;
 
+	// @TODO: Enable/Disable MSAA
+	//bool mIsMSAAEnabled = true;
+
 private:
 	Resource<Shader>* mQuadShader;
 	Resource<Shader>* mBGShader;

@@ -28,11 +28,11 @@ void GraphicsManager::Initialize()
 
 	glClearColor(1.0f, 0.2f, 1.0f, 1.0f);
 
-	// enable depth buffering & back-face removal
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glEnable(GL_MULTISAMPLE);
 
 	InputMgr->mOnWindowResize.Add([](const uint32_t width, const uint32_t height) { glViewport(0, 0, width, height); });
 

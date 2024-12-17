@@ -9,6 +9,7 @@ SongSelectRenderables::SongSelectRenderables()
 void SongSelectRenderables::OnSongChange(Resource<Song>* song)
 {
 	// std::vector<ChartRenderables> mChartRenderables;
+
 }
 
 void SongSelectRenderables::SetTextures()
@@ -43,9 +44,9 @@ void SongSelectRenderables::SetTextures()
 void SongSelectRenderables::SetInitialVisibility()
 {
 	// Creepily staring at these values (maybe @TODO for making a UI file IO system?)
-	mStageText.transform.pos = glm::vec3(-820.0f, 465.0f, 1.0f);
+	mStageText.transform.pos = glm::vec3(-820.0f, 465.0f, 3.0f);
 	mStageText.transform.scale = glm::vec3(1.0f);
-	mStageBG.transform.pos = glm::vec3(-825.0f, 490.0f, 0.5f);
+	mStageBG.transform.pos = glm::vec3(-825.0f, 490.0f, 2.5f);
 	mStageBG.mColor = glm::vec4(0.0f, 0.0f, 0.0f, 0.75f);
 	mStageBG.transform.scale = glm::vec3(150.0f, 50.0f, 0.1f);
 
