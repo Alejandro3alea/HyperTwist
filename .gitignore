@@ -37,3 +37,6 @@
 */data/songs/*
 *data/ignore/*
 *data/local/*
+
+# Custom Files
+PlatformCategories.data
