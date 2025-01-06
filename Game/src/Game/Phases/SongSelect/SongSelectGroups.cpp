@@ -21,6 +21,33 @@ void SongSelectSortByName::GenerateChildren(const std::vector<Resource<Song>*>& 
 	}
 }
 
+void SongSelectSortByBPM::GenerateChildren(const std::vector<Resource<Song>*>& songs)
+{
+	for (uint32_t bpm = 100; bpm <= 500; bpm += 20)
+	{
+		mChildren.push_back(std::make_shared<SongSelectGroup>(std::to_string(bpm)));
+	}
+}
+
+void SongSelectSortByVersion::GenerateChildren(const std::vector<Resource<Song>*>& songs)
+{
+	std::map<std::string, std::vector<std::string>> versions = LoadPlatformData();
+}
+
+std::map<std::string, std::vector<std::string>> SongSelectSortByVersion::LoadPlatformData()
+{
+	std::map<std::string, std::vector<std::string>> list;
+	std::ifstream file("data/local/Platform")
+
+
+	return list;
+}
+
+void SongSelectSortByLevel::GenerateChildren(const std::vector<Resource<Song>*>& songs)
+{
+}
+
+
 void SongSelectTestFilter::GenerateChildren(const std::vector<Resource<Song>*>& songs)
 {
 	std::shared_ptr<SongSelectGroup> newGroup = std::make_shared<SongSelectGroup>("Hello There");

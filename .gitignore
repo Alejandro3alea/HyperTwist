@@ -36,3 +36,4 @@
 .vs/*
 */data/songs/*
 *data/ignore/*
+*data/local/*

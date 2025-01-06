@@ -80,6 +80,36 @@ struct SongSelectSortByName : public SongSelectFilter
 	void OnOpen() {}
 };
 
+struct SongSelectSortByLevel : public SongSelectFilter
+{
+	SongSelectSortByLevel(const std::vector<Resource<Song>*>& songs) : SongSelectFilter("Sort by Song Name", songs) {}
+
+	virtual void GenerateChildren(const std::vector<Resource<Song>*>& songs) override;
+
+	void OnOpen() {}
+};
+
+struct SongSelectSortByVersion : public SongSelectFilter
+{
+	SongSelectSortByVersion(const std::vector<Resource<Song>*>& songs) : SongSelectFilter("Sort by Song Name", songs) {}
+
+	virtual void GenerateChildren(const std::vector<Resource<Song>*>& songs) override;
+
+	void OnOpen() {}
+
+private:
+	std::map<std::string, std::vector<std::string>> versions = LoadPlatformData()
+};
+
+struct SongSelectSortByBPM : public SongSelectFilter
+{
+	SongSelectSortByBPM(const std::vector<Resource<Song>*>& songs) : SongSelectFilter("Sort by Song Name", songs) {}
+
+	virtual void GenerateChildren(const std::vector<Resource<Song>*>& songs) override;
+
+	void OnOpen() {}
+};
+
 struct SongSelectTestFilter : public SongSelectFilter
 {
 	SongSelectTestFilter(const std::vector<Resource<Song>*>& songs) : SongSelectFilter("Test filter", songs) {}
