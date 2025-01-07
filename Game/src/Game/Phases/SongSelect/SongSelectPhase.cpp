@@ -4,6 +4,8 @@
 
 #include <filesystem>
 
+std::vector<Resource<Song>*> SongSelectPhase::mSongs;
+
 void SongSelectPhase::OnEnter()
 {
 	//GfxMgr->SetBackgroundShader(ResourceMgr->Load<Shader>("data/shaders/SongSelectBG.shader")); 
@@ -36,6 +38,10 @@ void SongSelectPhase::OnTick(const float dt)
         mNodeIdx += 1;
         OnUpdateIdx();
     }
+    if (InputMgr->isKeyPressed(SDL_SCANCODE_RETURN))
+    {
+        GetNodeByIdx(mNodeIdx)->OnOpen();
+    }
 }
 
 void SongSelectPhase::OnExit()
@@ -60,6 +66,74 @@ SongSelectNode* SongSelectPhase::GetNodeByIdx(const uint32_t mSelectedIdx)
     return nullptr;
 }
 
+std::map<uint8_t, std::vector<Song*>> SongSelectPhase::GetSongsByName()
+{
+    std::map<uint8_t, std::vector<Song*>> result;
+    for (Resource<Song>* songRes : mSongs)
+    {
+        Song* song = songRes->get();
+        result[song->mTitle.at(0)].push_back(song);
+    }
+    return result;
+}
+
+std::map<uint8_t, std::vector<Song*>> SongSelectPhase::GetSongsByArtist()
+{
+    std::map<uint8_t, std::vector<Song*>> result;
+    for (Resource<Song>* songRes : mSongs)
+    {
+        Song* song = songRes->get();
+        result[song->mArtist.at(0)].push_back(song);
+    }
+    return result;
+}
+
+std::map<uint32_t, std::vector<Song*>> SongSelectPhase::GetSongsByLevel()
+{
+    std::map<uint32_t, std::vector<Song*>> result;
+    for (Resource<Song>* songRes : mSongs)
+    {
+        Song* song = songRes->get();
+        for (const auto& [_diff, chart] : song->mCharts)
+            result[chart->mDifficultyVal].push_back(song);
+    }
+    return result;
+}
+
+std::map<std::string, std::vector<Song*>> SongSelectPhase::GetSongsByPlatform()
+{
+    std::map<std::string, std::vector<Song*>> result;
+    for (Resource<Song>* songRes : mSongs)
+    {
+        Song* song = songRes->get();
+        result[song->mPlatform].push_back(song);
+    }
+    return result;
+}
+
+std::vector<Song*> SongSelectPhase::GetSongsByVersion(const std::vector<Song*>& platformSongs, const std::string& platformVersion)
+{
+    std::vector<Song*> result;
+    for (Song* song : platformSongs)
+    {
+        if (song->mPlatformVersion == platformVersion)
+            result.push_back(song);
+    }
+    return result;
+}
+
+std::vector<Song*> SongSelectPhase::GetSongsFromBPMRange(const uint32_t minBPM, const uint32_t maxBPM)
+{
+    std::vector<Song*> result;
+    for (Resource<Song>* songRes : mSongs)
+    {
+        Song* song = songRes->get();
+        if (song->mDisplayBPM >= minBPM && song->mDisplayBPM < maxBPM)
+            result.push_back(song);
+    }
+    return result;
+}
+
 void SongSelectPhase::LoadSongs()
 {
     std::string rootDirectory = "./";  // Starting directory (current directory in this case)
@@ -81,7 +155,12 @@ void SongSelectPhase::LoadSongs()
 
 void SongSelectPhase::SetupFilters()
 {
-    mFilters.push_back(std::make_shared<SongSelectTestFilter>(mSongs));
+    mFilters.push_back(std::make_shared<SongSelectSortByName>());
+    mFilters.push_back(std::make_shared<SongSelectSortByLevel>());
+    mFilters.push_back(std::make_shared<SongSelectSortByArtist>());
+    mFilters.push_back(std::make_shared<SongSelectSortByVersion>());
+    mFilters.push_back(std::make_shared<SongSelectSortByBPM>());
+    mFilters.push_back(std::make_shared<SongSelectSortByGenre>());
 }
 
 uint32_t SongSelectPhase::GetDisplayedNodesCount()

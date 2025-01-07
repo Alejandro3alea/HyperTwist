@@ -51,6 +51,8 @@ public:
 	std::string mSubtitleTranslit;
 	std::string mArtistTranslit;
 	std::string mGenre;
+	std::string mPlatform;
+	std::string mPlatformVersion;
 	std::string mCredit;
 	std::string mSongPath;
 	std::string mBannerPath;

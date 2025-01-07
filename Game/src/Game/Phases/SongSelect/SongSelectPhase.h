@@ -1,7 +1,9 @@
 #pragma once
 #include "Game/Phases/Phase.h"
 #include "SongSelectRenderables.h"
-#include "SongSelectGroups.h"
+#include "SongSelectFilters.h"
+
+#include <map>
 
 struct SongSelectPhase : public Phase
 {
@@ -11,8 +13,16 @@ struct SongSelectPhase : public Phase
 
 	SongSelectNode* GetNodeByIdx(const uint32_t mSelectedIdx);
 
+public:
+	static std::map<uint8_t, std::vector<Song*>> GetSongsByName();
+	static std::map<uint8_t, std::vector<Song*>> GetSongsByArtist();
+	static std::map<uint32_t, std::vector<Song*>> GetSongsByLevel();
+	static std::map<std::string, std::vector<Song*>> GetSongsByPlatform();
+	static std::vector<Song*> GetSongsByVersion(const std::vector<Song*>& platformSongs, const std::string& platformVersion);
+	static std::vector<Song*> GetSongsFromBPMRange(const uint32_t minBPM, const uint32_t maxBPM);
+
 protected:
-	void LoadSongs();
+	static void LoadSongs();
 	void SetupFilters();
 
 	uint32_t GetDisplayedNodesCount();
@@ -24,5 +34,6 @@ private:
 	uint32_t mNodeIdx;
 	SongSelectRenderables* mRenderables;
 	std::vector<std::shared_ptr<SongSelectFilter>> mFilters;
-	std::vector<Resource<Song>*> mSongs;
+
+	static std::vector<Resource<Song>*> mSongs;
 };

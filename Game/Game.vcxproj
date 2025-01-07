@@ -155,6 +155,7 @@
     <ClCompile Include="src\Game\Phases\GameResults\GameResultsPhase.cpp" />
     <ClCompile Include="src\Game\Phases\IntroScreen\IntroScreenPhase.cpp" />
     <ClCompile Include="src\Game\Phases\PhaseManager.cpp" />
+    <ClCompile Include="src\Game\Phases\SongSelect\SongSelectFilters.cpp" />
     <ClCompile Include="src\Game\Phases\SongSelect\SongSelectGroups.cpp" />
     <ClCompile Include="src\Game\Phases\SongSelect\SongSelectPhase.cpp" />
     <ClCompile Include="src\Game\Phases\SongResults\SongResultsPhase.cpp" />
@@ -182,6 +183,7 @@
     <ClInclude Include="src\Game\Phases\Phase.h" />
     <ClInclude Include="src\Game\Phases\PhaseManager.h" />
     <ClInclude Include="src\Game\Phases\SongResults\SongResultsPhase.h" />
+    <ClInclude Include="src\Game\Phases\SongSelect\SongSelectFilters.h" />
     <ClInclude Include="src\Game\Phases\SongSelect\SongSelectGroups.h" />
     <ClInclude Include="src\Game\Phases\SongSelect\SongSelectPhase.h" />
     <ClInclude Include="src\Game\Phases\SongSelect\SongSelectRenderables.h" />

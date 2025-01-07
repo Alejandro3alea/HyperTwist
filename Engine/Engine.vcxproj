@@ -201,6 +201,8 @@
     <ClInclude Include="src\Misc\Ensure.h" />
     <ClInclude Include="src\Misc\Singleton.h" />
     <ClInclude Include="src\Misc\Timer.h" />
+    <ClInclude Include="src\Resources\Resource.h" />
+    <ClInclude Include="src\Resources\ResourceImporter.h" />
     <ClInclude Include="src\Resources\ResourceMgr.h" />
     <ClInclude Include="src\Utils\RNG.h" />
   </ItemGroup>
