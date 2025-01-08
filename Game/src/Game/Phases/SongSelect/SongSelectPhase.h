@@ -5,11 +5,22 @@
 
 #include <map>
 
+enum class SongSelectState
+{
+	FilterSelect,
+	SongSelect,
+	DifficultySelect
+};
+
 struct SongSelectPhase : public Phase
 {
 	virtual void OnEnter() override;
 	virtual void OnTick(const float dt) override;
 	virtual void OnExit() override;
+
+	void UpdateFilterSelect(const float dt);
+	void UpdateSongSelect(const float dt);
+	void UpdateDifficultySelect(const float dt);
 
 	SongSelectNode* GetNodeByIdx(const uint32_t mSelectedIdx);
 
@@ -34,6 +45,7 @@ private:
 	uint32_t mNodeIdx;
 	SongSelectRenderables* mRenderables;
 	std::vector<std::shared_ptr<SongSelectFilter>> mFilters;
+	SongSelectState mState = ;
 
 	static std::vector<Resource<Song>*> mSongs;
 };

@@ -18,6 +18,30 @@ void SongSelectPhase::OnEnter()
 
 void SongSelectPhase::OnTick(const float dt)
 {
+    switch (mState)
+    {
+    case SongSelectState::FilterSelect:
+        UpdateFilterSelect(dt);
+        break;
+    case SongSelectState::SongSelect:
+        UpdateSongSelect(dt);
+        break;
+    case SongSelectState::DifficultySelect:
+        UpdateDifficultySelect(dt);
+        break;
+    }
+}
+
+void SongSelectPhase::OnExit()
+{
+}
+
+void SongSelectPhase::UpdateFilterSelect(const float dt)
+{
+}
+
+void SongSelectPhase::UpdateSongSelect(const float dt)
+{
     if (InputMgr->isKeyPressed(SDL_SCANCODE_UP))
     {
         mNodeIdx -= 3;
@@ -44,7 +68,7 @@ void SongSelectPhase::OnTick(const float dt)
     }
 }
 
-void SongSelectPhase::OnExit()
+void SongSelectPhase::UpdateDifficultySelect(const float dt)
 {
 }
 

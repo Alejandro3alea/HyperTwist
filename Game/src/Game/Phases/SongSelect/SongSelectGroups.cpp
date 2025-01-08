@@ -17,6 +17,7 @@ void SongSelectSongNode::ConstructRenderable()
 
 void SongSelectSongNode::OnOpen()
 {
+
 }
 	
 void SongSelectGroup::OnOpen()
