@@ -11,7 +11,7 @@ void SongSelectPhase::OnEnter()
 	//GfxMgr->SetBackgroundShader(ResourceMgr->Load<Shader>("data/shaders/SongSelectBG.shader")); 
 	GfxMgr->SetBackgroundTexture(ResourceMgr->Load<Texture>("data/engine/texture/SongSelect/MainBG.png"));
 
-	mRenderables = new SongSelectRenderables();
+	mRenderables = std::make_shared<SongSelectRenderables>();
     LoadSongs();
     SetupFilters();
 }
@@ -36,8 +36,29 @@ void SongSelectPhase::OnExit()
 {
 }
 
+void SongSelectPhase::ChangeToState(const SongSelectState& newState)
+{
+    mState = newState;
+}
+
 void SongSelectPhase::UpdateFilterSelect(const float dt)
 {
+    if (InputMgr->isKeyPressed(SDL_SCANCODE_LEFT))
+    {
+        mNodeIdx--;
+        OnUpdateFilterIdx();
+    }
+    if (InputMgr->isKeyPressed(SDL_SCANCODE_RIGHT))
+    {
+        mNodeIdx++;
+        OnUpdateFilterIdx();
+    }
+    if (InputMgr->isKeyPressed(SDL_SCANCODE_RETURN))
+    {
+        mFilters[mFilterIdx]->OnOpen();
+        OnSelectFilter();
+        ChangeToState(SongSelectState::SongSelect);
+    }
 }
 
 void SongSelectPhase::UpdateSongSelect(const float dt)
@@ -45,26 +66,27 @@ void SongSelectPhase::UpdateSongSelect(const float dt)
     if (InputMgr->isKeyPressed(SDL_SCANCODE_UP))
     {
         mNodeIdx -= 3;
-        OnUpdateIdx();
+        OnUpdateNodeIdx();
     }
     if (InputMgr->isKeyPressed(SDL_SCANCODE_LEFT))
     {
         mNodeIdx -= 1;
-        OnUpdateIdx();
+        OnUpdateNodeIdx();
     }
     if (InputMgr->isKeyPressed(SDL_SCANCODE_DOWN))
     {
         mNodeIdx += 3;
-        OnUpdateIdx();
+        OnUpdateNodeIdx();
     }
     if (InputMgr->isKeyPressed(SDL_SCANCODE_RIGHT))
     {
         mNodeIdx += 1;
-        OnUpdateIdx();
+        OnUpdateNodeIdx();
     }
     if (InputMgr->isKeyPressed(SDL_SCANCODE_RETURN))
     {
         GetNodeByIdx(mNodeIdx)->OnOpen();
+        ChangeToState(SongSelectState::DifficultySelect);
     }
 }
 
@@ -74,20 +96,7 @@ void SongSelectPhase::UpdateDifficultySelect(const float dt)
 
 SongSelectNode* SongSelectPhase::GetNodeByIdx(const uint32_t mSelectedIdx)
 {
-    for (uint32_t i = 0; i < mFilters.size(); i++)
-    {
-        if (i == mSelectedIdx)
-            return mFilters[i].get();
-
-        if (mFilters[i]->IsOpen())
-        {
-            SongSelectNode* foundNode = mFilters[i]->GetNodeByIdx(mSelectedIdx - i - 1);
-            if (foundNode != nullptr)
-                return foundNode;
-        }
-    }
-
-    return nullptr;
+    return mFilters[mFilterIdx]->GetNodeByIdx(mSelectedIdx);
 }
 
 std::map<uint8_t, std::vector<Song*>> SongSelectPhase::GetSongsByName()
@@ -204,10 +213,23 @@ uint32_t SongSelectPhase::GetDisplayedNodesCount()
     return result;
 }
 
-void SongSelectPhase::OnUpdateIdx()
+void SongSelectPhase::OnUpdateFilterIdx()
+{
+
+}
+
+void SongSelectPhase::OnUpdateNodeIdx()
+{
+}
+
+void SongSelectPhase::OnSelectFilter()
 {
 }
 
 void SongSelectPhase::OnSelectNode()
+{
+}
+
+void SongSelectPhase::OnCancellingNode()
 {
 }

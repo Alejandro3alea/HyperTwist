@@ -18,6 +18,7 @@ struct SongSelectPhase : public Phase
 	virtual void OnTick(const float dt) override;
 	virtual void OnExit() override;
 
+	void ChangeToState(const SongSelectState& newState);
 	void UpdateFilterSelect(const float dt);
 	void UpdateSongSelect(const float dt);
 	void UpdateDifficultySelect(const float dt);
@@ -38,14 +39,19 @@ protected:
 
 	uint32_t GetDisplayedNodesCount();
 
-	void OnUpdateIdx();
+	void OnUpdateFilterIdx();
+	void OnUpdateNodeIdx();
+
+	void OnSelectFilter();
 	void OnSelectNode();
+	void OnCancellingNode();
 
 private:
-	uint32_t mNodeIdx;
-	SongSelectRenderables* mRenderables;
+	uint32_t mFilterIdx = 0;
+	uint32_t mNodeIdx = 0;
+	SongSelectState mState = SongSelectState::FilterSelect;
 	std::vector<std::shared_ptr<SongSelectFilter>> mFilters;
-	SongSelectState mState = ;
+	std::shared_ptr<SongSelectRenderables> mRenderables;
 
 	static std::vector<Resource<Song>*> mSongs;
 };

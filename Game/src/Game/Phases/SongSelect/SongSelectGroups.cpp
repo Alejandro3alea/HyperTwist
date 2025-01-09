@@ -41,7 +41,7 @@ uint32_t SongSelectGroup::GetDisplayedNodesCount()
 	return result;
 }
 
-SongSelectNode* SongSelectGroup::GetNodeByIdx(const uint32_t mSelectedIdx)
+SongSelectNode* SongSelectGroup::GetNodeByIdx(uint32_t mSelectedIdx)
 {
 	for (uint32_t i = 0; i < mChildren.size(); i++)
 	{
