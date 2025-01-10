@@ -18,10 +18,12 @@ struct SongSelectNode
 	virtual inline bool IsLeaf() = 0;
 	virtual void OnOpen() = 0;
 
+public:
+	Renderable mRenderable;
+
 protected:
 	std::string mName;
 	bool mIsHovered = false;
-	std::shared_ptr<Renderable> mRenderable;
 };
 
 
@@ -38,7 +40,7 @@ struct SongSelectSongNode : public SongSelectNode
 
 private:
 	Song* mSong;
-	std::shared_ptr<Renderable> mCDRenderable;
+	Renderable mCDRenderable;
 };
 
 

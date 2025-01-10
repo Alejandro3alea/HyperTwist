@@ -4,18 +4,18 @@
 // Main song select groups. It groups songs by a filter.
 struct SongSelectFilter : public SongSelectGroup
 {
-	SongSelectFilter(const std::string& name) : SongSelectGroup(name, 1) {}
+	SongSelectFilter(const std::string& name) : SongSelectGroup(name, 1) { SetupFilterTexture(name); }
 
 	virtual void GenerateChildren() = 0;
-	virtual void GenerateRenderables() {}
-
 	virtual void OnOpen() = 0;
+
+	virtual void SetupFilterTexture(const std::string& name);
 };
 
 
 struct SongSelectSortByName : public SongSelectFilter
 {
-	SongSelectSortByName() : SongSelectFilter("Sort by Name") {}
+	SongSelectSortByName() : SongSelectFilter("SortByName") {}
 
 	virtual void GenerateChildren() override;
 
@@ -24,7 +24,7 @@ struct SongSelectSortByName : public SongSelectFilter
 
 struct SongSelectSortByLevel : public SongSelectFilter
 {
-	SongSelectSortByLevel() : SongSelectFilter("Sort by Level") {}
+	SongSelectSortByLevel() : SongSelectFilter("SortByLevel") {}
 
 	virtual void GenerateChildren() override;
 
@@ -33,7 +33,7 @@ struct SongSelectSortByLevel : public SongSelectFilter
 
 struct SongSelectSortByArtist : public SongSelectFilter
 {
-	SongSelectSortByArtist() : SongSelectFilter("Sort by Artist") {}
+	SongSelectSortByArtist() : SongSelectFilter("SortByArtist") {}
 
 	virtual void GenerateChildren() override;
 
@@ -42,7 +42,7 @@ struct SongSelectSortByArtist : public SongSelectFilter
 
 struct SongSelectSortByVersion : public SongSelectFilter
 {
-	SongSelectSortByVersion() : SongSelectFilter("Sort by Version") {}
+	SongSelectSortByVersion() : SongSelectFilter("SortByVersion") {}
 
 	virtual void GenerateChildren() override;
 
@@ -54,7 +54,7 @@ private:
 
 struct SongSelectSortByBPM : public SongSelectFilter
 {
-	SongSelectSortByBPM() : SongSelectFilter("Sort by BPM") {}
+	SongSelectSortByBPM() : SongSelectFilter("SortByBPM") {}
 
 	virtual void GenerateChildren() override;
 
@@ -63,7 +63,7 @@ struct SongSelectSortByBPM : public SongSelectFilter
 
 struct SongSelectSortByGenre : public SongSelectFilter
 {
-	SongSelectSortByGenre() : SongSelectFilter("Sort by Genre") {}
+	SongSelectSortByGenre() : SongSelectFilter("SortByGenre") {}
 
 	virtual void GenerateChildren() override;
 

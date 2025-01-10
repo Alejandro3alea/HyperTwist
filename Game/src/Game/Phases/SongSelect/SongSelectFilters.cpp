@@ -5,6 +5,9 @@
 
 void SongSelectSortByName::GenerateChildren()
 {
+	if (!mChildren.empty())
+		return;
+
 	auto songs = SongSelectPhase::GetSongsByName();
 	for (uint8_t c = 'A'; c <= 'Z'; c++)
 	{
@@ -136,4 +139,10 @@ void SongSelectSortByGenre::GenerateChildren()
 
 	}
 	mChildren.push_back(newGroup);*/
+}
+
+void SongSelectFilter::SetupFilterTexture(const std::string& name)
+{
+	mRenderable.SetTexture("data/engine/texture/SongSelect/Filters/" + name + ".png");
+	mRenderable.transform.scale = glm::vec3(350.0f, 350.0f, 1.0f);
 }

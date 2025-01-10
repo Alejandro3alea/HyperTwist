@@ -8,11 +8,8 @@ void SongSelectSongNode::Select()
 
 void SongSelectSongNode::ConstructRenderable()
 {
-	mRenderable = std::make_shared<Renderable>();
-	mCDRenderable = std::make_shared<Renderable>();
-
-	mRenderable->SetTexture("data/engine/texture/SongSelect/SongBase.png");
-	mCDRenderable->SetTexture("data/engine/texture/SongSelect/RectangleHorizontalFade.png");
+	mRenderable.SetTexture("data/engine/texture/SongSelect/SongBase.png");
+	mCDRenderable.SetTexture("data/engine/texture/SongSelect/RectangleHorizontalFade.png");
 }
 
 void SongSelectSongNode::OnOpen()
