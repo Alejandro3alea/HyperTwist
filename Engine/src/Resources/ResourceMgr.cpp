@@ -24,6 +24,7 @@ void ResourceManager::Initialize()
 	mAllImporters["ssc"]	= std::shared_ptr<IResourceImporterBase>(new ResourceImporter<Song>());
 	mAllImporters["sm"]		= std::shared_ptr<IResourceImporterBase>(new ResourceImporter<Song>());
 	mAllImporters["smd"]	= std::shared_ptr<IResourceImporterBase>(new ResourceImporter<Song>());
+	mAllImporters["scd"]	= std::shared_ptr<IResourceImporterBase>(new ResourceImporter<Song>());
 	mAllImporters["ttf"]	= std::shared_ptr<IResourceImporterBase>(new ResourceImporter<Font>());
 
 	mBasePath = std::filesystem::current_path().string();
@@ -56,6 +57,13 @@ const std::string ResourceManager::GetResourceName(const std::string& filePath) 
 		result.push_back(filePath[i]);
 
 	return result;
+}
+
+const std::string ResourceManager::GetPathWithoutExtension(const std::string& filePath) const
+{
+	size_t extensionLoc = filePath.find_last_of('.');
+	size_t end = (extensionLoc != std::string::npos) ? extensionLoc : filePath.length();
+	return filePath.substr(0, extensionLoc);
 }
 
 void ResourceManager::ReloadShaders()

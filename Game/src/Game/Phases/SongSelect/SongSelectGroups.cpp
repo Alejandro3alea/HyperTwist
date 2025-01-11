@@ -10,6 +10,7 @@ void SongSelectSongNode::ConstructRenderable()
 {
 	mRenderable.SetTexture("data/engine/texture/SongSelect/SongBase.png");
 	mCDRenderable.SetTexture("data/engine/texture/SongSelect/RectangleHorizontalFade.png");
+	mRenderable.transform.scale = glm::vec3(200.0f, 200.0f, 1.0f);
 }
 
 void SongSelectSongNode::OnOpen()

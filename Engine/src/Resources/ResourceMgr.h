@@ -22,6 +22,7 @@ public:
 
 	const std::string GetExtension(const std::string& filePath) const;
 	const std::string GetResourceName(const std::string& filePath) const;
+	const std::string GetPathWithoutExtension(const std::string& filePath) const;
 
 	void ReloadShaders();
 

@@ -3,6 +3,12 @@
 
 #include <fstream>
 
+void SongSelectFilter::SetupFilterTexture(const std::string& name)
+{
+	mRenderable.SetTexture("data/engine/texture/SongSelect/Filters/" + name + ".png");
+	mRenderable.transform.scale = glm::vec3(350.0f, 350.0f, 1.0f);
+}
+
 void SongSelectSortByName::GenerateChildren()
 {
 	if (!mChildren.empty())
@@ -139,10 +145,4 @@ void SongSelectSortByGenre::GenerateChildren()
 
 	}
 	mChildren.push_back(newGroup);*/
-}
-
-void SongSelectFilter::SetupFilterTexture(const std::string& name)
-{
-	mRenderable.SetTexture("data/engine/texture/SongSelect/Filters/" + name + ".png");
-	mRenderable.transform.scale = glm::vec3(350.0f, 350.0f, 1.0f);
 }

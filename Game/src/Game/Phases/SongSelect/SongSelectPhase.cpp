@@ -248,21 +248,15 @@ std::vector<Song*> SongSelectPhase::GetSongsFromBPMRange(const uint32_t minBPM, 
 
 void SongSelectPhase::LoadSongs()
 {
-    std::string rootDirectory = "data/songs/";  // Starting directory (current directory in this case)
+    std::string rootDirectory = "data/songs/";
 
-    try {
-        // Iterate recursively over the directory and its subdirectories
-        for (const auto& entry : std::filesystem::recursive_directory_iterator(rootDirectory)) {
-            // Check if the current entry is a regular file and has the extension .smd
-            if (entry.is_regular_file() && entry.path().extension() == ".smd") 
-            {
-                std::cout << entry.path() << std::endl;  // Print the full path of the .smd file
-                mSongs.push_back(ResourceMgr->Load<Song>(entry.path().string()));
-            }
+    for (const auto& entry : std::filesystem::recursive_directory_iterator(rootDirectory))
+    {
+        if (entry.is_regular_file() && entry.path().extension() == ".smd") 
+        {
+            std::cout << entry.path() << std::endl;
+            mSongs.push_back(ResourceMgr->Load<Song>(entry.path().string()));
         }
-    }
-    catch (const std::filesystem::filesystem_error& e) {
-        std::cerr << "Error: " << e.what() << std::endl;
     }
 }
 
