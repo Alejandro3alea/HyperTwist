@@ -6,11 +6,12 @@ struct DevMenuNode : public DevMenuItem
 public:
     DevMenuNode(const std::string& name) : DevMenuItem(name) {}
 
-    virtual void InitializeRenderables();
+    virtual void InitializeRenderables(int32_t yStartPos);
     void ShowRenderables();
     void HideRenderables();
 
-    void AddItem(std::shared_ptr<DevMenuItem> item);
+    void AddItem(const std::shared_ptr<DevMenuItem>& item);
+    void AddRenderable(const std::shared_ptr<Renderable>& renderable);
 
     void OnSelected() override;
     void Select();
@@ -25,7 +26,8 @@ private:
 
 private:
     std::vector<std::shared_ptr<DevMenuItem>> mItems;
-    std::vector<std::shared_ptr<Renderable>> mRenderables;
+    std::vector<std::shared_ptr<Renderable>> mItemRenderables;
+    std::vector<std::shared_ptr<Renderable>> mCustomRenderables;
     int32_t mSelectedIdx = 0;
 };
 
@@ -36,19 +38,19 @@ struct DevMenuMainMenu : public DevMenuNode
 
 struct DevMenuInputOutputCheck : public DevMenuNode
 {
-    struct DevMenuInputCheck : public DevMenuNode
+    struct InputCheck : public DevMenuNode
     {
-        DevMenuInputCheck(DevMenuNode* parentNode);
+        InputCheck(DevMenuNode* parentNode);
     };
 
-    struct DevMenuFootPanelCheck : public DevMenuNode
+    struct FootPanelCheck : public DevMenuNode
     {
-        DevMenuFootPanelCheck(DevMenuNode* parentNode);
+        FootPanelCheck(DevMenuNode* parentNode);
     };
 
-    struct DevMenuICCardCheck : public DevMenuNode
+    struct ICCardCheck : public DevMenuNode
     {
-        DevMenuICCardCheck(DevMenuNode* parentNode);
+        ICCardCheck(DevMenuNode* parentNode);
     };
 
     DevMenuInputOutputCheck(DevMenuNode* parentNode);
@@ -71,6 +73,18 @@ struct DevMenuSoundSettings : public DevMenuNode
 
 struct DevMenuGameSettings : public DevMenuNode
 {
+    // .sm/.scc to (.smd + .scd)
+    struct UpdateSongVersions : public DevMenuNode
+    {
+        UpdateSongVersions(DevMenuNode* parentNode);
+
+        virtual void OnSelected() override;
+        void UpdateSongs();
+
+    private:
+        void UpdateSong(const std::string& path);
+    };
+
     DevMenuGameSettings(DevMenuNode* parentNode);
 };
 
