@@ -35,7 +35,9 @@ void PrintSuccess(const std::string& text)
 
 void PrintDebug(const std::string& text)
 {
+#if _DEBUG
 	PrintColoredText("[DEBUG] - " + text, ConsoleColor::Default);
+#endif
 }
 
 void PrintWarning(const std::string& text)
