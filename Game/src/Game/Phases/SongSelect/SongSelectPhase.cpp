@@ -56,7 +56,6 @@ void SongSelectPhase::ChangeToState(const SongSelectState& newState)
     }
 }
 
-
 void SongSelectPhase::TransitionToFilterSelect()
 {
     mRenderables->mArrowDown.mbIsVisible = false;
@@ -280,15 +279,16 @@ void SongSelectPhase::SetupFilters()
     }
 }
 
-uint32_t SongSelectPhase::GetDisplayedNodesCount()
+uint32_t SongSelectPhase::GetDisplayedNodesInGroup(SongSelectGroup* group)
 {
     uint32_t result = 0;
-
-    for (auto filter : mFilters)
+    for (auto& child : group->mChildren)
     {
-        if (filter->IsOpen())
+        if (!child->IsLeaf())
         {
-            result += GetDisplayedNodesCount();
+            SongSelectGroup* childGroup = dynamic_cast<SongSelectGroup*>(child.get());
+            if (childGroup->IsOpen())
+                result += GetDisplayedNodesInGroup(childGroup);
         }
 
         result++;
@@ -297,12 +297,21 @@ uint32_t SongSelectPhase::GetDisplayedNodesCount()
     return result;
 }
 
+std::pair<uint32_t, uint32_t> SongSelectPhase::GetDisplayData(const uint32_t nodeIdx)
+{
+    uint32_t groupsTillIdx = 0;
+    uint32_t nodesTillIdx = 0;
+    return ;
+}
+
 void SongSelectPhase::OnUpdateFilters()
 {
 }
 
 void SongSelectPhase::OnUpdateNodes()
 {
+    SongSelectNode* node = GetNodeByIdx(mNodeIdx);
+    uint32_t middleYPos = 
 }
 
 void SongSelectPhase::OnSelectFilter()

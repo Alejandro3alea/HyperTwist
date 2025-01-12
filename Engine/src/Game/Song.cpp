@@ -118,11 +118,9 @@ float Song::GetBPMAt(const float time)
     case 1:
         return mBPMs.begin()->second;
     default:
-        // Obtener el iterador al segundo elemento
         auto it = mBPMs.begin();
         std::advance(it, 1);
 
-        // Iterar por los valores desde el segundo elemento
         for (; it != mBPMs.end(); ++it)
         {
             if (time < it->first)
@@ -138,19 +136,17 @@ float Song::GetBPMAt(const float time)
 
 void Song::GetResources()
 {
-    // There should be ALWAYS a song path (No audios, no bitches)
-    mSong = ResourceMgr->Load<Audio>(mPath + mSongPath);
-    mSong->get()->SetVolume(50.0f);
+    // There should be ALWAYS a song path (No audios, no party)
+    //mSong = ResourceMgr->Load<Audio>(mPath + mSongPath);
 
-    if (!mBannerPath.empty())
+    /*if (!mBannerPath.empty())
         mBanner     = ResourceMgr->Load<Texture>(mPath + mBannerPath);
     if (!mBackgroundPath.empty())
     {
         mBackground = ResourceMgr->Load<Texture>(mPath + mBackgroundPath);
-        //GfxMgr->SetBackgroundTexture(mBackground);
     }
     if (!mCDTitlePath.empty())
-        mCDTitle    = ResourceMgr->Load<Texture>(mPath + mCDTitlePath);
+        mCDTitle    = ResourceMgr->Load<Texture>(mPath + mCDTitlePath);*/
 }
 
 void Song::ProcessSMSong(std::istringstream& file)
@@ -975,7 +971,8 @@ void Song::ProcessSMD(std::istringstream& file)
             }
             else if (key == "#DISPLAYBPM")
             {
-                mDisplayBPM = std::stof(value);
+                if (value != "*")
+                    mDisplayBPM = std::stof(value);
             }
             else if (key == "#ORIGIN")
             {

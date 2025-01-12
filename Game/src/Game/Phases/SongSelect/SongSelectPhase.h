@@ -34,7 +34,10 @@ protected:
 	static void LoadSongs();
 	void SetupFilters();
 
-	uint32_t GetDisplayedNodesCount();
+	uint32_t GetDisplayedNodesInGroup(SongSelectGroup* group);
+
+	// return: <groups, song nodes>
+	std::pair<uint32_t, uint32_t> GetDisplayData(const uint32_t nodeIdx); 
 
 	void TransitionToFilterSelect();
 	void TransitionToSongSelect();
@@ -51,7 +54,9 @@ protected:
 	void OnSelectNode();
 	void OnCancellingNode();
 
+
 private:
+	uint32_t mDisplayedRowCount = 3;
 	int32_t mFilterIdx = 0;
 	int32_t mNodeIdx = 0;
 	float mTransitionVal = 0.0f;

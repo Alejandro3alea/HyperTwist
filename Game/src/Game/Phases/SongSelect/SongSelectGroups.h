@@ -50,10 +50,11 @@ struct SongSelectGroup : public SongSelectNode
 
 	virtual inline bool IsLeaf() override { return false; }
 	virtual void Select() override { mIsOpen = !mIsOpen; }
-	bool IsOpen() { return mIsOpen; }
+	inline bool IsOpen() { return mIsOpen; }
 
 	virtual void OnOpen() override;
 
+	virtual uint32_t GetChildrenPerRow() { return mChildrenPerRow; }
 	uint32_t GetDisplayedNodesCount();
 	SongSelectNode* GetNodeByIdx(const uint32_t mSelectedIdx);
 
@@ -62,5 +63,5 @@ public:
 
 private:
 	bool mIsOpen = false;
-	unsigned mChildrenPerRow;
+	uint32_t mChildrenPerRow;
 };
