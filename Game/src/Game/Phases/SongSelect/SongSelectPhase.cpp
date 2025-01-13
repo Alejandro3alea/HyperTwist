@@ -98,6 +98,8 @@ void SongSelectPhase::TransitionToSongSelect()
 
     for (auto& filter : mFilters)
         filter->mRenderable.mbIsVisible = false;
+
+    mSongDisplay.Reconstruct(mFilters[mFilterIdx].get());
 }
 
 void SongSelectPhase::TransitionToDifficultySelect()
@@ -141,28 +143,28 @@ void SongSelectPhase::UpdateSongSelect(const float dt)
 {
     if (InputMgr->isKeyPressed(SDL_SCANCODE_UP))
     {
-        mNodeIdx -= 3;
+        mSongDisplay.MoveUp();
         OnUpdateNodes();
     }
     if (InputMgr->isKeyPressed(SDL_SCANCODE_LEFT))
     {
-        mNodeIdx -= 1;
+        mSongDisplay.MoveLeft();
         OnUpdateNodes();
     }
     if (InputMgr->isKeyPressed(SDL_SCANCODE_DOWN))
     {
-        mNodeIdx += 3;
+        mSongDisplay.MoveDown();
         OnUpdateNodes();
     }
     if (InputMgr->isKeyPressed(SDL_SCANCODE_RIGHT))
     {
-        mNodeIdx += 1;
+        mSongDisplay.MoveRight();
         OnUpdateNodes();
     }
     if (InputMgr->isKeyPressed(SDL_SCANCODE_RETURN))
     {
-        GetNodeByIdx(mNodeIdx)->OnOpen();
-        ChangeToState(SongSelectState::DifficultySelect);
+        mSongDisplay.Select();
+        //ChangeToState(SongSelectState::DifficultySelect);
     }
 }
 
@@ -297,11 +299,30 @@ uint32_t SongSelectPhase::GetDisplayedNodesInGroup(SongSelectGroup* group)
     return result;
 }
 
-std::pair<uint32_t, uint32_t> SongSelectPhase::GetDisplayData(const uint32_t nodeIdx)
+std::pair<uint32_t, uint32_t> SongSelectPhase::GetDisplayData(
+    const std::vector<std::shared_ptr<SongSelectNode>>& groups,
+    uint32_t nodeIdx)
 {
     uint32_t groupsTillIdx = 0;
     uint32_t nodesTillIdx = 0;
-    return ;
+    for (auto& groupNode : groups)
+    {
+        groupsTillIdx++;
+        if (nodeIdx == 0)
+            return std::make_pair(groupsTillIdx, nodesTillIdx);
+
+        nodeIdx--;
+        if (!groupNode->IsOpen())
+            continue;
+        
+        SongSelectGroup* group = dynamic_cast<SongSelectGroup*>(groupNode.get());
+        nodesTillIdx = group->mChildren.size();
+        if (nodesTillIdx > nodeIdx)
+            return std::make_pair(groupsTillIdx, nodeIdx);
+
+        nodeIdx -= nodesTillIdx;
+    }
+    return std::make_pair(groupsTillIdx, nodesTillIdx);
 }
 
 void SongSelectPhase::OnUpdateFilters()
@@ -310,8 +331,6 @@ void SongSelectPhase::OnUpdateFilters()
 
 void SongSelectPhase::OnUpdateNodes()
 {
-    SongSelectNode* node = GetNodeByIdx(mNodeIdx);
-    uint32_t middleYPos = 
 }
 
 void SongSelectPhase::OnSelectFilter()

@@ -69,6 +69,9 @@
     <ClCompile Include="src\Game\Phases\SongSelect\SongSelectFilters.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\Game\Phases\SongSelect\SongListDisplayManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Game\Phases\Phase.h">
@@ -126,6 +129,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Game\Phases\SongSelect\SongSelectFilters.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\Phases\SongSelect\SongListDisplayManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

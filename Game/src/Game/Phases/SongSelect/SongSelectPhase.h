@@ -2,6 +2,7 @@
 #include "Game/Phases/Phase.h"
 #include "SongSelectRenderables.h"
 #include "SongSelectFilters.h"
+#include "SongListDisplayManager.h"
 
 #include <map>
 
@@ -37,7 +38,8 @@ protected:
 	uint32_t GetDisplayedNodesInGroup(SongSelectGroup* group);
 
 	// return: <groups, song nodes>
-	std::pair<uint32_t, uint32_t> GetDisplayData(const uint32_t nodeIdx); 
+	std::pair<uint32_t, uint32_t> GetDisplayData(
+		const std::vector<std::shared_ptr<SongSelectNode>>& groups, uint32_t nodeIdx);
 
 	void TransitionToFilterSelect();
 	void TransitionToSongSelect();
@@ -58,11 +60,12 @@ protected:
 private:
 	uint32_t mDisplayedRowCount = 3;
 	int32_t mFilterIdx = 0;
-	int32_t mNodeIdx = 0;
 	float mTransitionVal = 0.0f;
 	SongSelectState mState = SongSelectState::FilterSelect;
 	std::vector<std::shared_ptr<SongSelectFilter>> mFilters;
 	std::shared_ptr<SongSelectRenderables> mRenderables;
+
+	SongListDisplayManager mSongDisplay;
 
 	static std::vector<Resource<Song>*> mSongs;
 };

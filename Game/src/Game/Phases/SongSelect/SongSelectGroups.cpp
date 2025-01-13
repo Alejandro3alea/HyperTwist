@@ -17,12 +17,29 @@ void SongSelectSongNode::OnOpen()
 {
 
 }
+
+void SongSelectSongNode::OnFocus()
+{
+}
+
+void SongSelectSongNode::OnUnfocus()
+{
+}
 	
 void SongSelectGroup::OnOpen()
 {
 }
 
-uint32_t SongSelectGroup::GetDisplayedNodesCount()
+void SongSelectGroup::OnFocus()
+{
+	
+}
+
+void SongSelectGroup::OnUnfocus()
+{
+}
+
+uint32_t SongSelectGroup::GetDisplayedNodesCount() const
 {
 	uint32_t result = 0;
 

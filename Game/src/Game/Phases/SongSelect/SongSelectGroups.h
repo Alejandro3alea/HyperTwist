@@ -15,8 +15,14 @@ struct SongSelectNode
 	virtual ~SongSelectNode() {}
 
 	virtual void Select() = 0;
-	virtual inline bool IsLeaf() = 0;
+
+	virtual bool IsLeaf() const = 0;
+	virtual bool IsOpen() const = 0;
+
 	virtual void OnOpen() = 0;
+	virtual void OnFocus() = 0;
+	virtual void OnUnfocus() = 0;
+
 
 public:
 	Renderable mRenderable;
@@ -32,11 +38,14 @@ struct SongSelectSongNode : public SongSelectNode
 	SongSelectSongNode(Song* song) : SongSelectNode(song->mTitle), mSong(song) { ConstructRenderable(); }
 	
 	virtual void Select() override;
-	virtual inline bool IsLeaf() override { return true; }
+	virtual bool IsLeaf() const override { return true; }
+	virtual bool IsOpen() const override { return false; }
 
 	void ConstructRenderable();
 
 	virtual void OnOpen() override;
+	virtual void OnFocus() override;
+	virtual void OnUnfocus() override;
 
 private:
 	Song* mSong;
@@ -48,14 +57,16 @@ struct SongSelectGroup : public SongSelectNode
 {
 	SongSelectGroup(const std::string& name, const unsigned childrenPerRow = 3) : SongSelectNode(name), mChildrenPerRow(childrenPerRow) {}
 
-	virtual inline bool IsLeaf() override { return false; }
+	virtual bool IsLeaf() const override { return false; }
 	virtual void Select() override { mIsOpen = !mIsOpen; }
-	inline bool IsOpen() { return mIsOpen; }
+	virtual bool IsOpen() const override { return mIsOpen; }
 
 	virtual void OnOpen() override;
+	virtual void OnFocus() override;
+	virtual void OnUnfocus() override;
 
-	virtual uint32_t GetChildrenPerRow() { return mChildrenPerRow; }
-	uint32_t GetDisplayedNodesCount();
+	uint32_t GetChildrenPerRow() const { return mChildrenPerRow; }
+	uint32_t GetDisplayedNodesCount() const;
 	SongSelectNode* GetNodeByIdx(const uint32_t mSelectedIdx);
 
 public:
