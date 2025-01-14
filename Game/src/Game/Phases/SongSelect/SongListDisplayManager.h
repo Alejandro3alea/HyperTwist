@@ -28,6 +28,6 @@ private:
 private:
 	std::vector<SongListDisplayRow> mRows;
 	uint32_t mDisplayedRows = 3;
-	uint32_t mMiddleRow = 0;
-	uint32_t mSelectedNode = 0;
+	int32_t mMiddleRow = 0;
+	int32_t mSelectedNode = 0;
 };

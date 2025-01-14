@@ -10,7 +10,7 @@ std::vector<Resource<Song>*> SongSelectPhase::mSongs;
 void SongSelectPhase::OnEnter()
 {
 	//GfxMgr->SetBackgroundShader(ResourceMgr->Load<Shader>("data/shaders/SongSelectBG.shader")); 
-	GfxMgr->SetBackgroundTexture(ResourceMgr->Load<Texture>("data/engine/texture/SongSelect/MainBG.png"));
+	GfxMgr->SetBackgroundTexture(ResourceMgr->Load<Texture>("data/engine/texture/SongSelect/ReferenceDark.png"));
 
 	mRenderables = std::make_shared<SongSelectRenderables>();
     ChangeToState(SongSelectState::FilterSelect);
@@ -141,6 +141,7 @@ void SongSelectPhase::UpdateFilterSelect(const float dt)
 
 void SongSelectPhase::UpdateSongSelect(const float dt)
 {
+    mSongDisplay.UpdateDisplay();
     if (InputMgr->isKeyPressed(SDL_SCANCODE_UP))
     {
         mSongDisplay.MoveUp();
@@ -327,6 +328,7 @@ std::pair<uint32_t, uint32_t> SongSelectPhase::GetDisplayData(
 
 void SongSelectPhase::OnUpdateFilters()
 {
+
 }
 
 void SongSelectPhase::OnUpdateNodes()

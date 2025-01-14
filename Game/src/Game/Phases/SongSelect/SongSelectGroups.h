@@ -36,7 +36,7 @@ protected:
 struct SongSelectSongNode : public SongSelectNode
 {
 	SongSelectSongNode(Song* song) : SongSelectNode(song->mTitle), mSong(song) { ConstructRenderable(); }
-	
+
 	virtual void Select() override;
 	virtual bool IsLeaf() const override { return true; }
 	virtual bool IsOpen() const override { return false; }
@@ -55,7 +55,7 @@ private:
 
 struct SongSelectGroup : public SongSelectNode
 {
-	SongSelectGroup(const std::string& name, const unsigned childrenPerRow = 3) : SongSelectNode(name), mChildrenPerRow(childrenPerRow) {}
+	SongSelectGroup(const std::string& name, const unsigned childrenPerRow = 3);
 
 	virtual bool IsLeaf() const override { return false; }
 	virtual void Select() override { mIsOpen = !mIsOpen; }

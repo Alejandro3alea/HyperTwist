@@ -26,6 +26,14 @@ void SongSelectSongNode::OnUnfocus()
 {
 }
 	
+SongSelectGroup::SongSelectGroup(const std::string& name, const unsigned childrenPerRow) : SongSelectNode(name), mChildrenPerRow(childrenPerRow)
+{
+	mRenderable.SetTexture("data/engine/texture/SongSelect/SongBase.png");
+	mRenderable.mbIsVisible = true;
+	mRenderable.mColor = glm::vec4(1,1,1,1);
+	std::cout << "Created " << name << std::endl;
+}
+
 void SongSelectGroup::OnOpen()
 {
 }
