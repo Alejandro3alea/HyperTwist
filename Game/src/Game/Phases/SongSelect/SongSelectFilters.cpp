@@ -15,9 +15,10 @@ void SongSelectSortByName::GenerateChildren()
 		return;
 
 	auto songs = SongSelectPhase::GetSongsByName();
-	for (uint8_t c = 'A'; c <= 'Z'; c++)
+	for (char c = 'A'; c <= 'Z'; c++)
 	{
-		std::shared_ptr<SongSelectGroup> currChild = std::make_shared<SongSelectGroup>(std::to_string(c));
+		std::string label(1, c);
+		std::shared_ptr<SongSelectGroup> currChild = std::make_shared<SongSelectGroup>(label);
 		for (Song* song : songs[c])
 		{
 			currChild->mChildren.push_back(std::make_shared<SongSelectSongNode>(song));
@@ -43,9 +44,10 @@ void SongSelectSortByLevel::GenerateChildren()
 void SongSelectSortByArtist::GenerateChildren()
 {
 	auto songs = SongSelectPhase::GetSongsByArtist();
-	for (uint8_t c = 'A'; c <= 'Z'; c++)
+	for (char c = 'A'; c <= 'Z'; c++)
 	{
-		std::shared_ptr<SongSelectGroup> currChild = std::make_shared<SongSelectGroup>(std::to_string(c));
+		std::string label(1, c);
+		std::shared_ptr<SongSelectGroup> currChild = std::make_shared<SongSelectGroup>(label);
 		for (Song* song : songs[c])
 		{
 			currChild->mChildren.push_back(std::make_shared<SongSelectSongNode>(song));

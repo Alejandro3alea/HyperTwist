@@ -68,6 +68,41 @@ void SongListDisplayManager::UnfocusNode()
 }
 
 
+void SongListDisplayManager::UpdateGroup(SongSelectGroup* group, const float yPos, const bool isSelected)
+{
+	//float xPos = 400.0f * xVals[j] + 400.0f;
+	group->Show();
+	const glm::vec3 newPos(440.0f, yPos, 1.0f);
+
+	auto& baseT = group->mRenderable.transform;
+	auto& labelT = group->mLabelText.transform;
+	baseT.pos = Math::Lerp(baseT.pos, newPos, 0.2f);
+	baseT.scale = glm::vec3(400.0f, 100.0f, 1.0f);
+	labelT.pos = Math::Lerp(labelT.pos, newPos, 0.2f);
+
+	const glm::vec4 updateCol = isSelected ? glm::vec4(1.0f, 1.0f, 0.20f, 1.0f) : glm::vec4(1.0f);
+	glm::vec4& selectedCol = group->mRenderable.mColor;
+	selectedCol = Math::Lerp(selectedCol, updateCol, 0.2f);
+}
+
+void SongListDisplayManager::UpdateSongNode(SongSelectSongNode* node, const float yPos, const bool isSelected)
+{
+	//float xPos = 400.0f * xVals[j] + 400.0f;
+	node->Show();
+	const glm::vec3 newPos(440.0f, yPos, 1.0f);
+
+	auto& baseT = node->mRenderable.transform;
+	auto& labelT = node->mRenderable.transform;
+	baseT.pos = Math::Lerp(baseT.pos, newPos, 0.2f);
+	baseT.scale = glm::vec3(400.0f, 100.0f, 1.0f);
+	labelT.pos = Math::Lerp(labelT.pos, newPos, 0.2f);
+	labelT.pos.z = 2.0f;
+
+	const glm::vec4 updateCol = isSelected ? glm::vec4(1.0f, 1.0f, 0.20f, 1.0f) : glm::vec4(1.0f);
+	glm::vec4& selectedCol = node->mRenderable.mColor;
+	selectedCol = Math::Lerp(selectedCol, updateCol, 0.2f);
+}
+
 void SongListDisplayManager::UpdateRow(const int32_t idx, const float yPos)
 {
 	const uint32_t mappedIdx = (idx < 0) ? idx + mRows.size() : (idx >= mRows.size()) ? idx - mRows.size() : idx;
@@ -75,14 +110,14 @@ void SongListDisplayManager::UpdateRow(const int32_t idx, const float yPos)
 	const size_t rowNodeCount = rowNodes.size();
 	
 	//std::vector<float> xVals = getNodeDistributions(rowNodeCount);
-	for (uint32_t j = 0; j < rowNodeCount; j++)
+	for (uint32_t i = 0; i < rowNodeCount; i++)
 	{
-		//float xPos = 400.0f * xVals[j] + 400.0f;
-		rowNodes[j]->Show();
-		auto& nodeT = rowNodes[j]->mRenderable.transform;
-		const glm::vec3 newPos(440.0f, yPos, 1.0f);
-		nodeT.pos = Math::Lerp(nodeT.pos, newPos, 0.2f);
-		nodeT.scale = glm::vec3(400.0f, 100.0f, 1.0f);
+		const bool isSelected = (mappedIdx == mMiddleRow && i == mSelectedNode);
+		if (rowNodes[i]->IsLeaf())
+			UpdateSongNode(dynamic_cast<SongSelectSongNode*>(rowNodes[i]), yPos, isSelected);
+		else // group
+			UpdateGroup(dynamic_cast<SongSelectGroup*>(rowNodes[i]), yPos, isSelected);
+
 	}
 }
 
@@ -127,9 +162,6 @@ void SongListDisplayManager::UpdateDisplay()
 	}
 	DisableRow(startRow - 1);
 	DisableRow(endRow + 1);
-
-	glm::vec4& SelectedCol = mRows[mMiddleRow].mNodes[mSelectedNode]->mRenderable.mColor;
-	SelectedCol = Math::Lerp(SelectedCol, glm::vec4(1.0f, 1.0f, 0.20f, 1.0f), 0.1f);
 }
 
 void SongListDisplayManager::Construct(const SongSelectGroup* mainGroup)

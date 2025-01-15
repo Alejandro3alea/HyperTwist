@@ -25,6 +25,8 @@ public:
 private:
 	void Construct(const SongSelectGroup* mainGroup);
 
+	void UpdateGroup(SongSelectGroup* group, const float yPos, const bool isSelected);
+	void UpdateSongNode(SongSelectSongNode* node, const float yPos, const bool isSelected);
 	void UpdateRow(const int32_t idx, const float yPos);
 	void DisableRow(const int32_t idx);
 
