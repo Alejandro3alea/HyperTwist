@@ -68,6 +68,33 @@ void SongListDisplayManager::UnfocusNode()
 }
 
 
+void SongListDisplayManager::UpdateRow(const int32_t idx, const float yPos)
+{
+	const uint32_t mappedIdx = (idx < 0) ? idx + mRows.size() : (idx >= mRows.size()) ? idx - mRows.size() : idx;
+	auto& rowNodes = mRows[mappedIdx].mNodes;
+	const size_t rowNodeCount = rowNodes.size();
+	
+	//std::vector<float> xVals = getNodeDistributions(rowNodeCount);
+	for (uint32_t j = 0; j < rowNodeCount; j++)
+	{
+		//float xPos = 400.0f * xVals[j] + 400.0f;
+		rowNodes[j]->Show();
+		auto& nodeT = rowNodes[j]->mRenderable.transform;
+		const glm::vec3 newPos(440.0f, yPos, 1.0f);
+		nodeT.pos = Math::Lerp(nodeT.pos, newPos, 0.2f);
+		nodeT.scale = glm::vec3(400.0f, 100.0f, 1.0f);
+	}
+}
+
+void SongListDisplayManager::DisableRow(const int32_t idx)
+{
+	const uint32_t mappedIdx = (idx < 0) ? idx + mRows.size() : (idx >= mRows.size()) ? idx - mRows.size() : idx;
+	auto& rowNodes = mRows[mappedIdx].mNodes;
+	for (SongSelectNode* rowNode : rowNodes)
+	{
+		rowNode->Hide();
+	}
+}
 
 void SongListDisplayManager::UpdateDisplay()
 {
@@ -82,39 +109,24 @@ void SongListDisplayManager::UpdateDisplay()
 				return std::vector<float>({ 0.5f });
 			default:
 				for (uint32_t i = 0; i < nodeCount; i++)
-				{
 					result.push_back(static_cast<float>(i) / (nodeCount - 1.0f));
-				}
 			}
 
 			return result;
 		};
 
 	int32_t midPoint = mDisplayedRows / 2 + 1;
-	const float yInc = 900 / midPoint;
-	float yPos = -900;
+	const float yInc = 700 / midPoint;
+	float yPos = 700;
 	const int32_t startRow = mMiddleRow - midPoint;
 	const int32_t endRow = mMiddleRow + midPoint;
-	const std::array<glm::vec3, 3> positions = {
-		glm::vec3(440, 350, 10),
-		glm::vec3(440, 0, 10),
-		glm::vec3(440, -350, 10)
-	};
-	for (int32_t i = startRow; i < endRow; i++)
+	for (int32_t i = startRow; i <= endRow; i++)
 	{
-		const uint32_t idx = (i >= 0) ? i : i + mRows.size();
-		auto& rowNodes = mRows[idx].mNodes;
-		const size_t rowNodeCount = rowNodes.size();
-		//std::vector<float> xVals = getNodeDistributions(rowNodeCount);
-		for (uint32_t j = 0; j < rowNodeCount; j++)
-		{
-			//float xPos = 400.0f * xVals[j] + 400.0f;
-			auto& nodeT = rowNodes[j]->mRenderable.transform;
-			nodeT.pos = positions[idx%3];
-			nodeT.scale = glm::vec3(400.0f, 100.0f, 1.0f);
-		}
-		yPos += yInc;
+		UpdateRow(i, yPos);
+		yPos -= yInc;
 	}
+	DisableRow(startRow - 1);
+	DisableRow(endRow + 1);
 
 	glm::vec4& SelectedCol = mRows[mMiddleRow].mNodes[mSelectedNode]->mRenderable.mColor;
 	SelectedCol = Math::Lerp(SelectedCol, glm::vec4(1.0f, 1.0f, 0.20f, 1.0f), 0.1f);

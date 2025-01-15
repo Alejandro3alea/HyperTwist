@@ -25,6 +25,9 @@ public:
 private:
 	void Construct(const SongSelectGroup* mainGroup);
 
+	void UpdateRow(const int32_t idx, const float yPos);
+	void DisableRow(const int32_t idx);
+
 private:
 	std::vector<SongListDisplayRow> mRows;
 	uint32_t mDisplayedRows = 3;
