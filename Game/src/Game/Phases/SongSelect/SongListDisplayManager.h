@@ -9,7 +9,7 @@ class SongListDisplayManager
 	};
 
 public:
-	void Reconstruct(const SongSelectGroup* mainGroup);
+	void Reconstruct(SongSelectGroup* mainGroup);
 
 	void MoveUp();
 	void MoveDown();
@@ -23,16 +23,23 @@ public:
 	void UpdateDisplay();
 
 private:
-	void Construct(const SongSelectGroup* mainGroup);
+	void Construct(SongSelectGroup* mainGroup);
 
-	void UpdateGroup(SongSelectGroup* group, const float yPos, const bool isSelected);
-	void UpdateSongNode(SongSelectSongNode* node, const float yPos, const bool isSelected);
+	void OpenGroup(SongSelectGroup* group);
+
+	void UpdateGroup(SongSelectGroup* group, const glm::vec3& newPos, const glm::vec3& newScale, const bool isSelected);
+	void UpdateSongNode(SongSelectSongNode* node, const glm::vec3& newPos, const glm::vec3& newScale, const bool isSelected);
 	void UpdateRow(const int32_t idx, const float yPos);
 	void DisableRow(const int32_t idx);
+
+	void SetNodeIndicesFrom(SongSelectNode* node);
 
 private:
 	std::vector<SongListDisplayRow> mRows;
 	uint32_t mDisplayedRows = 3;
 	int32_t mMiddleRow = 0;
 	int32_t mSelectedNode = 0;
+
+	SongSelectGroup* mMainGroup;
+	SongSelectGroup* mOpenGroup = nullptr;
 };
