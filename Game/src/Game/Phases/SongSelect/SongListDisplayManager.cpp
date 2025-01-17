@@ -129,19 +129,22 @@ void SongListDisplayManager::UpdateRow(const int32_t idx, const float yPos)
 
 	const int32_t mappedIdx = (idx < 0) ? idx + mRows.size() : (idx >= mRows.size()) ? idx - mRows.size() : idx;
 	auto& rowNodes = mRows[mappedIdx].mNodes;
-	const size_t rowNodeCount = rowNodes.size();
+	const size_t rowNodeCount = mRows[mappedIdx].mMaxSize;
 	const std::vector<float> nodeDists = getNodeDistributions(rowNodeCount);
 
 	const float distFromMidpoint = std::abs(mMiddleRow - idx);
-	glm::vec3 newScale = glm::vec3(450.0f, 120.0f, 1.0f) - glm::vec3(50.0f, 20.0f, 0.0f) * distFromMidpoint;
-	newScale /= rowNodeCount;
+	const float rowNodesDivisionA = std::pow(rowNodeCount, 1.1f);
+	const float rowNodesDivision = std::pow(rowNodeCount, 1.5f);
+	glm::vec3 newScale = glm::vec3(450.0f / rowNodesDivisionA, 120.0f, 1.0f) - glm::vec3(50.0f, 20.0f, 0.0f) * distFromMidpoint / rowNodesDivision;
 
+	const float startX = distFromMidpoint * 175.0f;
+	const float sizeX = 700.0f - distFromMidpoint * 100.0f;
 
 	//std::vector<float> xVals = getNodeDistributions(rowNodeCount);
-	for (uint32_t i = 0; i < rowNodeCount; i++)
+	for (uint32_t i = 0; i < rowNodes.size(); i++)
 	{
 		const bool isSelected = (distFromMidpoint == 0.0f && i == mSelectedNode);
-		const glm::vec3 newPos(350.0f + nodeDists[i] * 200.0f, yPos, 1.0f);
+		const glm::vec3 newPos(startX + nodeDists[i] * sizeX, yPos, 1.0f);
 
 		if (rowNodes[i]->IsLeaf())
 			UpdateSongNode(dynamic_cast<SongSelectSongNode*>(rowNodes[i]), newPos, newScale, isSelected);
@@ -201,7 +204,7 @@ void SongListDisplayManager::Construct(SongSelectGroup* mainGroup)
 	if (mainGroup == nullptr)
 		return;
 
-	SongListDisplayRow currRow;
+	SongListDisplayRow currRow(mainGroup->GetChildrenPerRow());
 	for (auto& group : mainGroup->mChildren)
 	{
 		currRow.mNodes.push_back(group.get());

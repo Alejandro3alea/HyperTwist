@@ -5,6 +5,9 @@ class SongListDisplayManager
 {
 	struct SongListDisplayRow
 	{
+		SongListDisplayRow(const size_t size) : mMaxSize(size) {}
+
+		const size_t mMaxSize;
 		std::vector<SongSelectNode*> mNodes;
 	};
 
