@@ -3,12 +3,26 @@
 
 Audio::Audio(const std::string& file)
 {
-    Ensure(mAudio.openFromFile(file), "Error loading the audio file.");
+    if (mAudio.openFromFile(file))
+    {
+        PrintWarning("Error loading the audio file: " + ResourceMgr->GetResourceName(file));
+    }
+}
+
+void Audio::Play(const float positionInMeasure)
+{
+    mAudio.play();
+    SetPosition(positionInMeasure);
 }
 
 void Audio::Play()
 {
     mAudio.play();
+}
+
+void Audio::Stop()
+{
+    mAudio.stop();
 }
 
 

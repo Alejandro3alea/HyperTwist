@@ -21,10 +21,10 @@ struct Song
 
 	bool IsPlaying() { return mIsPlaying; }
 
-	Audio* GetSong()		 { if (mSong) return mSong->get();				else return nullptr; }
-	Texture* GetBanner()	 { if (mBanner) return mBanner->get();			else return nullptr; }
-	Texture* GetBackground() { if (mBackground) return mBackground->get();	else return nullptr; }
-	Texture* GetCDTitle()	 { if (mCDTitle) return mCDTitle->get();		else return nullptr; }
+	Audio* GetSong();
+	Texture* GetBanner();
+	Texture* GetBackground();
+	Texture* GetCDTitle();
 
 	void SaveAsSSCSong();
 

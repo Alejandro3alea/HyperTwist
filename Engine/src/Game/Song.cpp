@@ -134,6 +134,46 @@ float Song::GetBPMAt(const float time)
     }
 }
 
+Audio* Song::GetSong()
+{
+    if (mSong) 
+        return mSong->get();
+
+    mSong = ResourceMgr->Load<Audio>(mPath + mSongPath);
+
+    return mSong->get();
+}
+
+Texture* Song::GetBanner()
+{
+    if (mBanner)
+        return mBanner->get();
+
+    mBanner = ResourceMgr->Load<Texture>(mPath + mBannerPath);
+
+    return mBanner->get();
+}
+
+Texture* Song::GetBackground()
+{
+    if (mBackground)
+        return mBackground->get();
+
+    mBackground = ResourceMgr->Load<Texture>(mPath + mBackgroundPath);
+
+    return mBackground->get();
+}
+
+Texture* Song::GetCDTitle()
+{
+    if (mCDTitle)
+        return mCDTitle->get();
+
+    mCDTitle = ResourceMgr->Load<Texture>(mPath + mCDTitlePath);
+
+    return mCDTitle->get();
+}
+
 void Song::GetResources()
 {
     // There should be ALWAYS a song path (No audios, no party)
