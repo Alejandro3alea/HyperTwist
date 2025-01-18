@@ -61,17 +61,34 @@ void SongListDisplayManager::Select()
 
 	if (!selectedNode->IsLeaf())
 		OpenGroup(dynamic_cast<SongSelectGroup*>(selectedNode));
-
+	else
+	{
+		SongSelectSongNode* songNode = dynamic_cast<SongSelectSongNode*>(selectedNode);
+		mOnSongSelect.Broadcast(songNode->GetSong());
+	}
 }
 
 void SongListDisplayManager::FocusNode()
 {
-	mRows[mMiddleRow].mNodes[mSelectedNode]->OnFocus();
+	SongSelectNode* node = mRows[mMiddleRow].mNodes[mSelectedNode];
+	node->OnFocus();
+
+	if (node->IsLeaf())
+	{
+		SongSelectSongNode* songNode = dynamic_cast<SongSelectSongNode*>(node);
+		mOnSongFocus.Broadcast(songNode->GetSong());
+	}
 }
 
 void SongListDisplayManager::UnfocusNode()
 {
-	mRows[mMiddleRow].mNodes[mSelectedNode]->OnUnfocus();
+	SongSelectNode* node = mRows[mMiddleRow].mNodes[mSelectedNode];
+	node->OnUnfocus();
+	if (node->IsLeaf())
+	{
+		SongSelectSongNode* songNode = dynamic_cast<SongSelectSongNode*>(node);
+		mOnSongUnfocus.Broadcast(songNode->GetSong());
+	}
 }
 
 
@@ -98,12 +115,13 @@ void SongListDisplayManager::UpdateSongNode(SongSelectSongNode* node, const glm:
 	node->Show();
 
 	auto& baseT = node->mRenderable.transform;
-	auto& labelT = node->mRenderable.transform;
+	auto& cdT = node->mCDRenderable.transform;
 	baseT.pos = Math::Lerp(baseT.pos, newPos, 0.2f);
 	baseT.scale = Math::Lerp(baseT.scale, newScale, 0.2f);
-	labelT.pos = Math::Lerp(labelT.pos, newPos, 0.2f);
+	cdT.pos = Math::Lerp(cdT.pos, newPos + glm::vec3(0.f, 0.f, 0.1f), 0.2f);
+	cdT.scale = Math::Lerp(cdT.scale, glm::vec3(newScale.x) / 1.25f, 0.2f);
 
-	const glm::vec4 updateCol = isSelected ? glm::vec4(1.0f, 1.0f, 0.20f, 1.0f) : glm::vec4(1.0f);
+	const glm::vec4 updateCol = isSelected ? glm::vec4(1.0f, 1.0f, 0.20f, 1.0f) : glm::vec4(0.f, 0.f, 0.f, 1.0f);
 	glm::vec4& selectedCol = node->mRenderable.mColor;
 	selectedCol = Math::Lerp(selectedCol, updateCol, 0.2f);
 }
@@ -138,7 +156,7 @@ void SongListDisplayManager::UpdateRow(const int32_t idx, const float yPos)
 	glm::vec3 newScale = glm::vec3(450.0f / rowNodesDivisionA, 120.0f, 1.0f) - glm::vec3(50.0f, 20.0f, 0.0f) * distFromMidpoint / rowNodesDivision;
 
 	const float startX = distFromMidpoint * 175.0f;
-	const float sizeX = 700.0f - distFromMidpoint * 100.0f;
+	const float sizeX = 650.0f - distFromMidpoint * 100.0f;
 
 	//std::vector<float> xVals = getNodeDistributions(rowNodeCount);
 	for (uint32_t i = 0; i < rowNodes.size(); i++)
@@ -159,9 +177,7 @@ void SongListDisplayManager::DisableRow(const int32_t idx)
 	const uint32_t mappedIdx = (idx < 0) ? idx + mRows.size() : (idx >= mRows.size()) ? idx - mRows.size() : idx;
 	auto& rowNodes = mRows[mappedIdx].mNodes;
 	for (SongSelectNode* rowNode : rowNodes)
-	{
 		rowNode->Hide();
-	}
 }
 
 void SongListDisplayManager::SetNodeIndicesFrom(SongSelectNode* node)

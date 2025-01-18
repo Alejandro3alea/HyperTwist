@@ -12,7 +12,6 @@ void SongSelectSongNode::ConstructRenderable()
 	mRenderable.mbIsVisible = false;
 	mRenderable.transform.scale = glm::vec3(200.0f, 200.0f, 1.0f);
 
-	mCDRenderable.SetTexture("data/engine/texture/SongSelect/RectangleHorizontalFade.png");
 	mCDRenderable.mbIsVisible = false;
 }
 
@@ -33,6 +32,11 @@ void SongSelectSongNode::Show()
 {
 	mRenderable.mbIsVisible = true;
 	mCDRenderable.mbIsVisible = true;
+
+	if (!mSong->mCDTitlePath.empty())
+		mCDRenderable.mTexture = ResourceMgr->Load<Texture>(mSong->GetPath() + mSong->mCDTitlePath);
+	else if(!mSong->mBannerPath.empty())
+		mCDRenderable.mTexture = ResourceMgr->Load<Texture>(mSong->GetPath() + mSong->mBannerPath);
 }
 
 void SongSelectSongNode::Hide()

@@ -1,5 +1,10 @@
 #pragma once
 #include "SongSelectGroups.h"
+#include "Composition/Events/Event.h"
+
+CREATE_MULTICAST_EVENT(OnSongFocus, Song*);
+CREATE_MULTICAST_EVENT(OnSongUnfocus, Song*);
+CREATE_MULTICAST_EVENT(OnSongSelect, Song*);
 
 class SongListDisplayManager
 {
@@ -24,6 +29,11 @@ public:
 	void UnfocusNode();
 
 	void UpdateDisplay();
+
+public:
+	OnSongFocus mOnSongFocus;
+	OnSongUnfocus mOnSongUnfocus;
+	OnSongSelect mOnSongSelect;
 
 private:
 	void Construct(SongSelectGroup* mainGroup);

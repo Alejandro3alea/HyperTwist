@@ -53,6 +53,9 @@ struct SongSelectSongNode : public SongSelectNode
 	virtual void Show() override;
 	virtual void Hide() override;
 
+	Song* GetSong() { return mSong; }
+
+public:
 	Renderable mCDRenderable;
 
 private:
