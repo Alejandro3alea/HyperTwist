@@ -12,6 +12,7 @@ class ResourceManager
 
 public:
 	void Initialize();
+	void LoadDefaultAssets();
 	void Shutdown();
 
 	template <typename T>
@@ -19,6 +20,9 @@ public:
 
 	template <typename T>
 	Resource<T>* LoadFromBasePath(const std::string& path);
+
+	template <typename T>
+	Resource<T>* GetDefautAsset();
 
 	const std::string GetExtension(const std::string& filePath) const;
 	const std::string GetResourceName(const std::string& filePath) const;
@@ -29,12 +33,14 @@ public:
 public:
 	std::map<std::string, std::shared_ptr<IResourceImporterBase>> mAllImporters;
 	std::map<std::string, std::shared_ptr<IResourceBase>> mAllResources;
+	std::map<std::string, IResourceBase*> mDefaultResources;
 
 private:
 	std::string mBasePath;
 };
 
 #define ResourceMgr ResourceManager::Instance()
+
 
 template<typename T>
 inline Resource<T>* ResourceManager::LoadFromBasePath(const std::string& path)
@@ -55,9 +61,31 @@ inline Resource<T>* ResourceManager::Load(const std::string& path)
 
 	if (mAllResources.find(path) != mAllResources.end())
 		return  dynamic_cast<Resource<T>*>(mAllResources[path].get());
+	
+	try
+	{
+		Resource<T>* resource = dynamic_cast<Resource<T>*>(mAllImporters[ext].get()->Import(path));
+		mAllResources[path] = std::shared_ptr<IResourceBase>(resource);
+		return resource;
+	}
+	catch (const ResourceLoadException& exc)
+	{
+		PrintWarning(exc.reason);
+		Resource<T>* resource = new Resource<T>(*GetDefautAsset<T>());
+		mAllResources[path] = std::shared_ptr<IResourceBase>(resource);
+		return resource;
+	}
+}
 
-	Resource<T>* resource = dynamic_cast<Resource<T>*>(mAllImporters[ext].get()->Import(path));
-	mAllResources[path] = std::shared_ptr<IResourceBase>(resource);
+template<typename T>
+inline Resource<T>* ResourceManager::GetDefautAsset()
+{
+	const std::string assetName = typeid(T).name();
+	if (mDefaultResources.find(assetName) == mDefaultResources.end())
+	{
+		PrintWarning("There is no proper default asset for \"." + assetName + "\" yet.");
+		return nullptr;
+	}
 
-	return resource;
+	return dynamic_cast<Resource<T>*>(mDefaultResources[assetName]);
 }

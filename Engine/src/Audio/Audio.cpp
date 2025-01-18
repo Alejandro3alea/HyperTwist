@@ -3,9 +3,10 @@
 
 Audio::Audio(const std::string& file)
 {
-    if (mAudio.openFromFile(file))
+    if (!mAudio.openFromFile(file))
     {
-        PrintWarning("Error loading the audio file: " + ResourceMgr->GetResourceName(file));
+        const std::string reason = "Error loading the audio file: " + ResourceMgr->GetResourceName(file);
+        throw ResourceLoadException(file, reason);
     }
 }
 

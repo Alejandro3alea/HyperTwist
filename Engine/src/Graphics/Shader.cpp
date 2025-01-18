@@ -1,4 +1,5 @@
 #include "Shader.h"
+#include "Resources/ResourceLoadException.h"
 #include "Misc/ColorConsole.h"
 
 #include <filesystem>
@@ -15,8 +16,7 @@ ShaderComp::ShaderComp(const GLenum type, const std::string& file) : mFile(file)
 
 	if (!tFile.is_open() || !tFile.good())
 	{
-		PrintWarning("File not read in " + file);
-		return;
+		throw ResourceLoadException(file, "File not read in " + file);
 	}
 
 	std::stringstream shaderCode;
@@ -42,12 +42,14 @@ ShaderComp::ShaderComp(const GLenum type, const std::string& file) : mFile(file)
 		GLchar* strInfoLog = new GLchar[infoLogLength + 1];
 		glGetShaderInfoLog(mShaderID, infoLogLength, NULL, strInfoLog);
 
-		PrintWarning("Compile failure in " + file + "\n" + strInfoLog);
+		std::string reason = "Compile failure in " + file + "\n" + strInfoLog;
 		delete[] strInfoLog;
+
+		throw ResourceLoadException(file, reason);
 	}
 	else
 	{
-		PrintSuccess("Shader " + file + " successfully read");
+		PrintSuccess("Shader " + file + " successfully read!");
 	}
 }
 
@@ -74,14 +76,17 @@ Shader::Shader(const std::vector<ShaderComp>& comps)
 		GLchar* strInfoLog = new GLchar[static_cast<size_t>(infoSize)];
 		glGetProgramInfoLog(mID, infoLogLength, NULL, strInfoLog);
 
+		std::string files;
 		std::string linkerFailureStr = std::string("Linker failure with...");
 		for (auto it : comps)
 		{
+			files += it.mFile + " + ";
 			linkerFailureStr += it.mFile + "\n";
 		}
 		linkerFailureStr += std::string(": \n") + strInfoLog;
-		PrintWarning(linkerFailureStr);
 		delete[] strInfoLog;
+
+		throw ResourceLoadException(files, linkerFailureStr);
 	}
 
 	for (auto it : comps)

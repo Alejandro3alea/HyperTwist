@@ -121,8 +121,9 @@ void SongSelectPhase::UpdateFilterSelect(const float dt)
         auto& t = mFilters[i]->mRenderable.transform;
         t.pos.x = Math::Lerp(t.pos.x, diff * 625.0f, 0.075f);
         t.pos.z = 10 - std::abs(diff);
-        t.scale.x = Math::Lerp(t.scale.x, std::max(350.0f - 120.0f * std::abs(diff), 0.01f), 0.075f);
-        t.scale.y = Math::Lerp(t.scale.y, std::max(350.0f - 120.0f * std::abs(diff), 0.01f), 0.075f);
+        const float scaleVal = std::max(350.0f - 120.0f * std::abs(diff), 0.01f);
+        t.scale.x = Math::Lerp(t.scale.x, scaleVal, 0.075f);
+        t.scale.y = Math::Lerp(t.scale.y, scaleVal, 0.075f);
     }
 
     if (InputMgr->isKeyPressed(SDL_SCANCODE_LEFT))

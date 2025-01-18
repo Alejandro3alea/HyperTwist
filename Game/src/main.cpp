@@ -13,9 +13,10 @@ int main(void)
 	ResourceMgr->Initialize();
 	WindowMgr->Initialize("Nextage");
 	GfxMgr->Initialize();
-	//AudioMgr->Initialize();
+	ResourceMgr->LoadDefaultAssets();
 	InputMgr->Initialize();
 	PhaseMgr->Initialize();
+
 
 	PhaseMgr->ChangeToScene("SongSelect");
 

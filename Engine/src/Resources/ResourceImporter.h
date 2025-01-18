@@ -1,5 +1,7 @@
 #pragma once
+#include "ResourceMgr.h"
 #include "Resource.h"
+#include "ResourceLoadException.h"
 
 #include <string>
 
