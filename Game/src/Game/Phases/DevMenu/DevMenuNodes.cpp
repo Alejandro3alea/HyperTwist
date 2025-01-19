@@ -193,21 +193,22 @@ void DevMenuGameSettings::UpdateSongVersions::OnSelected()
     UpdateSongs();
 }
 
-void DevMenuGameSettings::UpdateSongVersions::UpdateSongs()
+void DevMenuGameSettings::UpdateSongVersions::UpdateSongs() const
 {
     std::string rootDirectory = "data/songs/";
 
     for (const auto& entry : std::filesystem::recursive_directory_iterator(rootDirectory))
     {
-        if (entry.is_regular_file() && (entry.path().extension() == ".sm" ||
-                                        entry.path().extension() == ".ssc"))
+        if (entry.is_regular_file() && (entry.path().extension() == ".sm" || entry.path().extension() == ".ssc"))
         {
-            UpdateSong(entry.path().string());
+            const std::string entryPath = entry.path().string();
+            if (!IsSongUpToDate(entryPath))
+                UpdateSong(entryPath);
         }
     }
 }
 
-void DevMenuGameSettings::UpdateSongVersions::UpdateSong(const std::string& path)
+void DevMenuGameSettings::UpdateSongVersions::UpdateSong(const std::string& path) const
 {
     std::ifstream file(path);
     if (!file.good() || !file.is_open())
@@ -238,6 +239,15 @@ void DevMenuGameSettings::UpdateSongVersions::UpdateSong(const std::string& path
         else
             scdFile << line << std::endl;
     }
+}
+
+bool DevMenuGameSettings::UpdateSongVersions::IsSongUpToDate(const std::string& path) const
+{
+    const std::string smdPath = ResourceMgr->GetPathWithoutExtension(path) + ".smd";
+    const auto smdWriteTime = std::filesystem::last_write_time(smdPath);
+    const auto oldWriteTime = std::filesystem::last_write_time(path);
+
+    return oldWriteTime < smdWriteTime;
 }
 
 

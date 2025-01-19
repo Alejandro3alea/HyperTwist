@@ -79,10 +79,12 @@ struct DevMenuGameSettings : public DevMenuNode
         UpdateSongVersions(DevMenuNode* parentNode);
 
         virtual void OnSelected() override;
-        void UpdateSongs();
+        void UpdateSongs() const;
 
     private:
-        void UpdateSong(const std::string& path);
+        void UpdateSong(const std::string& path) const;
+
+        bool IsSongUpToDate(const std::string& path) const;
     };
 
     DevMenuGameSettings(DevMenuNode* parentNode);

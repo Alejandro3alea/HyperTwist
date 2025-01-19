@@ -96,7 +96,6 @@ void SongListDisplayManager::UnfocusNode()
 
 void SongListDisplayManager::UpdateGroup(SongSelectGroup* group, const glm::vec3& newPos, const glm::vec3& newScale, const bool isSelected)
 {
-	//float xPos = 400.0f * xVals[j] + 400.0f;
 	group->Show();
 
 	auto& baseT = group->mRenderable.transform;
@@ -113,7 +112,6 @@ void SongListDisplayManager::UpdateGroup(SongSelectGroup* group, const glm::vec3
 
 void SongListDisplayManager::UpdateSongNode(SongSelectSongNode* node, const glm::vec3& newPos, const glm::vec3& newScale, const bool isSelected)
 {
-	//float xPos = 400.0f * xVals[j] + 400.0f;
 	node->Show();
 
 	auto& baseT = node->mRenderable.transform;
