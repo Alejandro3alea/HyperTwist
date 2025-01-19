@@ -57,6 +57,7 @@ struct SongSelectSongNode : public SongSelectNode
 
 public:
 	Renderable mCDRenderable;
+	FontRenderer mLabel;
 
 private:
 	Song* mSong;

@@ -30,8 +30,9 @@ void SongListDisplayManager::MoveLeft()
 	UnfocusNode();
 	if (mSelectedNode == 0)
 	{
-		MoveUp();
 		mSelectedNode = mRows[mMiddleRow].mNodes.size() - 1;
+		MoveUp();
+		return;
 	}
 	else
 		mSelectedNode--;
@@ -44,8 +45,9 @@ void SongListDisplayManager::MoveRight()
 	UnfocusNode();
 	if (mSelectedNode == mRows[mMiddleRow].mNodes.size() - 1)
 	{
-		MoveDown();
 		mSelectedNode = 0;
+		MoveDown();
+		return;
 	}
 	else
 		mSelectedNode++;
@@ -116,12 +118,16 @@ void SongListDisplayManager::UpdateSongNode(SongSelectSongNode* node, const glm:
 
 	auto& baseT = node->mRenderable.transform;
 	auto& cdT = node->mCDRenderable.transform;
-	baseT.pos = Math::Lerp(baseT.pos, newPos, 0.2f);
-	baseT.scale = Math::Lerp(baseT.scale, newScale, 0.2f);
-	cdT.pos = Math::Lerp(cdT.pos, newPos + glm::vec3(0.f, 0.f, 0.1f), 0.2f);
-	cdT.scale = Math::Lerp(cdT.scale, glm::vec3(newScale.x) / 1.25f, 0.2f);
+	auto& labelT = node->mLabel.transform;
 
-	const glm::vec4 updateCol = isSelected ? glm::vec4(1.0f, 1.0f, 0.20f, 1.0f) : glm::vec4(0.f, 0.f, 0.f, 1.0f);
+	baseT.pos = Math::Lerp(baseT.pos, newPos, 0.2f);
+	baseT.scale = Math::Lerp(baseT.scale, glm::vec3(newScale.x, newScale.y * 1.2f, 1.f), 0.2f);
+	cdT.pos = Math::Lerp(cdT.pos, newPos + glm::vec3(0.f, newScale.y / 5.f, 0.1f), 0.2f);
+	cdT.scale = Math::Lerp(cdT.scale, glm::vec3(newScale.x) / 1.25f, 0.2f);
+	labelT.pos = Math::Lerp(labelT.pos, newPos + glm::vec3(0.f, -newScale.y, 0.2f), 0.2f);
+	//labelT.scale = Math::Lerp(labelT.scale, glm::vec3(newScale.x) / 1.25f, 0.2f);
+
+	const glm::vec4 updateCol = isSelected ? glm::vec4(0.7f, 0.7f, 0.f, 1.0f) : glm::vec4(0.f, 0.f, 0.f, 1.0f);
 	glm::vec4& selectedCol = node->mRenderable.mColor;
 	selectedCol = Math::Lerp(selectedCol, updateCol, 0.2f);
 }
@@ -178,6 +184,19 @@ void SongListDisplayManager::DisableRow(const int32_t idx)
 	auto& rowNodes = mRows[mappedIdx].mNodes;
 	for (SongSelectNode* rowNode : rowNodes)
 		rowNode->Hide();
+}
+
+void SongListDisplayManager::ResetVisibility()
+{
+	const size_t rowCount = mRows.size();
+	for (uint32_t i = 0; i < rowCount; i++)
+	{
+		const size_t rowSize = mRows[i].mNodes.size();
+		for (uint32_t j = 0; j < rowSize; j++)
+		{
+			mRows[i].mNodes[j]->Hide();
+		}
+	}
 }
 
 void SongListDisplayManager::SetNodeIndicesFrom(SongSelectNode* node)
@@ -243,6 +262,8 @@ void SongListDisplayManager::Construct(SongSelectGroup* mainGroup)
 
 void SongListDisplayManager::OpenGroup(SongSelectGroup* group)
 {
+	ResetVisibility();
+
 	if (mOpenGroup)
 		mOpenGroup->Close();
 

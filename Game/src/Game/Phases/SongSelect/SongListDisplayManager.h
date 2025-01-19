@@ -45,6 +45,8 @@ private:
 	void UpdateRow(const int32_t idx, const float yPos);
 	void DisableRow(const int32_t idx);
 
+	void ResetVisibility();
+
 	void SetNodeIndicesFrom(SongSelectNode* node);
 
 private:
