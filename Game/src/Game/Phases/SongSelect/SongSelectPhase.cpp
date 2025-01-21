@@ -164,10 +164,18 @@ void SongSelectPhase::UpdateSongSelect(const float dt)
     {
         mSongDisplay.Select();
     }
+    if (InputMgr->isKeyPressed(SDL_SCANCODE_ESCAPE))
+    {
+        ChangeToState(SongSelectState::FilterSelect);
+    }
 }
 
 void SongSelectPhase::UpdateDifficultySelect(const float dt)
 {
+    if (InputMgr->isKeyPressed(SDL_SCANCODE_ESCAPE))
+    {
+        ChangeToState(SongSelectState::SongSelect);
+    }
 }
 
 #pragma region GetSongRegions
