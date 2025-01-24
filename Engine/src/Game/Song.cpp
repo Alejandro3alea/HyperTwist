@@ -654,10 +654,7 @@ Chart* Song::ProcessSMChart(std::istringstream& file)
 {
     auto charCheckLambda = [](unsigned char c) { return std::isspace(c) || c == ':'; };
     auto charEraseLambda = [charCheckLambda](std::string& str) { str.erase(std::remove_if(str.begin(), str.end(), charCheckLambda), str.end()); };
-    auto commentEraseLambda = [](std::string& str) 
-    {
-        size_t commentPos = str.find("//");
-    };
+
     std::string danceCategory;
     std::getline(file, danceCategory); charEraseLambda(danceCategory);
     // @TODO: Double charts.
@@ -680,13 +677,6 @@ Chart* Song::ProcessSMChart(std::istringstream& file)
 
 Chart* Song::ProcessSSCChart(std::istringstream& file)
 {
-    auto charCheckLambda = [](unsigned char c) { return std::isspace(c) || c == ':'; };
-    auto charEraseLambda = [charCheckLambda](std::string& str) { str.erase(std::remove_if(str.begin(), str.end(), charCheckLambda), str.end()); };
-    auto commentEraseLambda = [](std::string& str)
-    {
-        size_t commentPos = str.find("//");
-    }; 
-
     std::string stepType, radarvalues;
     Chart* currChart = new Chart();
 

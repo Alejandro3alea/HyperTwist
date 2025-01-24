@@ -35,7 +35,6 @@ int main(void)
 
 	InputMgr->Shutdown();
 	WindowMgr->Shutdown();
-	//AudioMgr->Shutdown();
 	GfxMgr->Shutdown();
 	ResourceMgr->Shutdown();
 
