@@ -75,7 +75,7 @@ Song::Song(const std::string& path)
         mPath = tPath.substr(0, lastSpacePos) + '/';
 
 	std::ifstream file(path);
-	Ensure(file.is_open() && file.good(), "File not read in " + path);
+	Requires(file.is_open() && file.good(), "File not read in " + path);
 
     std::string fileContents((std::istreambuf_iterator<char>(file)),
         std::istreambuf_iterator<char>());
@@ -1077,8 +1077,8 @@ Chart* Song::ProcessSMNChart(std::istringstream& file)
 
 void Song::SaveAsSSCSong()
 {
-    std::ofstream file("mPath.ssc");
-    Ensure(file.is_open() && file.good(), " " + mPath);
+    std::ofstream file(mPath + ".ssc");
+    Requires(file.is_open() && file.good(), " " + mPath);
 
     file << "#VERSION:0.83;" << std::endl;
     file << "#TITLE:" << mTitle << ";" << std::endl;
@@ -1234,57 +1234,14 @@ void Song::SaveAsSSCSong()
     }
 
     file.close();
-   
-    /*
-    #VERSION:0.83;
-#TITLE:King;
-#SUBTITLE:;
-#ARTIST:Kanaria;
-#TITLETRANSLIT:;
-#SUBTITLETRANSLIT:;
-#ARTISTTRANSLIT:;
-#GENRE:;
-#CREDIT:Gumi;
-#MUSIC:song.ogg;
-#BANNER:bn.png;
-#BACKGROUND:bg_intro.jpg;
-#CDTITLE:;
-#SAMPLESTART:52.304;
-#SAMPLELENGTH:12.289;
-#SELECTABLE:YES;
-#OFFSET:1.009;
-#BPMS:0.000=166.000
-,112.000=332.000
-,115.000=166.000
-;
-#STOPS:112.000=0.181
-,113.000=0.181
-,114.000=0.181
-;
-#SPEEDS:0.000=1.000=0.000=0;
-#SCROLLS:0.000=1.000;
-#TICKCOUNTS:0.000=4;
-#TIMESIGNATURES:0.000=4=4;
-#LABELS:0.000=Song Start;
-#COMBOS:0.000=1;
-#DISPLAYBPM:166.000;
-#ORIGIN:;
-#PREVIEWVID:;
-#JACKET:;
-#CDIMAGE:;
-#DISCIMAGE:;
-#BGCHANGES:;
-;
-#FGCHANGES:;
-//--------------- dance-single - Balea ----------------
-#NOTEDATA:;
-#STEPSTYPE:dance-single;
-#DESCRIPTION:Balea;
-#DIFFICULTY:Beginner;
-#METER:4;
-#RADARVALUES:0,0,0,0,0;
-#NOTES:
-    */
 
     GlobalEvents::gOnSongCreate.Broadcast(this);
+}
+
+void Song::SaveToSMD()
+{
+}
+
+void Song::SaveToSCD()
+{
 }

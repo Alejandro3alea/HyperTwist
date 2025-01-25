@@ -28,6 +28,9 @@ struct Song
 
 	void SaveAsSSCSong();
 
+	void SaveToSMD();
+	void SaveToSCD();
+
 private:
 	void GetResources();
 
