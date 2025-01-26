@@ -1,6 +1,7 @@
 #include "Song.h"
 #include "Misc/Ensure.h"
 #include "GlobalEvents.h"
+#include "GameVariables.h"
 #include "Graphics/GfxMgr.h"
 
 #include <sstream>
@@ -1219,7 +1220,7 @@ void Song::SaveAsSSCSong()
         case ChartDifficulty::Challenge:
             file << "Challenge" << ";" << std::endl;
             break;
-        case ChartDifficulty::Edit:
+        case ChartDifficulty::Special:
             file << "Edit" << ";" << std::endl;
             break;
         default: // ChartDifficulty::None
@@ -1240,8 +1241,200 @@ void Song::SaveAsSSCSong()
 
 void Song::SaveToSMD()
 {
+    std::ofstream file(mPath + ".smd");
+    Requires(file.is_open() && file.good(), " " + mPath);
+
+    file << "#VERSION:" << gGameVariables.mMajorVersion << "." << gGameVariables.mMinorVersion << "."
+         << gGameVariables.mPatchVersion << ";" << std::endl;
+    file << "#TITLE:" << mTitle << ";" << std::endl;
+    file << "#SUBTITLE:" << mSubtitle << ";" << std::endl;
+    file << "#ARTIST:" << mArtist << ";" << std::endl;
+    file << "#TITLETRANSLIT:" << mTitleTranslit << ";" << std::endl;
+    file << "#SUBTITLETRANSLIT:" << mSubtitleTranslit << ";" << std::endl;
+    file << "#ARTISTTRANSLIT:" << mArtistTranslit << ";" << std::endl;
+    file << "#GENRE:" << mGenre << ";" << std::endl;
+    file << "#CREDIT:" << mCredit << ";" << std::endl;
+    file << "#MUSIC:" << mSongPath << ";" << std::endl;
+    file << "#BANNER:" << mBannerPath << ";" << std::endl;
+    file << "#BACKGROUND:" << mBackgroundPath << ";" << std::endl;
+    file << "#CDTITLE:" << mCDTitlePath << ";" << std::endl;
+    file << "#SAMPLESTART:" << mSampleStart << ";" << std::endl;
+    file << "#SAMPLELENGTH:" << mSampleLength << ";" << std::endl;
+    const std::string selectableStr = mSelectable ? "YES" : "NO";
+    file << "#SELECTABLE:" << selectableStr << ";" << std::endl;
+    file << "#OFFSET:" << mOffset << ";" << std::endl;
+
+    // BPMs
+    file << std::fixed << std::setprecision(3);
+    file << "#BPMS:";
+    for (auto it = mBPMs.begin(); it != mBPMs.end(); ++it)
+    {
+        file << it->first << "=" << it->second << std::endl;
+        if (std::next(it) != mBPMs.end())
+            file << ",";
+    }
+    file << ";" << std::endl;
+
+    // Stops
+    file << "#STOPS:";
+    for (auto it = mStops.begin(); it != mStops.end(); ++it)
+    {
+        file << it->first << "=" << it->second << std::endl;
+        if (std::next(it) != mStops.end())
+            file << ",";
+    }
+    file << ";" << std::endl;
+
+    // Speeds
+    file << "#SPEEDS:";
+    for (auto it = mSpeeds.begin(); it != mSpeeds.end(); ++it)
+    {
+        file << it->first << "=" << std::get<0>(it->second) << "=" << std::get<1>(it->second) << "=" << std::get<2>(it->second) << std::endl;
+        if (std::next(it) != mSpeeds.end())
+            file << ",";
+    }
+    file << ";" << std::endl;
+
+    file << "#SCROLLS:";
+    for (auto it = mScrolls.begin(); it != mScrolls.end(); ++it)
+    {
+        file << it->first << "=" << it->second << std::endl;
+        if (std::next(it) != mScrolls.end())
+            file << ",";
+    }
+    file << ";" << std::endl;
+
+    file << "#TICKCOUNTS:";
+    for (auto it = mTickCounts.begin(); it != mTickCounts.end(); ++it)
+    {
+        file << it->first << "=" << it->second << std::endl;
+        if (std::next(it) != mTickCounts.end())
+            file << ",";
+    }
+    file << ";" << std::endl;
+
+    file << "#TIMESIGNATURES:";
+    for (auto it = mTimeSignatures.begin(); it != mTimeSignatures.end(); ++it)
+    {
+        file << it->first << "=" << it->second.first << "=" << it->second.second << std::endl;
+        if (std::next(it) != mTimeSignatures.end())
+            file << ",";
+    }
+    file << ";" << std::endl;
+
+    file << "#LABELS:";
+    for (auto it = mLabels.begin(); it != mLabels.end(); ++it)
+    {
+        file << it->first << "=" << it->second << std::endl;
+        if (std::next(it) != mLabels.end())
+            file << ",";
+    }
+    file << ";" << std::endl;
+
+    file << "#COMBOS:";
+    for (auto it = mCombos.begin(); it != mCombos.end(); ++it)
+    {
+        file << it->first << "=" << it->second << std::endl;
+        if (std::next(it) != mCombos.end())
+            file << ",";
+    }
+    file << ";" << std::endl;
+
+    file << "#DISPLAYBPM:" << mDisplayBPM << ";" << std::endl;
+    file << "#ORIGIN:" << mOrigin << ";" << std::endl;
+    file << "#PREVIEWVID:" << mPreviewVID << ";" << std::endl;
+    file << "#JACKET:" << mJacket << ";" << std::endl;
+    file << "#CDIMAGE:" << mCDImage << ";" << std::endl;
+    file << "#DISCIMAGE:" << mDiscImage << ";" << std::endl;
+
+    file << "#BGCHANGES:";
+    for (auto it = mBGChanges.begin(); it != mBGChanges.end(); ++it)
+    {
+        file << it->first << "=" << it->second << std::endl;
+        if (std::next(it) != mBGChanges.end())
+            file << ",";
+    }
+    file << ";" << std::endl;
+
+    // In front of the UI
+    file << "#FGCHANGES:" << mFGChanges << ";" << std::endl;
+
+    file << "#CHARTS:" << std::endl;
+    for (auto chart : mCharts)
+    {
+        Chart* chartData = chart.second;
+        switch (chartData->mDifficulty)
+        {
+        case ChartDifficulty::Beginner:
+            file << "Beginner:" << chartData->mDifficultyVal << ";" << std::endl;
+            break;
+        case ChartDifficulty::Easy:
+            file << "Easy:" << chartData->mDifficultyVal << ";" << std::endl;
+            break;
+        case ChartDifficulty::Medium:
+            file << "Medium:" << chartData->mDifficultyVal << ";" << std::endl;
+            break;
+        case ChartDifficulty::Hard:
+            file << "Hard:" << chartData->mDifficultyVal << ";" << std::endl;
+            break;
+        case ChartDifficulty::Challenge:
+            file << "Challenge:" << chartData->mDifficultyVal << ";" << std::endl;
+            break;
+        case ChartDifficulty::Special:
+            file << "Special:" << chartData->mDifficultyVal << ";" << std::endl;
+            break;
+        default: // ChartDifficulty::None
+            file << "Unknown:" << chartData->mDifficultyVal << ";" << std::endl;
+        }
+    }
+
+    file.close();
 }
 
 void Song::SaveToSCD()
 {
+    std::ofstream file(mPath + ".scd");
+    Requires(file.is_open() && file.good(), " " + mPath);
+
+    for (auto chart : mCharts)
+    {
+        Chart* chartData = chart.second;
+        file << "//--------------- dance-single - " << chartData->mStepArtist << " ----------------" << std::endl;
+        file << "#NOTEDATA:" << "" << ";" << std::endl; // TODO
+        file << "#STEPSTYPE:" << "dance-single" << ";" << std::endl; // TODO
+        file << "#DESCRIPTION:" << chartData->mStepArtist << ";" << std::endl;
+
+        file << "#DIFFICULTY:";
+        switch (chartData->mDifficulty)
+        {
+        case ChartDifficulty::Beginner:
+            file << "Beginner" << ";" << std::endl;
+            break;
+        case ChartDifficulty::Easy:
+            file << "Easy" << ";" << std::endl;
+            break;
+        case ChartDifficulty::Medium:
+            file << "Medium" << ";" << std::endl;
+            break;
+        case ChartDifficulty::Hard:
+            file << "Hard" << ";" << std::endl;
+            break;
+        case ChartDifficulty::Challenge:
+            file << "Challenge" << ";" << std::endl;
+            break;
+        case ChartDifficulty::Special:
+            file << "Special" << ";" << std::endl;
+            break;
+        default: // ChartDifficulty::None
+            file << "Edit" << ";" << std::endl;
+        }
+
+        file << "#METER:" << chartData->mDifficultyVal << ";" << std::endl;
+        file << "#RADARVALUES:" << "0,0,0,0,0" << ";" << std::endl; // TODO
+
+        file << "#NOTES:" << std::endl;
+        chartData->SaveNotes(file);
+    }
+
+    file.close();
 }

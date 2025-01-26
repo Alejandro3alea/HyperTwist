@@ -38,7 +38,7 @@ ChartDifficulty Chart::ProcessDifficulty(const std::string& difficulty)
 	if (difficulty == "Challenge")
 		return ChartDifficulty::Challenge;
 
-	return ChartDifficulty::Edit;
+	return ChartDifficulty::Special;
 }
 
 void Chart::ProcessNotes(std::istringstream& file)
@@ -195,6 +195,7 @@ void Chart::SaveNotes(std::ofstream& file)
     {
         while (notePos >= currMaxPos)
         {
+            // In first measure we don't print a comma
             if (isFirstMeasures)
                 isFirstMeasures = false;
             else

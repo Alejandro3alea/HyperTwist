@@ -19,7 +19,7 @@ enum ChartDifficulty
 	Medium,
 	Hard,
 	Challenge,
-	Edit,
+	Special,
 	None
 };
 
