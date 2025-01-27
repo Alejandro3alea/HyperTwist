@@ -1,5 +1,9 @@
 #include "SongSelectRenderables.h"
 
+ChartRenderables::ChartRenderables(const ChartDifficulty& category, const uint8_t level)
+{
+}
+
 SongSelectRenderables::SongSelectRenderables()
 {
 	SetTextures();
@@ -8,8 +12,17 @@ SongSelectRenderables::SongSelectRenderables()
 
 void SongSelectRenderables::OnSongChange(Resource<Song>* song)
 {
-	// std::vector<ChartRenderables> mChartRenderables;
+	mChartRenderables.clear();
 
+	if (song == nullptr)
+		return;
+
+	Song* pSong = song->get();
+
+	for (auto& [diffCategory, diffVal] : pSong->mChartDifficulties)
+	{
+		mChartRenderables.emplace_back(diffCategory, diffVal);
+	}
 }
 
 void SongSelectRenderables::SetTextures()

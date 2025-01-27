@@ -236,7 +236,7 @@ void ImGuiEditor::MainMenu()
 				{
 					std::wstring wideString(fileName);
 					mSong = ResourceMgr->Load<Song>(std::string(wideString.begin(), wideString.end()));
-					ChangeDifficulty(mSong->get()->mCharts.rbegin()->second->mDifficulty);
+					ChangeDifficulty(mSong->get()->mCharts.rbegin()->second->mDifficultyCategory);
 					GfxMgr->mCam.SetPositionFromMeasure(0.0f);
 				}
 			}
@@ -352,7 +352,7 @@ void ImGuiEditor::ChangeDifficulty(const ChartDifficulty Difficulty)
 	for (auto chartInfo : charts)
 	{
 		Chart* currChart = chartInfo.second;
-		const bool shouldBeVisible = currChart->mDifficulty == Difficulty;
+		const bool shouldBeVisible = currChart->mDifficultyCategory == Difficulty;
 		currChart->mNoteRenderer->mbIsVisible = shouldBeVisible;
 		currChart->mHoldRenderer->mbIsVisible = shouldBeVisible;
 		currChart->mMineRenderer->mbIsVisible = shouldBeVisible;
@@ -465,7 +465,7 @@ void ImGuiEditor::ChartListWindow()
 			float hueVal = 0.0f;
 			std::string text;
 
-			switch (chart->mDifficulty)
+			switch (chart->mDifficultyCategory)
 			{
 			case ChartDifficulty::Beginner:
 				hueVal = 0.51f;
@@ -493,12 +493,12 @@ void ImGuiEditor::ChartListWindow()
 			ImGui::PushStyleVar(ImGuiStyleVar_ButtonTextAlign, { 0.0f, 0.0f });
 			ImGui::SetNextItemWidth(-1);
 			text += " - " + chart->mStepArtist + " - " + std::to_string(chart->mDifficultyVal);
-			ImGui::PushID(chart->mDifficulty);
+			ImGui::PushID(chart->mDifficultyCategory);
 			ImGui::PushStyleColor(ImGuiCol_Button, (ImVec4)ImColor::HSV(hueVal, 0.6f, 0.6f));
 			ImGui::PushStyleColor(ImGuiCol_ButtonHovered, (ImVec4)ImColor::HSV(hueVal, 0.7f, 0.7f));
 			ImGui::PushStyleColor(ImGuiCol_ButtonActive, (ImVec4)ImColor::HSV(hueVal, 0.8f, 0.8f));
 			if (ImGui::Button(text.c_str(), { -1.0f, 0.0f }))
-				ChangeDifficulty(chart->mDifficulty);
+				ChangeDifficulty(chart->mDifficultyCategory);
 
 			ImGui::PopStyleColor(3);
 			ImGui::PopStyleVar();

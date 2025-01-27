@@ -1,17 +1,18 @@
 #include "Chart.h"
 #include "Math/MathUtils.h"
+#include "Utils/GameUtils.h"
 
 #include <sstream>
 #include <fstream>
 #include <array>
 #include <numeric>
 
-Chart::Chart() : mStepArtist(""), mDifficulty(ChartDifficulty::Beginner), mDifficultyVal(0) 
+Chart::Chart() : mStepArtist(""), mDifficultyCategory(ChartDifficulty::Beginner), mDifficultyVal(0) 
 {
 }
 
 Chart::Chart(const std::string& stepArtist, const std::string& difficulty, const unsigned difficultyVal) :
-    mStepArtist(stepArtist), mDifficulty(ProcessDifficulty(difficulty)), mDifficultyVal(difficultyVal)
+    mStepArtist(stepArtist), mDifficultyCategory(GameUtils::StrToChartDifficulty(difficulty)), mDifficultyVal(difficultyVal)
 {
 }
 
@@ -23,22 +24,6 @@ Chart::~Chart()
         delete mHoldRenderer;
     if (mMineRenderer)
         delete mMineRenderer;
-}
-
-ChartDifficulty Chart::ProcessDifficulty(const std::string& difficulty)
-{
-	if (difficulty == "Beginner")
-		return ChartDifficulty::Beginner;
-	if (difficulty == "Easy")
-		return ChartDifficulty::Easy;
-	if (difficulty == "Medium")
-		return ChartDifficulty::Medium;
-	if (difficulty == "Hard")
-		return ChartDifficulty::Hard;
-	if (difficulty == "Challenge")
-		return ChartDifficulty::Challenge;
-
-	return ChartDifficulty::Special;
 }
 
 void Chart::ProcessNotes(std::istringstream& file)

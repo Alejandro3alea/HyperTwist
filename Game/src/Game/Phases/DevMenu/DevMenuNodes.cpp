@@ -1,6 +1,7 @@
 #include "DevMenuNodes.h"
 #include "DevMenuActionLeaves.h"
 #include "Graphics/GfxMgr.h"
+#include "Utils/GameUtils.h"
 
 #include "DevMenuPhase.h"
 #include "Game/Phases/PhaseManager.h"
@@ -202,7 +203,7 @@ void DevMenuGameSettings::UpdateSongVersions::UpdateSongs() const
         if (entry.is_regular_file() && (entry.path().extension() == ".sm" || entry.path().extension() == ".ssc"))
         {
             const std::string entryPath = entry.path().string();
-            if (!IsSongUpToDate(entryPath))
+            //if (!IsSongUpToDate(entryPath))
                 UpdateSong(entryPath);
         }
     }
@@ -210,35 +211,11 @@ void DevMenuGameSettings::UpdateSongVersions::UpdateSongs() const
 
 void DevMenuGameSettings::UpdateSongVersions::UpdateSong(const std::string& path) const
 {
-    std::ifstream file(path);
-    if (!file.good() || !file.is_open())
-    {
-        PrintError("Errors trying to update song " + path);
-        return;
-    }
-
-    const std::string noExtPath = ResourceMgr->GetPathWithoutExtension(path);
-    const std::string smdPath = noExtPath + ".smd";
-    const std::string scdPath = noExtPath + ".scd";
-
-    std::ofstream smdFile(smdPath);
-    std::ofstream scdFile(scdPath);
-
-    bool processingSMD = true;
-    std::string line;
-    while (std::getline(file, line))
-    {
-        if (line.starts_with("//"))
-            continue;
-
-        if (line.starts_with("#NOTES:") || line.starts_with("#NOTEDATA:"))
-            processingSMD = false;
-
-        if (processingSMD)
-            smdFile << line << std::endl;
-        else
-            scdFile << line << std::endl;
-    }
+    const std::string ext = ResourceMgr->GetExtension(path);
+    if (ext == "sm")
+        GameUtils::UpdateSMSongToSMD(path);
+    else if (ext == "scc")
+        GameUtils::UpdateSCCSongToSMD(path);
 }
 
 bool DevMenuGameSettings::UpdateSongVersions::IsSongUpToDate(const std::string& path) const

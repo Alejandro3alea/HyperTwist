@@ -29,8 +29,6 @@ struct Chart
 	Chart(const std::string& stepArtist, const std::string& difficulty, const unsigned difficultyVal);
 
 	~Chart();
-
-	static ChartDifficulty ProcessDifficulty(const std::string& difficulty);
 	
 	void ProcessNotes(std::istringstream& file);
 	void SaveNotes(std::ofstream& file);
@@ -42,7 +40,7 @@ struct Chart
 	std::multiset<MineNote*, NoteCompare> GetAllMineNotes();
 
 public:
-	ChartDifficulty mDifficulty;
+	ChartDifficulty mDifficultyCategory;
 	int mDifficultyVal = 1;
 	std::string mStepArtist;
 

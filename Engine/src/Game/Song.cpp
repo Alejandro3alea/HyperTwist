@@ -3,6 +3,7 @@
 #include "GlobalEvents.h"
 #include "GameVariables.h"
 #include "Graphics/GfxMgr.h"
+#include "Utils/GameUtils.h"
 
 #include <sstream>
 #include <fstream>
@@ -304,7 +305,7 @@ void Song::ProcessSMSong(std::istringstream& file)
             else if (key == "#NOTES")
             {
                 if (Chart* newChart = ProcessSMChart(file))
-                    mCharts[newChart->mDifficulty] = newChart;
+                    mCharts[newChart->mDifficultyCategory] = newChart;
             }
         }
     }
@@ -645,7 +646,7 @@ void Song::ProcessSSCSong(std::istringstream& file)
             else if (key == "#NOTEDATA")
             {
                 if (Chart* newChart = ProcessSSCChart(file))
-                    mCharts[newChart->mDifficulty] = newChart;
+                    mCharts[newChart->mDifficultyCategory] = newChart;
             }
         }
     }
@@ -709,20 +710,22 @@ Chart* Song::ProcessSSCChart(std::istringstream& file)
             else if (key == "#DESCRIPTION")
                 currChart->mStepArtist = value;
             else if (key == "#DIFFICULTY")
-                currChart->mDifficulty = Chart::ProcessDifficulty(value);
+                currChart->mDifficultyCategory = GameUtils::StrToChartDifficulty(value);
             else if (key == "#METER")
                 currChart->mDifficultyVal = std::atoi(value.c_str());
             else if (key == "#RADARVALUES")
                 radarvalues = value;
             else if (key == "#NOTES")
             {
+                mChartDifficulties[currChart->mDifficultyCategory] = currChart->mDifficultyVal;
                 currChart->ProcessNotes(file);
                 return currChart;
             }
         }
     }
-}
 
+    return nullptr;
+}
 
 void Song::ProcessSMD(std::istringstream& file)
 {
@@ -813,6 +816,7 @@ void Song::ProcessSMD(std::istringstream& file)
                 {
                     std::string currLine;
                     std::getline(file, currLine);
+
                     value += currLine;
                     isEoC |= currLine.find(';') != std::string::npos;
 
@@ -1057,22 +1061,90 @@ void Song::ProcessSMD(std::istringstream& file)
             {
                 // @TODO
             }
-            else if (key == "#NOTEDATA")
+            else if (key == "#CHARTS")
             {
-                if (Chart* newChart = ProcessSSCChart(file))
-                    mCharts[newChart->mDifficulty] = newChart;
+                while (!isEoC)
+                {
+                    std::string currLine;
+                    std::getline(file, currLine);
+
+                    colonPos = line.find(':');
+                    key = line.substr(0, colonPos);
+                    value = line.substr(colonPos + 1);
+
+                    isEoC |= currLine.find(';') != std::string::npos;
+                    if (isEoC)
+                    {
+                        value.pop_back();
+                        break;
+                    }
+
+                    mChartDifficulties[GameUtils::StrToChartDifficulty(key)] = std::stoi(value);
+                }
             }
         }
     }
 }
 
-void Song::ProcessSMN(std::istringstream& file)
+void Song::ProcessSCD(std::istringstream& file)
 {
 
+    std::string line;
+    while (std::getline(file, line))
+    {
+        size_t colonPos = line.find(':');
+        if (colonPos == std::string::npos)
+            continue;
+
+        std::string key = line.substr(0, colonPos);
+        std::string value = line.substr(colonPos + 1);
+        if (key == "#NEWCHART")
+        {
+            if (Chart* newChart = ProcessSSCChart(file))
+                mCharts[newChart->mDifficultyCategory] = newChart;
+        }
+    }
 }
 
-Chart* Song::ProcessSMNChart(std::istringstream& file)
+Chart* Song::ProcessSCDChart(std::istringstream& file)
 {
+    std::string stepType, radarvalues;
+    Chart* currChart = new Chart();
+
+    std::string line;
+    while (std::getline(file, line))
+    {
+        if (line.empty() || line[0] == '/') // Ignore empty lines and comment lines
+            continue;
+
+        // Extract the key and value from each line
+        size_t colonPos = line.find(':');
+        if (colonPos != std::string::npos)
+        {
+            std::string key = line.substr(0, colonPos);
+            std::string value = line.substr(colonPos + 1);
+
+            if (key == "#STEPSTYPE")
+            {
+                // TODO: dance-single
+                stepType = value;
+            }
+            else if (key == "#AUTHOR")
+                currChart->mStepArtist = value;
+            else if (key == "#DIFFICULTY")
+                currChart->mDifficultyCategory = GameUtils::StrToChartDifficulty(value);
+            else if (key == "#METER")
+                currChart->mDifficultyVal = std::atoi(value.c_str());
+            else if (key == "#RADARVALUES")
+                radarvalues = value;
+            else if (key == "#NOTES")
+            {
+                currChart->ProcessNotes(file);
+                return currChart;
+            }
+        }
+    }
+
     return nullptr;
 }
 
@@ -1203,29 +1275,7 @@ void Song::SaveAsSSCSong()
         file << "#DESCRIPTION:" << chartData->mStepArtist << ";" << std::endl;
 
         file << "#DIFFICULTY:";
-        switch (chartData->mDifficulty)
-        {
-        case ChartDifficulty::Beginner:
-            file << "Beginner" << ";" << std::endl;
-            break;
-        case ChartDifficulty::Easy:
-            file << "Easy" << ";" << std::endl;
-            break;
-        case ChartDifficulty::Medium:
-            file << "Medium" << ";" << std::endl;
-            break;
-        case ChartDifficulty::Hard:
-            file << "Hard" << ";" << std::endl;
-            break;
-        case ChartDifficulty::Challenge:
-            file << "Challenge" << ";" << std::endl;
-            break;
-        case ChartDifficulty::Special:
-            file << "Edit" << ";" << std::endl;
-            break;
-        default: // ChartDifficulty::None
-            file << "Edit" << ";" << std::endl;
-        }
+        file << GameUtils::ChartDifficultyToStr(chartData->mDifficultyCategory) << ";" << std::endl;
 
         file << "#METER:" << chartData->mDifficultyVal << ";" << std::endl;
         file << "#RADARVALUES:" << "0,0,0,0,0" << ";" << std::endl; // TODO
@@ -1363,30 +1413,9 @@ void Song::SaveToSMD()
     for (auto chart : mCharts)
     {
         Chart* chartData = chart.second;
-        switch (chartData->mDifficulty)
-        {
-        case ChartDifficulty::Beginner:
-            file << "Beginner:" << chartData->mDifficultyVal << ";" << std::endl;
-            break;
-        case ChartDifficulty::Easy:
-            file << "Easy:" << chartData->mDifficultyVal << ";" << std::endl;
-            break;
-        case ChartDifficulty::Medium:
-            file << "Medium:" << chartData->mDifficultyVal << ";" << std::endl;
-            break;
-        case ChartDifficulty::Hard:
-            file << "Hard:" << chartData->mDifficultyVal << ";" << std::endl;
-            break;
-        case ChartDifficulty::Challenge:
-            file << "Challenge:" << chartData->mDifficultyVal << ";" << std::endl;
-            break;
-        case ChartDifficulty::Special:
-            file << "Special:" << chartData->mDifficultyVal << ";" << std::endl;
-            break;
-        default: // ChartDifficulty::None
-            file << "Unknown:" << chartData->mDifficultyVal << ";" << std::endl;
-        }
+        file << GameUtils::ChartDifficultyToStr(chartData->mDifficultyCategory) << ":" << chartData->mDifficultyVal << std::endl;
     }
+    file << ";" << std::endl;
 
     file.close();
 }
@@ -1400,34 +1429,12 @@ void Song::SaveToSCD()
     {
         Chart* chartData = chart.second;
         file << "//--------------- dance-single - " << chartData->mStepArtist << " ----------------" << std::endl;
-        file << "#NOTEDATA:" << "" << ";" << std::endl; // TODO
+        file << "#NEWCHART:" << "" << ";" << std::endl; // TODO
         file << "#STEPSTYPE:" << "dance-single" << ";" << std::endl; // TODO
-        file << "#DESCRIPTION:" << chartData->mStepArtist << ";" << std::endl;
+        file << "#AUTHOR:" << chartData->mStepArtist << ";" << std::endl;
 
         file << "#DIFFICULTY:";
-        switch (chartData->mDifficulty)
-        {
-        case ChartDifficulty::Beginner:
-            file << "Beginner" << ";" << std::endl;
-            break;
-        case ChartDifficulty::Easy:
-            file << "Easy" << ";" << std::endl;
-            break;
-        case ChartDifficulty::Medium:
-            file << "Medium" << ";" << std::endl;
-            break;
-        case ChartDifficulty::Hard:
-            file << "Hard" << ";" << std::endl;
-            break;
-        case ChartDifficulty::Challenge:
-            file << "Challenge" << ";" << std::endl;
-            break;
-        case ChartDifficulty::Special:
-            file << "Special" << ";" << std::endl;
-            break;
-        default: // ChartDifficulty::None
-            file << "Edit" << ";" << std::endl;
-        }
+        file << GameUtils::ChartDifficultyToStr(chartData->mDifficultyCategory) << ";" << std::endl;
 
         file << "#METER:" << chartData->mDifficultyVal << ";" << std::endl;
         file << "#RADARVALUES:" << "0,0,0,0,0" << ";" << std::endl; // TODO

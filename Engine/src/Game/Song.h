@@ -42,8 +42,8 @@ private:
 	
 
 	void ProcessSMD(std::istringstream& file);
-	void ProcessSMN(std::istringstream& file);
-	Chart* ProcessSMNChart(std::istringstream& file);
+	void ProcessSCD(std::istringstream& file);
+	Chart* ProcessSCDChart(std::istringstream& file);
 
 
 public:
@@ -86,6 +86,7 @@ public:
 	std::map<float, std::string> mBGChanges; // @TODO: Figure out how this works   #BGCHANGES:;
 	std::string mFGChanges; // @TODO: Figure out how this works   #FGCHANGES:;
 
+	std::map<ChartDifficulty, uint8_t> mChartDifficulties;
 	std::map<ChartDifficulty, Chart*> mCharts;
 
 private:
