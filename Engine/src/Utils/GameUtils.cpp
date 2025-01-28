@@ -1,7 +1,7 @@
 #include "GameUtils.h"
 #include "Game/Song.h"
 
-void GameUtils::UpdateSCCSongToSMD(const std::string& path)
+void GameUtils::UpdateSSCSongToSMD(const std::string& path)
 {
     Song* pSong = ResourceMgr->Load<Song>(path)->get();
     pSong->SaveToSMD();

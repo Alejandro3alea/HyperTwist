@@ -68,6 +68,9 @@ void Chart::ProcessNotes(std::istringstream& file)
                 mHoldRenderer = new HoldNoteBodyRenderer(this); 
                 mNoteRenderer = new NoteRenderer(this);
                 mMineRenderer = new MineRenderer(this);
+                mHoldRenderer->mbIsVisible = false;
+                mNoteRenderer->mbIsVisible = false;
+                mMineRenderer->mbIsVisible = false;
                 return;
             }
 

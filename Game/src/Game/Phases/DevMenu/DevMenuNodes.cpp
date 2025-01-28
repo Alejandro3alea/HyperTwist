@@ -179,7 +179,7 @@ DevMenuGameSettings::DevMenuGameSettings(DevMenuNode* parentNode) : DevMenuNode(
     InitializeRenderables();
 }
 
-DevMenuGameSettings::UpdateSongVersions::UpdateSongVersions(DevMenuNode* parentNode) : DevMenuNode("Update SM/SCC songs to SMD")
+DevMenuGameSettings::UpdateSongVersions::UpdateSongVersions(DevMenuNode* parentNode) : DevMenuNode("Update SM/SSC songs to SMD")
 {
     const auto& renderable = std::make_shared<FontRenderer>("Songs updated.");
     renderable->mColor = glm::vec4(0.25f, 1.0f, 0.3f, 1.0f);
@@ -214,8 +214,8 @@ void DevMenuGameSettings::UpdateSongVersions::UpdateSong(const std::string& path
     const std::string ext = ResourceMgr->GetExtension(path);
     if (ext == "sm")
         GameUtils::UpdateSMSongToSMD(path);
-    else if (ext == "scc")
-        GameUtils::UpdateSCCSongToSMD(path);
+    else if (ext == "ssc")
+        GameUtils::UpdateSSCSongToSMD(path);
 }
 
 bool DevMenuGameSettings::UpdateSongVersions::IsSongUpToDate(const std::string& path) const

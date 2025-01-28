@@ -1065,14 +1065,12 @@ void Song::ProcessSMD(std::istringstream& file)
             {
                 while (!isEoC)
                 {
-                    std::string currLine;
-                    std::getline(file, currLine);
-
+                    std::getline(file, line);
                     colonPos = line.find(':');
                     key = line.substr(0, colonPos);
                     value = line.substr(colonPos + 1);
 
-                    isEoC |= currLine.find(';') != std::string::npos;
+                    isEoC |= line.find(';') != std::string::npos;
                     if (isEoC)
                     {
                         value.pop_back();
@@ -1291,7 +1289,7 @@ void Song::SaveAsSSCSong()
 
 void Song::SaveToSMD()
 {
-    std::ofstream file(mPath + ".smd");
+    std::ofstream file(mPath + mTitle + ".smd");
     Requires(file.is_open() && file.good(), " " + mPath);
 
     file << "#VERSION:" << gGameVariables.mMajorVersion << "." << gGameVariables.mMinorVersion << "."
@@ -1422,7 +1420,7 @@ void Song::SaveToSMD()
 
 void Song::SaveToSCD()
 {
-    std::ofstream file(mPath + ".scd");
+    std::ofstream file(mPath + mTitle + ".scd");
     Requires(file.is_open() && file.good(), " " + mPath);
 
     for (auto chart : mCharts)

@@ -73,7 +73,7 @@ struct DevMenuSoundSettings : public DevMenuNode
 
 struct DevMenuGameSettings : public DevMenuNode
 {
-    // .sm/.scc to (.smd + .scd)
+    // .sm/.ssc to (.smd + .scd)
     struct UpdateSongVersions : public DevMenuNode
     {
         UpdateSongVersions(DevMenuNode* parentNode);
