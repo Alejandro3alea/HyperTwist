@@ -1,15 +1,19 @@
 # HyperTwist
-## _A love letter for Rhythm games_
+
+> _A love letter for Rhythm games_
 
 *(Currently it's only available in a Visual Studio solution, in the near future it will be implemented for CMake & multiple platforms)*
+
 [![Version]( https://img.shields.io/badge/version-0.1.0-blue)](https://github.com/alejandro3alea/HyperTwist/)  [![Build Status](https://github.com/alejandro3alea/HyperTwist/actions/workflows/c-cpp.yml/badge.svg)](https://github.com/alejandro3alea/HyperTwist/) 
 
 HyperTwist is a Rhythm engine, editor and game.
+
 
 ## Game
 Nowadays there are several 4-pad foot rythm games. However, I personally feel that none of them delve inough into their mechanics, leaving them for more ideas that can be exploited. This game aims to expand on these innovative features and improved gameplay that promise to engage players and enhance their experience.
 
 ![Song Select Menu](https://github.com/Alejandro3alea/HyperTwist/blob/main/Game/data/engine/texture/SongSelect/Reference.png?raw=true)
+
 
 #### Features
 - **Song Processing (.sm, .ssc)**
@@ -39,6 +43,7 @@ Nowadays there are several 4-pad foot rythm games. However, I personally feel th
 ![Song Select Menu](https://www.alejandrobalea.com/wp-content/uploads/2023/10/King.png)
 ![Song Select Menu](https://www.alejandrobalea.com/wp-content/uploads/2023/10/King.png)
 
+
 #### Features
 - **Song Processing (.sm, .scc)**
     - Song resources and properties loader
@@ -55,6 +60,7 @@ Nowadays there are several 4-pad foot rythm games. However, I personally feel th
 - **Song serialization**
 - **Pauses & Gimmicks**
 
+
 ## Libraries
 
 HyperTwist works thanks to the following libraries:
@@ -68,21 +74,26 @@ HyperTwist works thanks to the following libraries:
 | OpenAL ***(Old)*** | Audio programming | [openal.org](https://www.openal.org/) |
 
 
+
 ## Installation
 
 For now, it can only be executed as a Visual Studio solution (.sln). Future plan is to work with CMake and Docker.
+
 
 ## Development
 
 Want to contribute? Great! Everyone is welcome to create a pull request and improve the project!
 
+
 ## Docker
 
 WIP
 
+
 ## CMake
 
 WIP
+
 
 ## License
 
