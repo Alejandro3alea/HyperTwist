@@ -40,8 +40,8 @@ Nowadays there are several 4-pad foot rythm games. However, I personally feel th
 
 
 ## Editor
-![Song Select Menu](https://www.alejandrobalea.com/wp-content/uploads/2023/10/King.png)
-![Song Select Menu](https://www.alejandrobalea.com/wp-content/uploads/2023/10/King.png)
+![Song Select Menu](https://github.com/Alejandro3alea/HyperTwist/blob/main/docs/King.png?raw=true)
+![Song Select Menu](https://github.com/Alejandro3alea/HyperTwist/blob/main/docs/Houkago-Stride.png?raw=true)
 
 
 #### Features
