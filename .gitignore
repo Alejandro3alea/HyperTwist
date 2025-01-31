@@ -29,6 +29,9 @@
 *.out
 *.app
 
+# build file
+build/*
+
 # Custom Folders
 */x64/*
 */Debug/*
