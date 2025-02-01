@@ -53,9 +53,14 @@ struct SongSelectSongNode : public SongSelectNode
 	virtual void Show() override;
 	virtual void Hide() override;
 
+	Song* GetSong() { return mSong; }
+
+public:
+	Renderable mCDRenderable;
+	FontRenderer mLabel;
+
 private:
 	Song* mSong;
-	Renderable mCDRenderable;
 };
 
 
@@ -67,6 +72,10 @@ struct SongSelectGroup : public SongSelectNode
 	virtual inline void Select() override { mIsOpen = !mIsOpen; }
 	virtual inline bool IsOpen() const override { return mIsOpen; }
 
+	inline void Open() { mIsOpen = true; OnOpen(); }
+	inline void Close() { mIsOpen = false; OnClose(); }
+
+	void OnClose() {}
 	virtual void OnOpen() override;
 	virtual void OnFocus() override;
 	virtual void OnUnfocus() override;

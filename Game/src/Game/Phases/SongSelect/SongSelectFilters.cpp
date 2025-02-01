@@ -23,7 +23,8 @@ void SongSelectSortByName::GenerateChildren()
 		{
 			currChild->mChildren.push_back(std::make_shared<SongSelectSongNode>(song));
 		}
-		mChildren.push_back(currChild);
+		if (!currChild->mChildren.empty())
+			mChildren.push_back(currChild);
 	}
 }
 

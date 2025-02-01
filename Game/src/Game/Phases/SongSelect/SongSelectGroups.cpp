@@ -9,11 +9,14 @@ void SongSelectSongNode::Select()
 void SongSelectSongNode::ConstructRenderable()
 {
 	mRenderable.SetTexture("data/engine/texture/SongSelect/SongBase.png");
-	mRenderable.mbIsVisible = false;
 	mRenderable.transform.scale = glm::vec3(200.0f, 200.0f, 1.0f);
+	mRenderable.mbIsVisible = false;
 
-	mCDRenderable.SetTexture("data/engine/texture/SongSelect/RectangleHorizontalFade.png");
 	mCDRenderable.mbIsVisible = false;
+
+	mLabel.transform.scale = glm::vec3(0.4f);
+	mLabel.SetText(mSong->mTitle);
+	mLabel.mbIsVisible = false;
 }
 
 void SongSelectSongNode::OnOpen()
@@ -33,12 +36,19 @@ void SongSelectSongNode::Show()
 {
 	mRenderable.mbIsVisible = true;
 	mCDRenderable.mbIsVisible = true;
+	mLabel.mbIsVisible = true;
+
+	if (!mSong->mCDTitlePath.empty())
+		mCDRenderable.mTexture = ResourceMgr->Load<Texture>(mSong->GetPath() + mSong->mCDTitlePath);
+	else if(!mSong->mBannerPath.empty())
+		mCDRenderable.mTexture = ResourceMgr->Load<Texture>(mSong->GetPath() + mSong->mBannerPath);
 }
 
 void SongSelectSongNode::Hide()
 {
 	mRenderable.mbIsVisible = false;
 	mCDRenderable.mbIsVisible = false;
+	mLabel.mbIsVisible = false;
 }
 	
 SongSelectGroup::SongSelectGroup(const std::string& name, const unsigned childrenPerRow) : SongSelectNode(name), mChildrenPerRow(childrenPerRow)

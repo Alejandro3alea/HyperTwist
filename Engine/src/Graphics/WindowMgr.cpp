@@ -31,7 +31,7 @@ Window::Window(const std::string& winName, const unsigned winWidth, const unsign
 		exit(1);
 	}
 
-	Ensure(SDL_GL_SetSwapInterval(1) >= 0, "Failed to enable V-Sync.");
+	Requires(SDL_GL_SetSwapInterval(1) >= 0, "Failed to enable V-Sync.");
 
 	mAspectRatio = static_cast<float>(winWidth) / static_cast<float>(winHeight);
 

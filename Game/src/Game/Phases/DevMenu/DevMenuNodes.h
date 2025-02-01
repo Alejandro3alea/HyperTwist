@@ -73,16 +73,18 @@ struct DevMenuSoundSettings : public DevMenuNode
 
 struct DevMenuGameSettings : public DevMenuNode
 {
-    // .sm/.scc to (.smd + .scd)
+    // .sm/.ssc to (.smd + .scd)
     struct UpdateSongVersions : public DevMenuNode
     {
         UpdateSongVersions(DevMenuNode* parentNode);
 
         virtual void OnSelected() override;
-        void UpdateSongs();
+        void UpdateSongs() const;
 
     private:
-        void UpdateSong(const std::string& path);
+        void UpdateSong(const std::string& path) const;
+
+        bool IsSongUpToDate(const std::string& path) const;
     };
 
     DevMenuGameSettings(DevMenuNode* parentNode);

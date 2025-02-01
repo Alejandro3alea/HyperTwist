@@ -1,6 +1,7 @@
 #include "DevMenuNodes.h"
 #include "DevMenuActionLeaves.h"
 #include "Graphics/GfxMgr.h"
+#include "Utils/GameUtils.h"
 
 #include "DevMenuPhase.h"
 #include "Game/Phases/PhaseManager.h"
@@ -178,7 +179,7 @@ DevMenuGameSettings::DevMenuGameSettings(DevMenuNode* parentNode) : DevMenuNode(
     InitializeRenderables();
 }
 
-DevMenuGameSettings::UpdateSongVersions::UpdateSongVersions(DevMenuNode* parentNode) : DevMenuNode("Update SM/SCC songs to SMD")
+DevMenuGameSettings::UpdateSongVersions::UpdateSongVersions(DevMenuNode* parentNode) : DevMenuNode("Update SM/SSC songs to SMD")
 {
     const auto& renderable = std::make_shared<FontRenderer>("Songs updated.");
     renderable->mColor = glm::vec4(0.25f, 1.0f, 0.3f, 1.0f);
@@ -193,51 +194,37 @@ void DevMenuGameSettings::UpdateSongVersions::OnSelected()
     UpdateSongs();
 }
 
-void DevMenuGameSettings::UpdateSongVersions::UpdateSongs()
+void DevMenuGameSettings::UpdateSongVersions::UpdateSongs() const
 {
     std::string rootDirectory = "data/songs/";
 
     for (const auto& entry : std::filesystem::recursive_directory_iterator(rootDirectory))
     {
-        if (entry.is_regular_file() && (entry.path().extension() == ".sm" ||
-                                        entry.path().extension() == ".ssc"))
+        if (entry.is_regular_file() && (entry.path().extension() == ".sm" || entry.path().extension() == ".ssc"))
         {
-            UpdateSong(entry.path().string());
+            const std::string entryPath = entry.path().string();
+            //if (!IsSongUpToDate(entryPath))
+                UpdateSong(entryPath);
         }
     }
 }
 
-void DevMenuGameSettings::UpdateSongVersions::UpdateSong(const std::string& path)
+void DevMenuGameSettings::UpdateSongVersions::UpdateSong(const std::string& path) const
 {
-    std::ifstream file(path);
-    if (!file.good() || !file.is_open())
-    {
-        PrintError("Errors trying to update song " + path);
-        return;
-    }
+    const std::string ext = ResourceMgr->GetExtension(path);
+    if (ext == "sm")
+        GameUtils::UpdateSMSongToSMD(path);
+    else if (ext == "ssc")
+        GameUtils::UpdateSSCSongToSMD(path);
+}
 
-    const std::string noExtPath = ResourceMgr->GetPathWithoutExtension(path);
-    const std::string smdPath = noExtPath + ".smd";
-    const std::string scdPath = noExtPath + ".scd";
+bool DevMenuGameSettings::UpdateSongVersions::IsSongUpToDate(const std::string& path) const
+{
+    const std::string smdPath = ResourceMgr->GetPathWithoutExtension(path) + ".smd";
+    const auto smdWriteTime = std::filesystem::last_write_time(smdPath);
+    const auto oldWriteTime = std::filesystem::last_write_time(path);
 
-    std::ofstream smdFile(smdPath);
-    std::ofstream scdFile(scdPath);
-
-    bool processingSMD = true;
-    std::string line;
-    while (std::getline(file, line))
-    {
-        if (line.starts_with("//"))
-            continue;
-
-        if (line.starts_with("#NOTES:") || line.starts_with("#NOTEDATA:"))
-            processingSMD = false;
-
-        if (processingSMD)
-            smdFile << line << std::endl;
-        else
-            scdFile << line << std::endl;
-    }
+    return oldWriteTime < smdWriteTime;
 }
 
 

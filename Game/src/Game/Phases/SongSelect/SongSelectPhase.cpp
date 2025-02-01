@@ -10,12 +10,16 @@ std::vector<Resource<Song>*> SongSelectPhase::mSongs;
 void SongSelectPhase::OnEnter()
 {
 	//GfxMgr->SetBackgroundShader(ResourceMgr->Load<Shader>("data/shaders/SongSelectBG.shader")); 
-	GfxMgr->SetBackgroundTexture(ResourceMgr->Load<Texture>("data/engine/texture/SongSelect/ReferenceDark.png"));
+	GfxMgr->SetBackgroundTexture(ResourceMgr->Load<Texture>("data/engine/texture/SongSelect/MainBG.png"));
 
 	mRenderables = std::make_shared<SongSelectRenderables>();
     ChangeToState(SongSelectState::FilterSelect);
     LoadSongs();
     SetupFilters();
+
+    mSongDisplay.mOnSongFocus.Add([this](Song* song) { FocusSong(song); });
+    mSongDisplay.mOnSongUnfocus.Add([this](Song* song) { UnfocusSong(song); });
+    mSongDisplay.mOnSongSelect.Add([this](Song* song) { SelectSong(song); });
 }
 
 void SongSelectPhase::OnTick(const float dt)
@@ -117,24 +121,22 @@ void SongSelectPhase::UpdateFilterSelect(const float dt)
         auto& t = mFilters[i]->mRenderable.transform;
         t.pos.x = Math::Lerp(t.pos.x, diff * 625.0f, 0.075f);
         t.pos.z = 10 - std::abs(diff);
-        t.scale.x = Math::Lerp(t.scale.x, std::max(350.0f - 120.0f * std::abs(diff), 0.01f), 0.075f);
-        t.scale.y = Math::Lerp(t.scale.y, std::max(350.0f - 120.0f * std::abs(diff), 0.01f), 0.075f);
+        const float scaleVal = std::max(350.0f - 120.0f * std::abs(diff), 0.01f);
+        t.scale.x = Math::Lerp(t.scale.x, scaleVal, 0.075f);
+        t.scale.y = Math::Lerp(t.scale.y, scaleVal, 0.075f);
     }
 
     if (InputMgr->isKeyPressed(SDL_SCANCODE_LEFT))
     {
         mFilterIdx = std::max(mFilterIdx - 1, 0);
-        OnUpdateFilters();
     }
     if (InputMgr->isKeyPressed(SDL_SCANCODE_RIGHT))
     {
         mFilterIdx = std::min(mFilterIdx + 1, static_cast<int32_t>(mFilters.size() - 1));
-        OnUpdateFilters();
     }
     if (InputMgr->isKeyPressed(SDL_SCANCODE_RETURN))
     {
         mFilters[mFilterIdx]->OnOpen();
-        OnSelectFilter();
         ChangeToState(SongSelectState::SongSelect);
     }
 }
@@ -145,32 +147,35 @@ void SongSelectPhase::UpdateSongSelect(const float dt)
     if (InputMgr->isKeyPressed(SDL_SCANCODE_UP))
     {
         mSongDisplay.MoveUp();
-        OnUpdateNodes();
     }
     if (InputMgr->isKeyPressed(SDL_SCANCODE_LEFT))
     {
         mSongDisplay.MoveLeft();
-        OnUpdateNodes();
     }
     if (InputMgr->isKeyPressed(SDL_SCANCODE_DOWN))
     {
         mSongDisplay.MoveDown();
-        OnUpdateNodes();
     }
     if (InputMgr->isKeyPressed(SDL_SCANCODE_RIGHT))
     {
         mSongDisplay.MoveRight();
-        OnUpdateNodes();
     }
     if (InputMgr->isKeyPressed(SDL_SCANCODE_RETURN))
     {
         mSongDisplay.Select();
-        //ChangeToState(SongSelectState::DifficultySelect);
+    }
+    if (InputMgr->isKeyPressed(SDL_SCANCODE_ESCAPE))
+    {
+        ChangeToState(SongSelectState::FilterSelect);
     }
 }
 
 void SongSelectPhase::UpdateDifficultySelect(const float dt)
 {
+    if (InputMgr->isKeyPressed(SDL_SCANCODE_ESCAPE))
+    {
+        ChangeToState(SongSelectState::SongSelect);
+    }
 }
 
 #pragma region GetSongRegions
@@ -326,23 +331,26 @@ std::pair<uint32_t, uint32_t> SongSelectPhase::GetDisplayData(
     return std::make_pair(groupsTillIdx, nodesTillIdx);
 }
 
-void SongSelectPhase::OnUpdateFilters()
+void SongSelectPhase::FocusSong(Song* song)
 {
+    song->GetSong()->Play(song->mSampleStart);
+    mRenderables->mSongInfoTitle.SetText(song->mTitle);
+    mRenderables->mSongInfoArtist.SetText(song->mArtist);
 
+    if (!song->mCDTitlePath.empty())
+        mRenderables->mSongThumb.SetTexture(song->GetPath() + song->mCDTitlePath);
+    else if (!song->mBannerPath.empty())
+        mRenderables->mSongThumb.SetTexture(song->GetPath() + song->mBannerPath);
+
+    // Setup chart renderables
 }
 
-void SongSelectPhase::OnUpdateNodes()
+void SongSelectPhase::UnfocusSong(Song* song)
 {
+    song->GetSong()->Stop();
 }
 
-void SongSelectPhase::OnSelectFilter()
+void SongSelectPhase::SelectSong(Song* song)
 {
-}
-
-void SongSelectPhase::OnSelectNode()
-{
-}
-
-void SongSelectPhase::OnCancellingNode()
-{
+    ChangeToState(SongSelectState::DifficultySelect);
 }

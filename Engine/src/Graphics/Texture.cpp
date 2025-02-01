@@ -1,4 +1,5 @@
 #include "Texture.h"
+#include "Resources/ResourceMgr.h"
 
 #define STB_IMAGE_IMPLEMENTATION
 #include "STB/stb_image.h"
@@ -17,9 +18,9 @@ Texture::Texture(const std::string& path)
 	unsigned char* data = stbi_load(path.c_str(), &mSize.x, &mSize.y, &mColorChannels, 4);
 	if (!data)
 	{
-		std::cout << "[ERROR] Error loading texture " << path << ": " << std::endl << stbi_failure_reason() << std::endl;
+		const std::string reason = "Error loading texture " + path + ":\n" + stbi_failure_reason() + '\n';
 		stbi_image_free(data);
-		return;
+		throw ResourceLoadException(path, reason);
 	}
 
 	GLenum eColorChannel = (mColorChannels == 4) ? GL_RGBA : GL_RGB;

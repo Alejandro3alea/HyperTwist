@@ -49,13 +49,9 @@ protected:
 	void UpdateSongSelect(const float dt);
 	void UpdateDifficultySelect(const float dt);
 
-	void OnUpdateFilters();
-	void OnUpdateNodes();
-
-	void OnSelectFilter();
-	void OnSelectNode();
-	void OnCancellingNode();
-
+	void FocusSong(Song* song);
+	void UnfocusSong(Song* song);
+	void SelectSong(Song* song);
 
 private:
 	uint32_t mDisplayedRowCount = 3;

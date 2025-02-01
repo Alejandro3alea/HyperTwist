@@ -1,4 +1,19 @@
 #include "SongSelectRenderables.h"
+#include "Utils/GameUtils.h"
+
+ChartRenderables::ChartRenderables(const ChartDifficulty& category, const uint8_t level)
+{
+	mBG.SetTexture("data/engine/texture/SongSelect/RectangleHorizontalFade.png");
+
+	mDifficulty.SetFont("data/engine/fonts/Rubik.ttf");
+	mDifficulty.SetText(GameUtils::ChartDifficultyToStr(category));
+
+	mLevel.SetFont("data/engine/fonts/Rubik.ttf");
+	mLevel.SetText(std::to_string(level));
+
+	mP1Grade.SetTexture("data/engine/texture/Grades/AAA.png");
+	mP2Grade.SetTexture("data/engine/texture/Grades/AAA.png");
+}
 
 SongSelectRenderables::SongSelectRenderables()
 {
@@ -8,8 +23,17 @@ SongSelectRenderables::SongSelectRenderables()
 
 void SongSelectRenderables::OnSongChange(Resource<Song>* song)
 {
-	// std::vector<ChartRenderables> mChartRenderables;
+	mChartRenderables.clear();
 
+	if (song == nullptr)
+		return;
+
+	Song* pSong = song->get();
+
+	for (auto& [diffCategory, diffVal] : pSong->mChartDifficulties)
+	{
+		mChartRenderables.emplace_back(diffCategory, diffVal);
+	}
 }
 
 void SongSelectRenderables::SetTextures()

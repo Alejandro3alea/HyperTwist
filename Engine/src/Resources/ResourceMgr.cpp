@@ -5,6 +5,7 @@
 #include "Misc/ColorConsole.h"
 #include "Graphics/Font.h"
 #include "Game/Song.h"
+#include "Utils/StringUtils.h"
 
 #include <iostream>
 #include <filesystem>
@@ -30,8 +31,17 @@ void ResourceManager::Initialize()
 	mBasePath = std::filesystem::current_path().string();
 }
 
+void ResourceManager::LoadDefaultAssets()
+{
+	mDefaultResources[typeid(Shader).name()] = Load<Shader>("data/engine/shaders/Quad.shader");
+	mDefaultResources[typeid(Texture).name()] = Load<Texture>("data/engine/texture/Default.png");
+	mDefaultResources[typeid(Audio).name()] = Load<Audio>("data/engine/audio/Default.mp3");
+	mDefaultResources[typeid(Font).name()] = Load<Font>("data/engine/fonts/Cousine-Regular.ttf");
+}
+
 void ResourceManager::Shutdown()
 {
+	mDefaultResources.clear();
 	mAllResources.clear();
 	mAllImporters.clear();
 }
@@ -41,7 +51,8 @@ const std::string ResourceManager::GetExtension(const std::string& filePath) con
 	size_t pos = filePath.find_last_of('.');
 	if (pos == std::string::npos)
 		PrintWarning("File " + filePath + " has no extension.");
-	return filePath.substr(pos + 1);
+
+	return ToLower(filePath.substr(pos + 1));
 }
 
 const std::string ResourceManager::GetResourceName(const std::string& filePath) const

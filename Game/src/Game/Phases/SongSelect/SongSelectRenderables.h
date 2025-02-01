@@ -4,6 +4,8 @@
 
 struct ChartRenderables
 {
+	ChartRenderables(const ChartDifficulty& category, const uint8_t level);
+
 	Renderable mBG;
 	FontRenderer mDifficulty;
 	FontRenderer mLevel;

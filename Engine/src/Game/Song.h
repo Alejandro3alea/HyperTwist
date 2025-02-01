@@ -21,12 +21,15 @@ struct Song
 
 	bool IsPlaying() { return mIsPlaying; }
 
-	Audio* GetSong()		 { if (mSong) return mSong->get();				else return nullptr; }
-	Texture* GetBanner()	 { if (mBanner) return mBanner->get();			else return nullptr; }
-	Texture* GetBackground() { if (mBackground) return mBackground->get();	else return nullptr; }
-	Texture* GetCDTitle()	 { if (mCDTitle) return mCDTitle->get();		else return nullptr; }
+	Audio* GetSong();
+	Texture* GetBanner();
+	Texture* GetBackground();
+	Texture* GetCDTitle();
 
 	void SaveAsSSCSong();
+
+	void SaveToSMD();
+	void SaveToSCD();
 
 private:
 	void GetResources();
@@ -39,8 +42,8 @@ private:
 	
 
 	void ProcessSMD(std::istringstream& file);
-	void ProcessSMN(std::istringstream& file);
-	Chart* ProcessSMNChart(std::istringstream& file);
+	void ProcessSCD(std::istringstream& file);
+	Chart* ProcessSCDChart(std::istringstream& file);
 
 
 public:
@@ -83,6 +86,7 @@ public:
 	std::map<float, std::string> mBGChanges; // @TODO: Figure out how this works   #BGCHANGES:;
 	std::string mFGChanges; // @TODO: Figure out how this works   #FGCHANGES:;
 
+	std::map<ChartDifficulty, uint8_t> mChartDifficulties;
 	std::map<ChartDifficulty, Chart*> mCharts;
 
 private:

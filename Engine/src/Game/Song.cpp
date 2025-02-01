@@ -1,7 +1,9 @@
 #include "Song.h"
 #include "Misc/Ensure.h"
 #include "GlobalEvents.h"
+#include "GameVariables.h"
 #include "Graphics/GfxMgr.h"
+#include "Utils/GameUtils.h"
 
 #include <sstream>
 #include <fstream>
@@ -75,7 +77,7 @@ Song::Song(const std::string& path)
         mPath = tPath.substr(0, lastSpacePos) + '/';
 
 	std::ifstream file(path);
-	Ensure(file.is_open() && file.good(), "File not read in " + path);
+	Requires(file.is_open() && file.good(), "File not read in " + path);
 
     std::string fileContents((std::istreambuf_iterator<char>(file)),
         std::istreambuf_iterator<char>());
@@ -132,6 +134,46 @@ float Song::GetBPMAt(const float time)
 
         return mBPMs.rbegin()->second;
     }
+}
+
+Audio* Song::GetSong()
+{
+    if (mSong) 
+        return mSong->get();
+
+    mSong = ResourceMgr->Load<Audio>(mPath + mSongPath);
+
+    return mSong->get();
+}
+
+Texture* Song::GetBanner()
+{
+    if (mBanner)
+        return mBanner->get();
+
+    mBanner = ResourceMgr->Load<Texture>(mPath + mBannerPath);
+
+    return mBanner->get();
+}
+
+Texture* Song::GetBackground()
+{
+    if (mBackground)
+        return mBackground->get();
+
+    mBackground = ResourceMgr->Load<Texture>(mPath + mBackgroundPath);
+
+    return mBackground->get();
+}
+
+Texture* Song::GetCDTitle()
+{
+    if (mCDTitle)
+        return mCDTitle->get();
+
+    mCDTitle = ResourceMgr->Load<Texture>(mPath + mCDTitlePath);
+
+    return mCDTitle->get();
 }
 
 void Song::GetResources()
@@ -263,7 +305,7 @@ void Song::ProcessSMSong(std::istringstream& file)
             else if (key == "#NOTES")
             {
                 if (Chart* newChart = ProcessSMChart(file))
-                    mCharts[newChart->mDifficulty] = newChart;
+                    mCharts[newChart->mDifficultyCategory] = newChart;
             }
         }
     }
@@ -604,7 +646,7 @@ void Song::ProcessSSCSong(std::istringstream& file)
             else if (key == "#NOTEDATA")
             {
                 if (Chart* newChart = ProcessSSCChart(file))
-                    mCharts[newChart->mDifficulty] = newChart;
+                    mCharts[newChart->mDifficultyCategory] = newChart;
             }
         }
     }
@@ -614,10 +656,7 @@ Chart* Song::ProcessSMChart(std::istringstream& file)
 {
     auto charCheckLambda = [](unsigned char c) { return std::isspace(c) || c == ':'; };
     auto charEraseLambda = [charCheckLambda](std::string& str) { str.erase(std::remove_if(str.begin(), str.end(), charCheckLambda), str.end()); };
-    auto commentEraseLambda = [](std::string& str) 
-    {
-        size_t commentPos = str.find("//");
-    };
+
     std::string danceCategory;
     std::getline(file, danceCategory); charEraseLambda(danceCategory);
     // @TODO: Double charts.
@@ -640,13 +679,6 @@ Chart* Song::ProcessSMChart(std::istringstream& file)
 
 Chart* Song::ProcessSSCChart(std::istringstream& file)
 {
-    auto charCheckLambda = [](unsigned char c) { return std::isspace(c) || c == ':'; };
-    auto charEraseLambda = [charCheckLambda](std::string& str) { str.erase(std::remove_if(str.begin(), str.end(), charCheckLambda), str.end()); };
-    auto commentEraseLambda = [](std::string& str)
-    {
-        size_t commentPos = str.find("//");
-    }; 
-
     std::string stepType, radarvalues;
     Chart* currChart = new Chart();
 
@@ -678,20 +710,22 @@ Chart* Song::ProcessSSCChart(std::istringstream& file)
             else if (key == "#DESCRIPTION")
                 currChart->mStepArtist = value;
             else if (key == "#DIFFICULTY")
-                currChart->mDifficulty = Chart::ProcessDifficulty(value);
+                currChart->mDifficultyCategory = GameUtils::StrToChartDifficulty(value);
             else if (key == "#METER")
                 currChart->mDifficultyVal = std::atoi(value.c_str());
             else if (key == "#RADARVALUES")
                 radarvalues = value;
             else if (key == "#NOTES")
             {
+                mChartDifficulties[currChart->mDifficultyCategory] = currChart->mDifficultyVal;
                 currChart->ProcessNotes(file);
                 return currChart;
             }
         }
     }
-}
 
+    return nullptr;
+}
 
 void Song::ProcessSMD(std::istringstream& file)
 {
@@ -782,6 +816,7 @@ void Song::ProcessSMD(std::istringstream& file)
                 {
                     std::string currLine;
                     std::getline(file, currLine);
+
                     value += currLine;
                     isEoC |= currLine.find(';') != std::string::npos;
 
@@ -1026,29 +1061,95 @@ void Song::ProcessSMD(std::istringstream& file)
             {
                 // @TODO
             }
-            else if (key == "#NOTEDATA")
+            else if (key == "#CHARTS")
             {
-                if (Chart* newChart = ProcessSSCChart(file))
-                    mCharts[newChart->mDifficulty] = newChart;
+                while (!isEoC)
+                {
+                    std::getline(file, line);
+                    colonPos = line.find(':');
+                    key = line.substr(0, colonPos);
+                    value = line.substr(colonPos + 1);
+
+                    isEoC |= line.find(';') != std::string::npos;
+                    if (isEoC)
+                    {
+                        value.pop_back();
+                        break;
+                    }
+
+                    mChartDifficulties[GameUtils::StrToChartDifficulty(key)] = std::stoi(value);
+                }
             }
         }
     }
 }
 
-void Song::ProcessSMN(std::istringstream& file)
+void Song::ProcessSCD(std::istringstream& file)
 {
 
+    std::string line;
+    while (std::getline(file, line))
+    {
+        size_t colonPos = line.find(':');
+        if (colonPos == std::string::npos)
+            continue;
+
+        std::string key = line.substr(0, colonPos);
+        std::string value = line.substr(colonPos + 1);
+        if (key == "#NEWCHART")
+        {
+            if (Chart* newChart = ProcessSSCChart(file))
+                mCharts[newChart->mDifficultyCategory] = newChart;
+        }
+    }
 }
 
-Chart* Song::ProcessSMNChart(std::istringstream& file)
+Chart* Song::ProcessSCDChart(std::istringstream& file)
 {
+    std::string stepType, radarvalues;
+    Chart* currChart = new Chart();
+
+    std::string line;
+    while (std::getline(file, line))
+    {
+        if (line.empty() || line[0] == '/') // Ignore empty lines and comment lines
+            continue;
+
+        // Extract the key and value from each line
+        size_t colonPos = line.find(':');
+        if (colonPos != std::string::npos)
+        {
+            std::string key = line.substr(0, colonPos);
+            std::string value = line.substr(colonPos + 1);
+
+            if (key == "#STEPSTYPE")
+            {
+                // TODO: dance-single
+                stepType = value;
+            }
+            else if (key == "#AUTHOR")
+                currChart->mStepArtist = value;
+            else if (key == "#DIFFICULTY")
+                currChart->mDifficultyCategory = GameUtils::StrToChartDifficulty(value);
+            else if (key == "#METER")
+                currChart->mDifficultyVal = std::atoi(value.c_str());
+            else if (key == "#RADARVALUES")
+                radarvalues = value;
+            else if (key == "#NOTES")
+            {
+                currChart->ProcessNotes(file);
+                return currChart;
+            }
+        }
+    }
+
     return nullptr;
 }
 
 void Song::SaveAsSSCSong()
 {
-    std::ofstream file("mPath.ssc");
-    Ensure(file.is_open() && file.good(), " " + mPath);
+    std::ofstream file(mPath + ".ssc");
+    Requires(file.is_open() && file.good(), " " + mPath);
 
     file << "#VERSION:0.83;" << std::endl;
     file << "#TITLE:" << mTitle << ";" << std::endl;
@@ -1172,29 +1273,7 @@ void Song::SaveAsSSCSong()
         file << "#DESCRIPTION:" << chartData->mStepArtist << ";" << std::endl;
 
         file << "#DIFFICULTY:";
-        switch (chartData->mDifficulty)
-        {
-        case ChartDifficulty::Beginner:
-            file << "Beginner" << ";" << std::endl;
-            break;
-        case ChartDifficulty::Easy:
-            file << "Easy" << ";" << std::endl;
-            break;
-        case ChartDifficulty::Medium:
-            file << "Medium" << ";" << std::endl;
-            break;
-        case ChartDifficulty::Hard:
-            file << "Hard" << ";" << std::endl;
-            break;
-        case ChartDifficulty::Challenge:
-            file << "Challenge" << ";" << std::endl;
-            break;
-        case ChartDifficulty::Edit:
-            file << "Edit" << ";" << std::endl;
-            break;
-        default: // ChartDifficulty::None
-            file << "Edit" << ";" << std::endl;
-        }
+        file << GameUtils::ChartDifficultyToStr(chartData->mDifficultyCategory) << ";" << std::endl;
 
         file << "#METER:" << chartData->mDifficultyVal << ";" << std::endl;
         file << "#RADARVALUES:" << "0,0,0,0,0" << ";" << std::endl; // TODO
@@ -1204,57 +1283,163 @@ void Song::SaveAsSSCSong()
     }
 
     file.close();
-   
-    /*
-    #VERSION:0.83;
-#TITLE:King;
-#SUBTITLE:;
-#ARTIST:Kanaria;
-#TITLETRANSLIT:;
-#SUBTITLETRANSLIT:;
-#ARTISTTRANSLIT:;
-#GENRE:;
-#CREDIT:Gumi;
-#MUSIC:song.ogg;
-#BANNER:bn.png;
-#BACKGROUND:bg_intro.jpg;
-#CDTITLE:;
-#SAMPLESTART:52.304;
-#SAMPLELENGTH:12.289;
-#SELECTABLE:YES;
-#OFFSET:1.009;
-#BPMS:0.000=166.000
-,112.000=332.000
-,115.000=166.000
-;
-#STOPS:112.000=0.181
-,113.000=0.181
-,114.000=0.181
-;
-#SPEEDS:0.000=1.000=0.000=0;
-#SCROLLS:0.000=1.000;
-#TICKCOUNTS:0.000=4;
-#TIMESIGNATURES:0.000=4=4;
-#LABELS:0.000=Song Start;
-#COMBOS:0.000=1;
-#DISPLAYBPM:166.000;
-#ORIGIN:;
-#PREVIEWVID:;
-#JACKET:;
-#CDIMAGE:;
-#DISCIMAGE:;
-#BGCHANGES:;
-;
-#FGCHANGES:;
-//--------------- dance-single - Balea ----------------
-#NOTEDATA:;
-#STEPSTYPE:dance-single;
-#DESCRIPTION:Balea;
-#DIFFICULTY:Beginner;
-#METER:4;
-#RADARVALUES:0,0,0,0,0;
-#NOTES:
-    */
 
     GlobalEvents::gOnSongCreate.Broadcast(this);
+}
+
+void Song::SaveToSMD()
+{
+    std::ofstream file(mPath + mTitle + ".smd");
+    Requires(file.is_open() && file.good(), " " + mPath);
+
+    file << "#VERSION:" << gGameVariables.mMajorVersion << "." << gGameVariables.mMinorVersion << "."
+         << gGameVariables.mPatchVersion << ";" << std::endl;
+    file << "#TITLE:" << mTitle << ";" << std::endl;
+    file << "#SUBTITLE:" << mSubtitle << ";" << std::endl;
+    file << "#ARTIST:" << mArtist << ";" << std::endl;
+    file << "#TITLETRANSLIT:" << mTitleTranslit << ";" << std::endl;
+    file << "#SUBTITLETRANSLIT:" << mSubtitleTranslit << ";" << std::endl;
+    file << "#ARTISTTRANSLIT:" << mArtistTranslit << ";" << std::endl;
+    file << "#GENRE:" << mGenre << ";" << std::endl;
+    file << "#CREDIT:" << mCredit << ";" << std::endl;
+    file << "#MUSIC:" << mSongPath << ";" << std::endl;
+    file << "#BANNER:" << mBannerPath << ";" << std::endl;
+    file << "#BACKGROUND:" << mBackgroundPath << ";" << std::endl;
+    file << "#CDTITLE:" << mCDTitlePath << ";" << std::endl;
+    file << "#SAMPLESTART:" << mSampleStart << ";" << std::endl;
+    file << "#SAMPLELENGTH:" << mSampleLength << ";" << std::endl;
+    const std::string selectableStr = mSelectable ? "YES" : "NO";
+    file << "#SELECTABLE:" << selectableStr << ";" << std::endl;
+    file << "#OFFSET:" << mOffset << ";" << std::endl;
+
+    // BPMs
+    file << std::fixed << std::setprecision(3);
+    file << "#BPMS:";
+    for (auto it = mBPMs.begin(); it != mBPMs.end(); ++it)
+    {
+        file << it->first << "=" << it->second << std::endl;
+        if (std::next(it) != mBPMs.end())
+            file << ",";
+    }
+    file << ";" << std::endl;
+
+    // Stops
+    file << "#STOPS:";
+    for (auto it = mStops.begin(); it != mStops.end(); ++it)
+    {
+        file << it->first << "=" << it->second << std::endl;
+        if (std::next(it) != mStops.end())
+            file << ",";
+    }
+    file << ";" << std::endl;
+
+    // Speeds
+    file << "#SPEEDS:";
+    for (auto it = mSpeeds.begin(); it != mSpeeds.end(); ++it)
+    {
+        file << it->first << "=" << std::get<0>(it->second) << "=" << std::get<1>(it->second) << "=" << std::get<2>(it->second) << std::endl;
+        if (std::next(it) != mSpeeds.end())
+            file << ",";
+    }
+    file << ";" << std::endl;
+
+    file << "#SCROLLS:";
+    for (auto it = mScrolls.begin(); it != mScrolls.end(); ++it)
+    {
+        file << it->first << "=" << it->second << std::endl;
+        if (std::next(it) != mScrolls.end())
+            file << ",";
+    }
+    file << ";" << std::endl;
+
+    file << "#TICKCOUNTS:";
+    for (auto it = mTickCounts.begin(); it != mTickCounts.end(); ++it)
+    {
+        file << it->first << "=" << it->second << std::endl;
+        if (std::next(it) != mTickCounts.end())
+            file << ",";
+    }
+    file << ";" << std::endl;
+
+    file << "#TIMESIGNATURES:";
+    for (auto it = mTimeSignatures.begin(); it != mTimeSignatures.end(); ++it)
+    {
+        file << it->first << "=" << it->second.first << "=" << it->second.second << std::endl;
+        if (std::next(it) != mTimeSignatures.end())
+            file << ",";
+    }
+    file << ";" << std::endl;
+
+    file << "#LABELS:";
+    for (auto it = mLabels.begin(); it != mLabels.end(); ++it)
+    {
+        file << it->first << "=" << it->second << std::endl;
+        if (std::next(it) != mLabels.end())
+            file << ",";
+    }
+    file << ";" << std::endl;
+
+    file << "#COMBOS:";
+    for (auto it = mCombos.begin(); it != mCombos.end(); ++it)
+    {
+        file << it->first << "=" << it->second << std::endl;
+        if (std::next(it) != mCombos.end())
+            file << ",";
+    }
+    file << ";" << std::endl;
+
+    file << "#DISPLAYBPM:" << mDisplayBPM << ";" << std::endl;
+    file << "#ORIGIN:" << mOrigin << ";" << std::endl;
+    file << "#PREVIEWVID:" << mPreviewVID << ";" << std::endl;
+    file << "#JACKET:" << mJacket << ";" << std::endl;
+    file << "#CDIMAGE:" << mCDImage << ";" << std::endl;
+    file << "#DISCIMAGE:" << mDiscImage << ";" << std::endl;
+
+    file << "#BGCHANGES:";
+    for (auto it = mBGChanges.begin(); it != mBGChanges.end(); ++it)
+    {
+        file << it->first << "=" << it->second << std::endl;
+        if (std::next(it) != mBGChanges.end())
+            file << ",";
+    }
+    file << ";" << std::endl;
+
+    // In front of the UI
+    file << "#FGCHANGES:" << mFGChanges << ";" << std::endl;
+
+    file << "#CHARTS:" << std::endl;
+    for (auto chart : mCharts)
+    {
+        Chart* chartData = chart.second;
+        file << GameUtils::ChartDifficultyToStr(chartData->mDifficultyCategory) << ":" << chartData->mDifficultyVal << std::endl;
+    }
+    file << ";" << std::endl;
+
+    file.close();
+}
+
+void Song::SaveToSCD()
+{
+    std::ofstream file(mPath + mTitle + ".scd");
+    Requires(file.is_open() && file.good(), " " + mPath);
+
+    for (auto chart : mCharts)
+    {
+        Chart* chartData = chart.second;
+        file << "//--------------- dance-single - " << chartData->mStepArtist << " ----------------" << std::endl;
+        file << "#NEWCHART:" << "" << ";" << std::endl; // TODO
+        file << "#STEPSTYPE:" << "dance-single" << ";" << std::endl; // TODO
+        file << "#AUTHOR:" << chartData->mStepArtist << ";" << std::endl;
+
+        file << "#DIFFICULTY:";
+        file << GameUtils::ChartDifficultyToStr(chartData->mDifficultyCategory) << ";" << std::endl;
+
+        file << "#METER:" << chartData->mDifficultyVal << ";" << std::endl;
+        file << "#RADARVALUES:" << "0,0,0,0,0" << ";" << std::endl; // TODO
+
+        file << "#NOTES:" << std::endl;
+        chartData->SaveNotes(file);
+    }
+
+    file.close();
 }

@@ -168,6 +168,7 @@
     <ClCompile Include="src\Misc\ColorConsole.cpp" />
     <ClCompile Include="src\Misc\Timer.cpp" />
     <ClCompile Include="src\Resources\ResourceMgr.cpp" />
+    <ClCompile Include="src\Utils\GameUtils.cpp" />
     <ClCompile Include="src\Utils\RNG.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -203,8 +204,11 @@
     <ClInclude Include="src\Misc\Timer.h" />
     <ClInclude Include="src\Resources\Resource.h" />
     <ClInclude Include="src\Resources\ResourceImporter.h" />
+    <ClInclude Include="src\Resources\ResourceLoadException.h" />
     <ClInclude Include="src\Resources\ResourceMgr.h" />
+    <ClInclude Include="src\Utils\GameUtils.h" />
     <ClInclude Include="src\Utils\RNG.h" />
+    <ClInclude Include="src\Utils\StringUtils.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
