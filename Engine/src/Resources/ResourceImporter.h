@@ -23,6 +23,6 @@ struct ResourceImporter : public IResourceImporterBase
 	template <class... Ts>
 	IResourceBase* Import(Ts... constructorParams)
 	{
-		return new Resource<T>(std::shared_ptr<T>(new T(constructorParams)));
+		return new Resource<T>(std::make_shared<T>(constructorParams...));
 	}
 };

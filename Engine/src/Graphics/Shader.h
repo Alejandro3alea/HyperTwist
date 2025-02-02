@@ -24,7 +24,7 @@ struct Shader
 	Shader(const std::vector<ShaderComp>& comps);
 
 	template <class T, class... Ts>
-	Shader(T fb, Ts... rest) : Shader(InitializeShader(fb, rest)) {}
+	Shader(T fb, Ts... rest) : Shader(InitializeShader(fb, rest...)) {}
 	Shader(const std::string& shaderFile) : Shader(InitializeShader(shaderFile)) {}
 
 	~Shader();
@@ -123,8 +123,7 @@ private:
 template<class T, class ...Ts>
 inline std::vector<ShaderComp> Shader::InitializeShader(T shader, Ts ...rest) const
 {
-	std::vector<ShaderComp> shaderList;
-	shaderList.push_back();
+	std::vector<ShaderComp> shaderList = { shader };
 	shaderList.insert(shaderList.end(), InitializeShader(rest...));
 	return shaderList;
 }

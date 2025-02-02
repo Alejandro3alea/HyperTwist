@@ -59,10 +59,10 @@ Font::Font(const std::string& path)
 
             // Store character for later use
             Character character = {
-                int(c),
+                uint32_t(c),
                 glm::ivec2(face->glyph->bitmap.width, face->glyph->bitmap.rows),
                 glm::ivec2(face->glyph->bitmap_left, face->glyph->bitmap_top),
-                static_cast<unsigned int>(face->glyph->advance.x)
+                static_cast<uint32_t>(face->glyph->advance.x)
             };
             mCharacters.insert(std::pair<char, Character>(c, character));
         }

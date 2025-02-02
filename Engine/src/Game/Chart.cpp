@@ -6,6 +6,7 @@
 #include <fstream>
 #include <array>
 #include <numeric>
+#include <algorithm>
 
 Chart::Chart() : mStepArtist(""), mDifficultyCategory(ChartDifficulty::Beginner), mDifficultyVal(0) 
 {

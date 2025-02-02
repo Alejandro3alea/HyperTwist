@@ -1,6 +1,7 @@
 #pragma once
 #include "Game/Phases/Phase.h"
 
+#include <cstdint>
 #include <string>
 #include <array>
 

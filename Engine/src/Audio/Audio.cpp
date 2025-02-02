@@ -1,6 +1,8 @@
 #include "Audio/Audio.h"
 #include "Misc/Ensure.h"
 
+#include "SFML/Audio.hpp"
+
 Audio::Audio(const std::string& file)
 {
     if (!mAudio.openFromFile(file))

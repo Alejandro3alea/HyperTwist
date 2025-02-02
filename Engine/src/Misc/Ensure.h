@@ -9,3 +9,4 @@
 		PrintError(message);			\
 		abort();						\
 	}
+

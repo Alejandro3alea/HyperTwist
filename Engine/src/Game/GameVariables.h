@@ -1,7 +1,7 @@
 #pragma once
 #include "EngineApi.h"
 
-#include <type_traits>
+#include <cstdint>
 
 struct GameVariables
 {
