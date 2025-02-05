@@ -1,6 +1,9 @@
 #pragma once
-#include <Windows.h>
 #include <iostream>
+
+#ifdef _WIN32
+	#include <Windows.h>
+#endif
 
 #undef Time
 
