@@ -8,6 +8,15 @@ option(BUILD_GAME "Build the game executable" ON)
 option(BUILD_EDITOR "Build the editor executable" OFF)
 
 
+find_package(OpenGL REQUIRED)
+find_package(GLEW REQUIRED)
+find_package(SFML 2.5 COMPONENTS system window graphics audio network REQUIRED)
+find_package(SDL2 REQUIRED)
+find_package(Freetype REQUIRED)
+find_package(nlohmann_json CONFIG REQUIRED)
+find_package(glm REQUIRED)
+
+
 include_directories(
     ${CMAKE_SOURCE_DIR}/include
     ${CMAKE_SOURCE_DIR}/include/AL

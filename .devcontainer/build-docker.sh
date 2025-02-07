@@ -1,0 +1,1 @@
+docker --debug build -f Dockerfile -t ht_build .
