@@ -2,11 +2,14 @@
 #include "Misc/Singleton.h"
 
 #include <GL/glew.h>
-#include <GL/GL.h>
+#include <GL/gl.h>
 #include <SDL2/SDL.h>
 #include <glm/glm.hpp>
 
-#include <windows.h>
+#ifdef _WIN32
+	#include <windows.h>
+#endif
+
 #include <memory>
 #include <string>
 

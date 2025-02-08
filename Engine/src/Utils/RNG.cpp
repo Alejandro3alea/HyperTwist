@@ -1,5 +1,6 @@
 #include "RNG.h"
 
+#include <cstdlib>
 #include <time.h>
 
 RandomNumberGenerator* RandomNumberGenerator::mpInstance;

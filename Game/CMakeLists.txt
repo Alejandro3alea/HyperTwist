@@ -22,20 +22,19 @@ target_link_directories(Game
             ${CMAKE_SOURCE_DIR}/lib/aubio
 )
 
+target_link_libraries(Game PRIVATE OpenGL::GL)
 target_link_libraries(Game
-    PRIVATE
+    PRIVATE 
         Engine
-        OpenAL32.lib
-        opengl32.lib
-        glew32.lib
-        SDL2.lib
-        SDL2_mixer.lib
-        freetype.lib
-        aubio.dll.a
-        libaubio.a
-        sfml-main.lib
-        sfml-system.lib
-        sfml-audio.lib
+        OpenGL::GL
+        GLEW::GLEW
+        sfml-system
+        sfml-window
+        sfml-graphics
+        sfml-network
+        sfml-audio
+        SDL2::SDL2
+        Freetype::Freetype
 )
 
 # Set output directories for Debug and Release builds
