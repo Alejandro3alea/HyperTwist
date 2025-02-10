@@ -18,26 +18,31 @@ target_link_directories(Game
             ${CMAKE_SOURCE_DIR}/lib/GL
             ${CMAKE_SOURCE_DIR}/lib/SDL2
             ${CMAKE_SOURCE_DIR}/lib/freetype
-            ${CMAKE_SOURCE_DIR}/lib/SFML/Release
+            $<$<CONFIG:Debug>:${SFML_LIB_DIR}/Debug>
+            $<$<CONFIG:Release>:${SFML_LIB_DIR}/Release>
             ${CMAKE_SOURCE_DIR}/lib/aubio
 )
 
-target_link_libraries(Game PRIVATE OpenGL::GL)
 target_link_libraries(Game
     PRIVATE 
         Engine
-        OpenGL::GL
-        GLEW::GLEW
-        sfml-system
-        sfml-window
-        sfml-graphics
-        sfml-network
-        sfml-audio
-        SDL2::SDL2
-        Freetype::Freetype
+        OpenAL32.lib
+        opengl32.lib
+        glew32.lib
+        SDL2.lib
+        SDL2_mixer.lib
+        freetype.lib
+        aubio.dll.a
+        libaubio.a
+        $<$<CONFIG:Debug>:libsfml-main-s-d.a>
+        $<$<CONFIG:Debug>:libsfml-system-d.a>
+        $<$<CONFIG:Debug>:libsfml-audio-d.a>
+        
+        $<$<CONFIG:Release>:libsfml-main-s.a>
+        $<$<CONFIG:Release>:libsfml-system.a>
+        $<$<CONFIG:Release>:libsfml-audio.a>
 )
 
-# Set output directories for Debug and Release builds
 set_target_properties(Game PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY_DEBUG   ${CMAKE_BINARY_DIR}/bin/Debug
     RUNTIME_OUTPUT_DIRECTORY_RELEASE ${CMAKE_BINARY_DIR}/bin/Release

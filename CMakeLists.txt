@@ -10,14 +10,8 @@ option(BUILD_EDITOR "Build the editor executable" OFF)
 # Prefer GLVND over the legacy OpenGL libraries.
 set(OpenGL_GL_PREFERENCE GLVND)
 
-find_package(OpenGL REQUIRED)
-find_package(GLEW REQUIRED)
-find_package(SFML 2.6 COMPONENTS system window graphics audio REQUIRED)
-find_package(SDL2 REQUIRED)
-find_package(Freetype REQUIRED)
-find_package(nlohmann_json CONFIG REQUIRED)
-find_package(glm REQUIRED)
-
+set(SFML_INCLUDE_DIR "${CMAKE_SOURCE_DIR}/include/SFML")
+set(SFML_LIB_DIR "${CMAKE_SOURCE_DIR}/lib/SFML")
 
 include_directories(
     ${CMAKE_SOURCE_DIR}/include
@@ -28,7 +22,7 @@ include_directories(
     ${CMAKE_SOURCE_DIR}/include/json
     ${CMAKE_SOURCE_DIR}/include/SDL2
     ${CMAKE_SOURCE_DIR}/include/STB
-    ${CMAKE_SOURCE_DIR}/include/SFML
+    ${SFML_INCLUDE_DIR}
     ${CMAKE_SOURCE_DIR}/include/freetype
     ${CMAKE_SOURCE_DIR}/Engine/src
 )
