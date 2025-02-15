@@ -30,10 +30,5 @@ include_directories(
 
 add_subdirectory(Engine)
 
-if (BUILD_GAME)
-    add_subdirectory(Game)
-endif()
-
-if (BUILD_EDITOR)
-    add_subdirectory(Editor)
-endif()
+add_subdirectory(Game)
+add_subdirectory(Editor)

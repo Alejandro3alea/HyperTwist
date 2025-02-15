@@ -9,7 +9,6 @@ endif()
 
 target_include_directories(Game
     PRIVATE 
-        ${CMAKE_CURRENT_SOURCE_DIR}/imgui
         ${CMAKE_CURRENT_SOURCE_DIR}/src
 )
 
