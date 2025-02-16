@@ -1,0 +1,54 @@
+{
+    "version": 2,
+    "configurePresets": [
+      {
+        "name": "base",
+        "generator": "MinGW Makefiles",
+        "cacheVariables": {
+          "BUILD_GAME": "OFF",
+          "BUILD_EDITOR": "OFF"
+        }
+      },
+      {
+        "name": "Editor-Debug",
+        "displayName": "Editor - Debug",
+        "inherits": "base",
+        "binaryDir": "${sourceDir}/build/Editor-Debug",
+        "cacheVariables": {
+          "BUILD_EDITOR": "ON",
+          "CMAKE_BUILD_TYPE": "Debug"
+        }
+      },
+      {
+        "name": "Editor-Release",
+        "displayName": "Editor - Release",
+        "inherits": "base",
+        "binaryDir": "${sourceDir}/build/Editor-Release",
+        "cacheVariables": {
+          "BUILD_EDITOR": "ON",
+          "CMAKE_BUILD_TYPE": "Release"
+        }
+      },
+      {
+        "name": "Game-Debug",
+        "displayName": "Game - Debug",
+        "inherits": "base",
+        "binaryDir": "${sourceDir}/build/Game-Debug",
+        "cacheVariables": {
+          "BUILD_GAME": "ON",
+          "CMAKE_BUILD_TYPE": "Debug"
+        }
+      },
+      {
+        "name": "Game-Release",
+        "displayName": "Game - Release",
+        "inherits": "base",
+        "binaryDir": "${sourceDir}/build/Game-Release",
+        "cacheVariables": {
+          "BUILD_GAME": "ON",
+          "CMAKE_BUILD_TYPE": "Release"
+        }
+      }
+    ]
+  }
+  

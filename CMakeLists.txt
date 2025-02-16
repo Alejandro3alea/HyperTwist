@@ -4,7 +4,7 @@ project(HyperTwist VERSION 0.1.0 LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-option(BUILD_GAME "Build the game executable" ON)
+option(BUILD_GAME "Build the game executable" OFF)
 option(BUILD_EDITOR "Build the editor executable" OFF)
 
 # Prefer GLVND over the legacy OpenGL libraries.
@@ -27,8 +27,12 @@ include_directories(
     ${CMAKE_SOURCE_DIR}/Engine/src
 )
 
-
 add_subdirectory(Engine)
 
-add_subdirectory(Game)
-add_subdirectory(Editor)
+if (BUILD_GAME)
+    add_subdirectory(Game)
+endif()
+
+if (BUILD_EDITOR)
+    add_subdirectory(Editor)
+endif()

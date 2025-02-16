@@ -2,11 +2,6 @@ file(GLOB_RECURSE ALL_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp")
 
 add_executable(Editor ${ALL_SOURCES})
 
-option(TEST_MODE "Enable test accounts" ON)
-if(TEST_MODE)
-    add_compile_definitions(TEST_MODE)
-endif()
-
 target_include_directories(Editor
     PRIVATE 
         ${CMAKE_CURRENT_SOURCE_DIR}/src/Editor
