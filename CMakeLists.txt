@@ -10,8 +10,15 @@ option(BUILD_EDITOR "Build the editor executable" OFF)
 # Prefer GLVND over the legacy OpenGL libraries.
 set(OpenGL_GL_PREFERENCE GLVND)
 
+find_package(SFML 2.5 COMPONENTS system audio REQUIRED)
 set(SFML_INCLUDE_DIR "${CMAKE_SOURCE_DIR}/include/SFML")
 set(SFML_LIB_DIR "${CMAKE_SOURCE_DIR}/lib/SFML")
+
+
+# Linux config
+if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
+    include_directories(/usr/include)
+endif()
 
 include_directories(
     ${CMAKE_SOURCE_DIR}/include

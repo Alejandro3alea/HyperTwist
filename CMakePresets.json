@@ -3,7 +3,7 @@
     "configurePresets": [
       {
         "name": "base",
-        "generator": "MinGW Makefiles",
+        "generator": "Ninja",
         "cacheVariables": {
           "BUILD_GAME": "OFF",
           "BUILD_EDITOR": "OFF"

@@ -1,7 +1,5 @@
 #include "Framebuffer.h"
 
-#include <gl/glew.h>
-
 Framebuffer::Framebuffer(std::vector<Buffer*> buffers)
 {
 	glGenFramebuffers(1, &mFbID);
