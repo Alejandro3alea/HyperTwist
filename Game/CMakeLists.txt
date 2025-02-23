@@ -1,4 +1,5 @@
 set(TARGET_NAME Game)
+set(DATA_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 
 file(GLOB_RECURSE ALL_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp")
 
@@ -76,44 +77,33 @@ set_target_properties(${TARGET_NAME} PROPERTIES
 )
 
 
-# Define a function that adds post-build copy commands for a given target
-function(copy_required_files target file)
-  # Copy the data folder only for Release builds
+function(copy_dll target file)
   add_custom_command(TARGET ${target} POST_BUILD
-    CONFIGURATIONS Release
-    COMMAND ${CMAKE_COMMAND} -E copy_directory
-      "${CMAKE_SOURCE_DIR}/${target}/data"
-      "$<TARGET_FILE_DIR:${target}>/data"
-    COMMENT "Copying data folder..."
-  )
-
-  # Copy a DLL file (or multiple DLLs) only for Release builds
-  add_custom_command(TARGET ${target} POST_BUILD
-    CONFIGURATIONS Release
+    CONFIGURATIONS ${TARGET_NAME}
     COMMAND ${CMAKE_COMMAND} -E copy_if_different
-      "${CMAKE_SOURCE_DIR}/${TARGET_NAME}/${target}"
-      "$<TARGET_FILE_DIR:${target}>"
+      "${CMAKE_SOURCE_DIR}/${TARGET_NAME}/${file}"
+      "$<TARGET_FILE_DIR:${target}>/${file}"
     COMMENT "Copying ${file}..."
   )
 endfunction()
 
-# Define a function that adds post-build copy commands for a given target
 function(copy_required_files target)
-  # Copy the data folder only for Release builds
-  add_custom_command(TARGET ${target} POST_BUILD
-    CONFIGURATIONS Release
-    COMMAND ${CMAKE_COMMAND} -E copy_directory
-      "${CMAKE_SOURCE_DIR}/data"
-      "$<TARGET_FILE_DIR:${target}>/data"
-    COMMENT "Copying data folder for Release build..."
-  )
+  copy_dll(${target} freetype.dll)
+  copy_dll(${target} glew32.dll)
+  copy_dll(${target} libaubio-5.dll)
+  copy_dll(${target} SDL2_mixer.dll)
+  copy_dll(${target} SDL2.dll)
+  copy_dll(${target} sfml-audio-d-3.dll)
+  copy_dll(${target} sfml-system-d-3.dll)
+endfunction()
 
-  # Copy a DLL file (or multiple DLLs) only for Release builds
+function(echo_path target file )
+  message(STATUS "Configurations: ${configuration}") # Debug line
   add_custom_command(TARGET ${target} POST_BUILD
-    CONFIGURATIONS Release
-    COMMAND ${CMAKE_COMMAND} -E copy_if_different
-      "${CMAKE_SOURCE_DIR}/dlls/yourlibrary.dll"
-      "$<TARGET_FILE_DIR:${target}>"
-    COMMENT "Copying DLL for Release build..."
+    CONFIGURATIONS ${TARGET_NAME}
+    COMMAND ${CMAKE_COMMAND} -E echo "Path for ${file}: "
+    COMMENT "Echoing path for ${file}..."
   )
 endfunction()
+
+copy_required_files(Game)

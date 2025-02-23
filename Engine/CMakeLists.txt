@@ -31,4 +31,4 @@ target_link_libraries(${TARGET_NAME}
 target_compile_definitions(${TARGET_NAME} PUBLIC SFML_STATIC)
 target_link_options(${TARGET_NAME} PUBLIC -static-libgcc -static-libstdc++)
 
-target_compile_definitions(${TARGET_NAME} PRIVATE ${TARGET_NAME}_EXPORTS)
+target_compile_definitions(${TARGET_NAME} PRIVATE ENGINE_EXPORTS)

@@ -2,17 +2,26 @@
     "version": 2,
     "configurePresets": [
       {
-        "name": "base",
-        "generator": "Ninja",
+        "name": "base-windows",
+        "generator": "MinGW Makefiles",
         "cacheVariables": {
           "BUILD_GAME": "OFF",
           "BUILD_EDITOR": "OFF"
         }
       },
       {
-        "name": "Editor-Debug",
-        "displayName": "Editor - Debug",
-        "inherits": "base",
+        "name": "base-linux",
+        "generator": "Ninja",
+        "cacheVariables": {
+          "BUILD_GAME": "OFF",
+          "BUILD_EDITOR": "OFF"
+        }
+      },
+
+      {
+        "name": "Editor-Debug-Windows",
+        "displayName": "[WINDOWS]  Editor - Debug",
+        "inherits": "base-windows",
         "binaryDir": "${sourceDir}/build/Editor-Debug",
         "cacheVariables": {
           "BUILD_EDITOR": "ON",
@@ -20,9 +29,9 @@
         }
       },
       {
-        "name": "Editor-Release",
-        "displayName": "Editor - Release",
-        "inherits": "base",
+        "name": "Editor-Release-Windows",
+        "displayName": "[WINDOWS]  Editor - Release",
+        "inherits": "base-windows",
         "binaryDir": "${sourceDir}/build/Editor-Release",
         "cacheVariables": {
           "BUILD_EDITOR": "ON",
@@ -30,9 +39,9 @@
         }
       },
       {
-        "name": "Game-Debug",
-        "displayName": "Game - Debug",
-        "inherits": "base",
+        "name": "Game-Debug-Windows",
+        "displayName": "[WINDOWS]  Game - Debug",
+        "inherits": "base-windows",
         "binaryDir": "${sourceDir}/build/Game-Debug",
         "cacheVariables": {
           "BUILD_GAME": "ON",
@@ -40,9 +49,51 @@
         }
       },
       {
-        "name": "Game-Release",
-        "displayName": "Game - Release",
-        "inherits": "base",
+        "name": "Game-Release-Windows",
+        "displayName": "[WINDOWS]  Game - Release",
+        "inherits": "base-windows",
+        "binaryDir": "${sourceDir}/build/Game-Release",
+        "cacheVariables": {
+          "BUILD_GAME": "ON",
+          "CMAKE_BUILD_TYPE": "Release"
+        }
+      },
+
+      
+      {
+        "name": "Editor-Debug-Linux",
+        "displayName": "[LINUX]  Editor - Debug",
+        "inherits": "base-linux",
+        "binaryDir": "${sourceDir}/build/Editor-Debug",
+        "cacheVariables": {
+          "BUILD_EDITOR": "ON",
+          "CMAKE_BUILD_TYPE": "Debug"
+        }
+      },
+      {
+        "name": "Editor-Release-Linux",
+        "displayName": "[LINUX]  Editor - Release",
+        "inherits": "base-linux",
+        "binaryDir": "${sourceDir}/build/Editor-Release",
+        "cacheVariables": {
+          "BUILD_EDITOR": "ON",
+          "CMAKE_BUILD_TYPE": "Release"
+        }
+      },
+      {
+        "name": "Game-Debug-Linux",
+        "displayName": "[LINUX]  Game - Debug",
+        "inherits": "base-linux",
+        "binaryDir": "${sourceDir}/build/Game-Debug",
+        "cacheVariables": {
+          "BUILD_GAME": "ON",
+          "CMAKE_BUILD_TYPE": "Debug"
+        }
+      },
+      {
+        "name": "Game-Release-Linux",
+        "displayName": "[LINUX]  Game - Release",
+        "inherits": "base-linux",
         "binaryDir": "${sourceDir}/build/Game-Release",
         "cacheVariables": {
           "BUILD_GAME": "ON",
