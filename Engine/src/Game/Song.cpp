@@ -717,6 +717,9 @@ Chart* Song::ProcessSSCChart(std::istringstream& file)
                 radarvalues = value;
             else if (key == "#NOTES")
             {
+                if (stepType == "dance-double")
+                    return nullptr;
+                    
                 mChartDifficulties[currChart->mDifficultyCategory] = currChart->mDifficultyVal;
                 currChart->ProcessNotes(file);
                 return currChart;
@@ -1146,10 +1149,11 @@ Chart* Song::ProcessSCDChart(std::istringstream& file)
     return nullptr;
 }
 
-void Song::SaveAsSSCSong()
+void Song::SaveAsSSCSong(const std::string& outPath)
 {
-    std::ofstream file(mPath + ".ssc");
-    Requires(file.is_open() && file.good(), " " + mPath);
+    const std::string path = outPath.empty() ? mPath + mTitle + ".ssc" : ResourceMgr->GetPathWithoutExtension(outPath) + ".ssc";
+    std::ofstream file(path);
+    Requires(file.is_open() && file.good(), path);
 
     file << "#VERSION:0.83;" << std::endl;
     file << "#TITLE:" << mTitle << ";" << std::endl;
@@ -1287,10 +1291,11 @@ void Song::SaveAsSSCSong()
     GlobalEvents::gOnSongCreate.Broadcast(this);
 }
 
-void Song::SaveToSMD()
+void Song::SaveToSMD(const std::string& outPath)
 {
-    std::ofstream file(mPath + mTitle + ".smd");
-    Requires(file.is_open() && file.good(), " " + mPath);
+    const std::string path = outPath.empty() ? mPath + mTitle + ".smd" : ResourceMgr->GetPathWithoutExtension(outPath) + ".smd";
+    std::ofstream file(path);
+    Requires(file.is_open() && file.good(), " " + path);
 
     file << "#VERSION:" << gGameVariables.mMajorVersion << "." << gGameVariables.mMinorVersion << "."
          << gGameVariables.mPatchVersion << ";" << std::endl;
@@ -1418,10 +1423,11 @@ void Song::SaveToSMD()
     file.close();
 }
 
-void Song::SaveToSCD()
+void Song::SaveToSCD(const std::string& outPath)
 {
-    std::ofstream file(mPath + mTitle + ".scd");
-    Requires(file.is_open() && file.good(), " " + mPath);
+    const std::string path = outPath.empty() ? mPath + mTitle + ".scd" : ResourceMgr->GetPathWithoutExtension(outPath) + ".scd";
+    std::ofstream file(path);
+    Requires(file.is_open() && file.good(), " " + path);
 
     for (auto chart : mCharts)
     {

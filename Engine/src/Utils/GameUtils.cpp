@@ -4,15 +4,15 @@
 void GameUtils::UpdateSSCSongToSMD(const std::string& path)
 {
     Song* pSong = ResourceMgr->Load<Song>(path)->get();
-    pSong->SaveToSMD();
-    pSong->SaveToSCD();
+    pSong->SaveToSMD(path);
+    pSong->SaveToSCD(path);
 }
 
 void GameUtils::UpdateSMSongToSMD(const std::string& path)
 {
     Song* pSong = ResourceMgr->Load<Song>(path)->get();
-    pSong->SaveToSMD();
-    pSong->SaveToSCD();
+    pSong->SaveToSMD(path);
+    pSong->SaveToSCD(path);
 }
 
 std::string GameUtils::ChartDifficultyToStr(const ChartDifficulty& val)

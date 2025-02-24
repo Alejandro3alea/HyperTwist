@@ -334,20 +334,17 @@ std::pair<uint32_t, uint32_t> SongSelectPhase::GetDisplayData(
 void SongSelectPhase::FocusSong(Song* song)
 {
     song->GetSong()->Play(song->mSampleStart);
-    mRenderables->mSongInfoTitle.SetText(song->mTitle);
-    mRenderables->mSongInfoArtist.SetText(song->mArtist);
-
-    if (!song->mCDTitlePath.empty())
-        mRenderables->mSongThumb.SetTexture(song->GetPath() + song->mCDTitlePath);
-    else if (!song->mBannerPath.empty())
-        mRenderables->mSongThumb.SetTexture(song->GetPath() + song->mBannerPath);
 
     // Setup chart renderables
+    mRenderables->OnSongChange(song);
 }
 
 void SongSelectPhase::UnfocusSong(Song* song)
 {
     song->GetSong()->Stop();
+
+    // No song, empty chart
+    mRenderables->OnSongChange(nullptr);
 }
 
 void SongSelectPhase::SelectSong(Song* song)

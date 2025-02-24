@@ -26,10 +26,10 @@ struct Song
 	Texture* GetBackground();
 	Texture* GetCDTitle();
 
-	void SaveAsSSCSong();
+	void SaveAsSSCSong(const std::string& outSong = "");
 
-	void SaveToSMD();
-	void SaveToSCD();
+	void SaveToSMD(const std::string& outSong = "");
+	void SaveToSCD(const std::string& outSong = "");
 
 private:
 	void GetResources();

@@ -214,7 +214,10 @@ void Chart::SaveNotes(std::ofstream& file)
             for (auto currHold : holdEndsToAdd)
             {
                 int rowIdx = static_cast<int>((currHold.first - currMinPos) * multipleNum);
-                measureStr[rowIdx][currHold.second] = '3';
+                
+                // TODO: Fix this issue/reformat how this is done
+                if (rowIdx >= 0)
+                    measureStr[rowIdx][currHold.second] = '3';
             }
 
             for (auto currNote : noteList)

@@ -17,9 +17,15 @@ struct SongSelectRenderables
 {
 	SongSelectRenderables();
 
-	void OnSongChange(Resource<Song>* song);
+	void OnSongChange(Song* song);
 
 private:
+	ChartRenderables CreateNewChartRenderables(const ChartDifficulty& category, const uint8_t level, const uint8_t idx);
+	
+	void UpdateSelectedSongData(Song* song);
+	void ShowSelectedSongData();
+	void HideSelectedSongData();
+
 	void SetTextures();
 	void SetInitialVisibility();
 

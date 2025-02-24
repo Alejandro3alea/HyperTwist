@@ -21,19 +21,94 @@ SongSelectRenderables::SongSelectRenderables()
 	SetInitialVisibility();
 }
 
-void SongSelectRenderables::OnSongChange(Resource<Song>* song)
+void SongSelectRenderables::OnSongChange(Song* song)
 {
 	mChartRenderables.clear();
 
 	if (song == nullptr)
-		return;
-
-	Song* pSong = song->get();
-
-	for (auto& [diffCategory, diffVal] : pSong->mChartDifficulties)
 	{
-		mChartRenderables.emplace_back(diffCategory, diffVal);
+		HideSelectedSongData();
+		return;
 	}
+
+	UpdateSelectedSongData(song);
+
+	// Setup chart renderables
+	uint8_t i = 0;
+	for (auto& [diffCategory, diffLevel] : song->mChartDifficulties)
+	{
+		mChartRenderables.push_back(CreateNewChartRenderables(diffCategory, diffLevel, i));
+	}
+}
+
+ChartRenderables SongSelectRenderables::CreateNewChartRenderables(const ChartDifficulty& category, const uint8_t level, const uint8_t idx)
+{
+	ChartRenderables result(category, level);
+
+	const float pos = 128.0f + idx * 75.0f;
+	//result.mBG.mColor = glm::vec4(1.0f, 1.0f, 1.0f, 0.4f);
+	//result.mBG.transform.pos = glm::vec3(-580.0f, 128.0f, 0.5f);
+	//result.mBG.transform.scale = glm::vec3(260.0f, 40.0f, 0.1f);
+
+	//result.mDifficulty.transform.pos = glm::vec3(-580.0f, 128.0f, 1.75f);
+	result.mDifficulty.transform.scale = glm::vec3(10.7f);
+	//result.mLevel.transform.pos = glm::vec3(-580.0f, 128.0f, 1.75f);
+	//result.mLevel.transform.scale = glm::vec3(0.7f);
+
+	//result.mP1Grade.transform.pos = glm::vec3(-650.0f, 128.0f, 1.75f);
+	//result.mP1Grade.transform.scale = glm::vec3(50.0f);
+	result.mP2Grade.transform.pos = glm::vec3(-510.0f, 128.0f, 1.75f);
+	result.mP2Grade.transform.scale = glm::vec3(500.0f);
+
+	return result;
+}
+
+void SongSelectRenderables::UpdateSelectedSongData(Song* song)
+{
+	ShowSelectedSongData();
+	mSongInfoTitle.SetText(song->mTitle);
+	mSongInfoArtist.SetText(song->mArtist);
+
+	if (!song->mCDTitlePath.empty())
+		mSongThumb.SetTexture(song->GetPath() + song->mCDTitlePath);
+	else if (!song->mBannerPath.empty())
+		mSongThumb.SetTexture(song->GetPath() + song->mBannerPath);
+}
+
+void SongSelectRenderables::ShowSelectedSongData()
+{
+	mSongInfoBG.mbIsVisible = true;
+	mSongInfoTitle.mbIsVisible = true;
+	mSongInfoArtist.mbIsVisible = true;
+	mSongThumb.mbIsVisible = true;
+
+	mP1ScoreBG.mbIsVisible = true;
+	mP1ScoreTitle.mbIsVisible = true;
+	mP1Score.mbIsVisible = true;
+	mP2ScoreBG.mbIsVisible = true;
+	mP2ScoreTitle.mbIsVisible = true;
+	mP2Score.mbIsVisible = true;
+
+	mP1Selector.mbIsVisible = true;
+	mP2Selector.mbIsVisible = true;
+}
+
+void SongSelectRenderables::HideSelectedSongData()
+{
+	mSongInfoBG.mbIsVisible = false;
+	mSongInfoTitle.mbIsVisible = false;
+	mSongInfoArtist.mbIsVisible = false;
+	mSongThumb.mbIsVisible = false;
+
+	mP1ScoreBG.mbIsVisible = false;
+	mP1ScoreTitle.mbIsVisible = false;
+	mP1Score.mbIsVisible = false;
+	mP2ScoreBG.mbIsVisible = false;
+	mP2ScoreTitle.mbIsVisible = false;
+	mP2Score.mbIsVisible = false;
+
+	mP1Selector.mbIsVisible = false;
+	mP2Selector.mbIsVisible = false;
 }
 
 void SongSelectRenderables::SetTextures()
@@ -105,9 +180,9 @@ void SongSelectRenderables::SetInitialVisibility()
 	mP2Selector.transform.pos = glm::vec3(-332.5f, -295.0f, 1.5f);
 	mP2Selector.transform.scale = glm::vec3(40.0f);
 
-	mArrowDown.transform.pos = glm::vec3(890.0f, -490.0f, 0.0f);
+	mArrowDown.transform.pos = glm::vec3(890.0f, -490.0f, 0.01f);
 	mArrowDown.transform.scale = glm::vec3(30.0f, 15.0f, 0.1f);
-	mArrowUp.transform.pos = glm::vec3(890.0f, 490.0f, 0.0f);
+	mArrowUp.transform.pos = glm::vec3(890.0f, 490.0f, 0.01f);
 	mArrowUp.transform.scale = glm::vec3(30.0f, 15.0f, 0.1f);
 	mArrowUp.transform.rotation = 180.0f;
 }
