@@ -19,9 +19,11 @@ struct SongSelectRenderables
 
 	void OnSongChange(Song* song);
 
+	void UpdateSelectorPositions(const std::array<int8_t, 2>& selectorIndices);
+
 	void ShowSelectedSongData();
 	void HideSelectedSongData();
-	
+
 private:
 	std::shared_ptr<ChartRenderables> CreateNewChartRenderables(const ChartDifficulty& category, const uint8_t level, const uint8_t idx);
 	

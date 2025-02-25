@@ -20,6 +20,9 @@ void SongSelectPhase::OnEnter()
     mSongDisplay.mOnSongFocus.Add([this](Song* song) { FocusSong(song); });
     mSongDisplay.mOnSongUnfocus.Add([this](Song* song) { UnfocusSong(song); });
     mSongDisplay.mOnSongSelect.Add([this](Song* song) { SelectSong(song); });
+
+    mSelectorIndices[0] = 0;
+    mSelectorIndices[1] = 0;
 }
 
 void SongSelectPhase::OnTick(const float dt)
@@ -136,6 +139,20 @@ void SongSelectPhase::UpdateSongSelect(const float dt)
     {
         mSongDisplay.MoveRight();
     }
+    
+    if (InputMgr->isKeyPressed(SDL_SCANCODE_Z) && mCurrSong != nullptr)
+        mSelectorIndices[0]--;
+
+    if (InputMgr->isKeyPressed(SDL_SCANCODE_X) && mCurrSong != nullptr)
+        mSelectorIndices[0]++;
+
+    
+    if (InputMgr->isKeyPressed(SDL_SCANCODE_N) && mCurrSong != nullptr)
+        mSelectorIndices[1]--;
+
+    if (InputMgr->isKeyPressed(SDL_SCANCODE_M) && mCurrSong != nullptr)
+        mSelectorIndices[1]++;
+
     if (InputMgr->isKeyPressed(SDL_SCANCODE_RETURN))
     {
         mSongDisplay.Select();
@@ -144,6 +161,14 @@ void SongSelectPhase::UpdateSongSelect(const float dt)
     {
         ChangeToState(SongSelectState::FilterSelect);
     }
+    
+
+    if (mCurrSong != nullptr)
+    {
+        mSelectorIndices[0] = std::clamp(mSelectorIndices[0], static_cast<int8_t>(0), static_cast<int8_t>(mCurrSong->mChartDifficulties.size() - 1));
+        mSelectorIndices[1] = std::clamp(mSelectorIndices[1], static_cast<int8_t>(0), static_cast<int8_t>(mCurrSong->mChartDifficulties.size() - 1));
+    }
+    mRenderables->UpdateSelectorPositions(mSelectorIndices);
 }
 
 void SongSelectPhase::UpdateDifficultySelect(const float dt)
@@ -309,6 +334,7 @@ std::pair<uint32_t, uint32_t> SongSelectPhase::GetDisplayData(
 
 void SongSelectPhase::FocusSong(Song* song)
 {
+    mCurrSong = song;
     song->GetSong()->Play(song->mSampleStart);
 
     // Setup chart renderables
@@ -317,6 +343,7 @@ void SongSelectPhase::FocusSong(Song* song)
 
 void SongSelectPhase::UnfocusSong(Song* song)
 {
+    mCurrSong = nullptr;
     song->GetSong()->Stop();
 
     // No song, empty chart

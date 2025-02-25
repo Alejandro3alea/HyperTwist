@@ -54,12 +54,14 @@ protected:
 	void SelectSong(Song* song);
 
 private:
+	Song* mCurrSong = nullptr;
 	uint32_t mDisplayedRowCount = 3;
 	int32_t mFilterIdx = 0;
 	float mTransitionVal = 0.0f;
 	SongSelectState mState = SongSelectState::FilterSelect;
 	std::vector<std::shared_ptr<SongSelectFilter>> mFilters;
 	std::shared_ptr<SongSelectRenderables> mRenderables;
+	std::array<int8_t, 2> mSelectorIndices;
 
 	SongListDisplayManager mSongDisplay;
 

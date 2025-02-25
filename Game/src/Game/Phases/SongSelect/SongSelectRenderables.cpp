@@ -1,6 +1,7 @@
 #include "SongSelectRenderables.h"
 #include "Utils/GameUtils.h"
 #include "Utils/StringUtils.h"
+#include "Math/Easing.h"
 
 ChartRenderables::ChartRenderables(const ChartDifficulty& category, const uint8_t level)
 {
@@ -41,6 +42,14 @@ void SongSelectRenderables::OnSongChange(Song* song)
 		mChartRenderables.push_back(CreateNewChartRenderables(diffCategory, diffLevel, i));
 		i++;
 	}
+}
+
+void SongSelectRenderables::UpdateSelectorPositions(const std::array<int8_t, 2>& selectorIndices) 
+{
+	const float posP1 = -155.0f - selectorIndices[0] * 70.0f;
+	const float posP2 = -155.0f - selectorIndices[1] * 70.0f;
+	mP1Selector.transform.pos.y = Math::Lerp(mP1Selector.transform.pos.y, posP1, 0.2f);
+	mP2Selector.transform.pos.y = Math::Lerp(mP2Selector.transform.pos.y, posP2, 0.2f);
 }
 
 std::shared_ptr<ChartRenderables> SongSelectRenderables::CreateNewChartRenderables(const ChartDifficulty& category, const uint8_t level, const uint8_t idx)
