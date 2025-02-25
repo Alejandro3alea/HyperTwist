@@ -64,20 +64,8 @@ void SongSelectPhase::TransitionToFilterSelect()
 {
     mRenderables->mArrowDown.mbIsVisible = false;
     mRenderables->mArrowUp.mbIsVisible = false;
-    mRenderables->mP1Score.mbIsVisible = false;
-    mRenderables->mP1ScoreBG.mbIsVisible = false;
-    mRenderables->mP1ScoreTitle.mbIsVisible = false;
-    mRenderables->mP1Selector.mbIsVisible = false;
-    mRenderables->mP2Score.mbIsVisible = false;
-    mRenderables->mP2ScoreBG.mbIsVisible = false;
-    mRenderables->mP2ScoreTitle.mbIsVisible = false;
-    mRenderables->mP2Selector.mbIsVisible = false;
-
-    mRenderables->mSongInfoArtist.mbIsVisible = false;
-    mRenderables->mSongInfoBG.mbIsVisible = false;
-    mRenderables->mSongInfoTitle.mbIsVisible = false;
-    mRenderables->mSongThumb.mbIsVisible = false;
-
+    mRenderables->HideSelectedSongData();
+    
     for (auto& filter : mFilters)
         filter->mRenderable.mbIsVisible = true;
 }
@@ -86,19 +74,7 @@ void SongSelectPhase::TransitionToSongSelect()
 {
     mRenderables->mArrowDown.mbIsVisible = true;
     mRenderables->mArrowUp.mbIsVisible = true;
-    mRenderables->mP1Score.mbIsVisible = true;
-    mRenderables->mP1ScoreBG.mbIsVisible = true;
-    mRenderables->mP1ScoreTitle.mbIsVisible = true;
-    mRenderables->mP1Selector.mbIsVisible = true;
-    mRenderables->mP2Score.mbIsVisible = true;
-    mRenderables->mP2ScoreBG.mbIsVisible = true;
-    mRenderables->mP2ScoreTitle.mbIsVisible = true;
-    mRenderables->mP2Selector.mbIsVisible = true;
-
-    mRenderables->mSongInfoArtist.mbIsVisible = true;
-    mRenderables->mSongInfoBG.mbIsVisible = true;
-    mRenderables->mSongInfoTitle.mbIsVisible = true;
-    mRenderables->mSongThumb.mbIsVisible = true;
+    mRenderables->ShowSelectedSongData();
 
     for (auto& filter : mFilters)
         filter->mRenderable.mbIsVisible = false;

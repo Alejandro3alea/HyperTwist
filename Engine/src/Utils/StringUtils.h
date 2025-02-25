@@ -2,7 +2,7 @@
 #include <algorithm>
 #include <string>
 
-std::string ToLower(const std::string& str)
+inline std::string ToLower(const std::string& str)
 {
 	std::string data(str);
 	std::transform(data.begin(), data.end(), data.begin(), [](const uint8_t& c) {
@@ -12,7 +12,7 @@ std::string ToLower(const std::string& str)
 	return data;
 }
 
-std::string ToUpper(const std::string& str)
+inline std::string ToUpper(const std::string& str)
 {
 	std::string data(str);
 	std::transform(data.begin(), data.end(), data.begin(), [](const uint8_t& c) {

@@ -1,12 +1,13 @@
 #include "SongSelectRenderables.h"
 #include "Utils/GameUtils.h"
+#include "Utils/StringUtils.h"
 
 ChartRenderables::ChartRenderables(const ChartDifficulty& category, const uint8_t level)
 {
 	mBG.SetTexture("data/engine/texture/SongSelect/RectangleHorizontalFade.png");
 
 	mDifficulty.SetFont("data/engine/fonts/Rubik.ttf");
-	mDifficulty.SetText(GameUtils::ChartDifficultyToStr(category));
+	mDifficulty.SetText(ToUpper(GameUtils::ChartDifficultyToStr(category)));
 
 	mLevel.SetFont("data/engine/fonts/Rubik.ttf");
 	mLevel.SetText(std::to_string(level));
@@ -38,27 +39,29 @@ void SongSelectRenderables::OnSongChange(Song* song)
 	for (auto& [diffCategory, diffLevel] : song->mChartDifficulties)
 	{
 		mChartRenderables.push_back(CreateNewChartRenderables(diffCategory, diffLevel, i));
+		i++;
 	}
 }
 
-ChartRenderables SongSelectRenderables::CreateNewChartRenderables(const ChartDifficulty& category, const uint8_t level, const uint8_t idx)
+std::shared_ptr<ChartRenderables> SongSelectRenderables::CreateNewChartRenderables(const ChartDifficulty& category, const uint8_t level, const uint8_t idx)
 {
-	ChartRenderables result(category, level);
+	std::shared_ptr<ChartRenderables> result = std::make_shared<ChartRenderables>(category, level);
 
-	const float pos = 128.0f + idx * 75.0f;
-	//result.mBG.mColor = glm::vec4(1.0f, 1.0f, 1.0f, 0.4f);
-	//result.mBG.transform.pos = glm::vec3(-580.0f, 128.0f, 0.5f);
-	//result.mBG.transform.scale = glm::vec3(260.0f, 40.0f, 0.1f);
+	constexpr float textOffsetY = 12.5f;
+	const float pos = -155.0f - idx * 70.0f;
+	result->mBG.mColor = glm::vec4(1.0f, 1.0f, 1.0f, 0.4f);
+	result->mBG.transform.pos = glm::vec3(-580.0f, pos, 0.5f);
+	result->mBG.transform.scale = glm::vec3(260.0f, 32.5f, 0.1f);
 
-	//result.mDifficulty.transform.pos = glm::vec3(-580.0f, 128.0f, 1.75f);
-	result.mDifficulty.transform.scale = glm::vec3(10.7f);
-	//result.mLevel.transform.pos = glm::vec3(-580.0f, 128.0f, 1.75f);
-	//result.mLevel.transform.scale = glm::vec3(0.7f);
+	result->mDifficulty.transform.pos = glm::vec3(-610.0f, pos - textOffsetY, 1.75f);
+	result->mDifficulty.transform.scale = glm::vec3(0.6f);
+	result->mLevel.transform.pos = glm::vec3(-460.0f, pos - textOffsetY, 1.75f);
+	result->mLevel.transform.scale = glm::vec3(0.6f);
 
-	//result.mP1Grade.transform.pos = glm::vec3(-650.0f, 128.0f, 1.75f);
-	//result.mP1Grade.transform.scale = glm::vec3(50.0f);
-	result.mP2Grade.transform.pos = glm::vec3(-510.0f, 128.0f, 1.75f);
-	result.mP2Grade.transform.scale = glm::vec3(500.0f);
+	result->mP1Grade.transform.pos = glm::vec3(-760.0f, pos, 1.8f);
+	result->mP1Grade.transform.scale = glm::vec3(40.0f);
+	result->mP2Grade.transform.pos = glm::vec3(-400.0f, pos, 1.8f);
+	result->mP2Grade.transform.scale = glm::vec3(40.0f);
 
 	return result;
 }
@@ -175,7 +178,7 @@ void SongSelectRenderables::SetInitialVisibility()
 	mP2Score.transform.pos = glm::vec3(-160.0f, 290.0f, 1.0f);
 	mP2Score.transform.scale = glm::vec3(0.5f);
 
-	mP1Selector.transform.pos = glm::vec3(-802.5f, -435.0f, 1.5f);
+	mP1Selector.transform.pos = glm::vec3(-827.5f, -435.0f, 1.5f);
 	mP1Selector.transform.scale = glm::vec3(40.0f);
 	mP2Selector.transform.pos = glm::vec3(-332.5f, -295.0f, 1.5f);
 	mP2Selector.transform.scale = glm::vec3(40.0f);
