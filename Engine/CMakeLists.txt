@@ -11,7 +11,6 @@ else() # Windows
     message("Setting up libraries for Windows in ${TARGET_NAME} target...")
 endif()
 
-message(${SFML_LIB_DIR})
 target_link_directories(${TARGET_NAME}
     PUBLIC  $<$<CONFIG:Debug>:${SFML_LIB_DIR}/Debug>
             $<$<CONFIG:Release>:${SFML_LIB_DIR}/Release>

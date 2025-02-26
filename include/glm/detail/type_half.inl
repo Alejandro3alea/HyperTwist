@@ -6,7 +6,11 @@ namespace detail
 		volatile float f = 1e10;
 
 		for(int i = 0; i < 10; ++i)
-			f *= f; // this will overflow before the for loop terminates
+		{
+            float temp = f;
+            temp *= temp;
+            f = temp; // this will overflow before the for loop terminates
+		}
 		return f;
 	}
 

@@ -14,12 +14,10 @@ set(OpenGL_GL_PREFERENCE GLVND)
 if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
     include_directories(/usr/include)
     find_package(SFML 2.5 COMPONENTS system audio REQUIRED)
+else()
+    set(SFML_INCLUDE_DIR "${CMAKE_SOURCE_DIR}/include/SFML")
+    set(SFML_LIB_DIR "${CMAKE_SOURCE_DIR}/lib/SFML")
 endif()
-
-set(SFML_INCLUDE_DIR "${CMAKE_SOURCE_DIR}/include/SFML")
-set(SFML_LIB_DIR "${CMAKE_SOURCE_DIR}/lib/SFML")
-
-
 
 include_directories(
     ${CMAKE_SOURCE_DIR}/include
