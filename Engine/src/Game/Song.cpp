@@ -44,6 +44,11 @@ void RemoveMultiLineComments(std::string& text)
     }
 }
 
+void RemoveCarriageReturns(std::string& text)
+{
+    text.erase(std::remove(text.begin(), text.end(), '\r'), text.end());
+}
+
 void RemoveBlankLines(std::string& text)
 {
     std::istringstream iss(text);
@@ -65,6 +70,7 @@ void RemoveContents(std::string& text)
 {
     RemoveSingleLineComments(text);
     RemoveMultiLineComments(text);
+    RemoveCarriageReturns(text);
     RemoveBlankLines(text);
 }
 
@@ -206,10 +212,10 @@ void Song::ProcessSMSong(std::istringstream& file)
             std::string key = line.substr(0, colonPos);
             std::string value = line.substr(colonPos + 1);
 
-            bool isEoC = false;
+            bool isEndOfCommand = false;
             if (value.find(';') != std::string::npos)
             {
-                isEoC = true;
+                isEndOfCommand = true;
                 value.pop_back();
             }
 
@@ -248,14 +254,14 @@ void Song::ProcessSMSong(std::istringstream& file)
                 mSelectable = value == "YES";
             else if (key == "#BPMS")
             {
-                while (!isEoC)
+                while (!isEndOfCommand)
                 {
                     std::string currLine;
                     std::getline(file, currLine);
                     value += currLine;
-                    isEoC |= currLine.find(';') != std::string::npos;
+                    isEndOfCommand |= currLine.find(';') != std::string::npos;
 
-                    if (isEoC)
+                    if (isEndOfCommand)
                         value.pop_back();
                 }
 
@@ -276,14 +282,14 @@ void Song::ProcessSMSong(std::istringstream& file)
             }
             else if (key == "#STOPS")
             {
-                while (!isEoC)
+                while (!isEndOfCommand)
                 {
                     std::string currLine;
                     std::getline(file, currLine);
                     value += currLine;
-                    isEoC |= currLine.find(';') != std::string::npos;
+                    isEndOfCommand |= currLine.find(';') != std::string::npos;
 
-                    if (isEoC)
+                    if (isEndOfCommand)
                         value.pop_back();
                 }
 
@@ -326,10 +332,10 @@ void Song::ProcessSSCSong(std::istringstream& file)
             std::string key = line.substr(0, colonPos);
             std::string value = line.substr(colonPos + 1);
 
-            bool isEoC = false;
+            bool isEndOfCommand = false;
             if (value.find(';') != std::string::npos)
             {
-                isEoC = true;
+                isEndOfCommand = true;
                 value.pop_back();
             }
 
@@ -368,14 +374,14 @@ void Song::ProcessSSCSong(std::istringstream& file)
                 mSelectable = value == "YES";
             else if (key == "#BPMS")
             {
-                while (!isEoC)
+                while (!isEndOfCommand)
                 {
                     std::string currLine;
                     std::getline(file, currLine);
                     value += currLine;
-                    isEoC |= currLine.find(';') != std::string::npos;
+                    isEndOfCommand |= currLine.find(';') != std::string::npos;
 
-                    if (isEoC)
+                    if (isEndOfCommand)
                         value.pop_back();
                 }
 
@@ -396,14 +402,14 @@ void Song::ProcessSSCSong(std::istringstream& file)
             }
             else if (key == "#STOPS")
             {
-                while (!isEoC)
+                while (!isEndOfCommand)
                 {
                     std::string currLine;
                     std::getline(file, currLine);
                     value += currLine;
-                    isEoC |= currLine.find(';') != std::string::npos;
+                    isEndOfCommand |= currLine.find(';') != std::string::npos;
 
-                    if (isEoC)
+                    if (isEndOfCommand)
                         value.pop_back();
                 }
 
@@ -424,14 +430,14 @@ void Song::ProcessSSCSong(std::istringstream& file)
             }
             else if (key == "#SPEEDS")
             {
-                while (!isEoC)
+                while (!isEndOfCommand)
                 {
                     std::string currLine;
                     std::getline(file, currLine);
                     value += currLine;
-                    isEoC |= currLine.find(';') != std::string::npos;
+                    isEndOfCommand |= currLine.find(';') != std::string::npos;
 
-                    if (isEoC)
+                    if (isEndOfCommand)
                         value.pop_back();
                 }
 
@@ -468,14 +474,14 @@ void Song::ProcessSSCSong(std::istringstream& file)
             }
             else if (key == "#SCROLLS")
             {
-                while (!isEoC)
+                while (!isEndOfCommand)
                 {
                     std::string currLine;
                     std::getline(file, currLine);
                     value += currLine;
-                    isEoC |= currLine.find(';') != std::string::npos;
+                    isEndOfCommand |= currLine.find(';') != std::string::npos;
 
-                    if (isEoC)
+                    if (isEndOfCommand)
                         value.pop_back();
                 }
 
@@ -496,14 +502,14 @@ void Song::ProcessSSCSong(std::istringstream& file)
             }
             else if (key == "#TICKCOUNTS")
             {
-                while (!isEoC)
+                while (!isEndOfCommand)
                 {
                     std::string currLine;
                     std::getline(file, currLine);
                     value += currLine;
-                    isEoC |= currLine.find(';') != std::string::npos;
+                    isEndOfCommand |= currLine.find(';') != std::string::npos;
 
-                    if (isEoC)
+                    if (isEndOfCommand)
                         value.pop_back();
                 }
 
@@ -524,14 +530,14 @@ void Song::ProcessSSCSong(std::istringstream& file)
             }
             else if (key == "#TIMESIGNATURES")
             {
-                while (!isEoC)
+                while (!isEndOfCommand)
                 {
                     std::string currLine;
                     std::getline(file, currLine);
                     value += currLine;
-                    isEoC |= currLine.find(';') != std::string::npos;
+                    isEndOfCommand |= currLine.find(';') != std::string::npos;
 
-                    if (isEoC)
+                    if (isEndOfCommand)
                         value.pop_back();
                 }
 
@@ -557,14 +563,14 @@ void Song::ProcessSSCSong(std::istringstream& file)
             }
             else if (key == "#LABELS")
             {
-                while (!isEoC)
+                while (!isEndOfCommand)
                 {
                     std::string currLine;
                     std::getline(file, currLine);
                     value += currLine;
-                    isEoC |= currLine.find(';') != std::string::npos;
+                    isEndOfCommand |= currLine.find(';') != std::string::npos;
 
-                    if (isEoC)
+                    if (isEndOfCommand)
                         value.pop_back();
                 }
 
@@ -613,14 +619,14 @@ void Song::ProcessSSCSong(std::istringstream& file)
             }
             else if (key == "#BGCHANGES")
             {
-                while (!isEoC)
+                while (!isEndOfCommand)
                 {
                     std::string currLine;
                     std::getline(file, currLine);
                     value += currLine;
-                    isEoC |= currLine.find(';') != std::string::npos;
+                    isEndOfCommand |= currLine.find(';') != std::string::npos;
 
-                    if (isEoC)
+                    if (isEndOfCommand)
                         value.pop_back();
                 }
 
@@ -695,10 +701,10 @@ Chart* Song::ProcessSSCChart(std::istringstream& file)
             std::string key = line.substr(0, colonPos);
             std::string value = line.substr(colonPos + 1);
 
-            bool isEoC = false;
+            bool isEndOfCommand = false;
             if (value.find(';') != std::string::npos)
             {
-                isEoC = true;
+                isEndOfCommand = true;
                 value.pop_back();
             }
 
@@ -745,10 +751,10 @@ void Song::ProcessSMD(std::istringstream& file)
             std::string key = line.substr(0, colonPos);
             std::string value = line.substr(colonPos + 1);
 
-            bool isEoC = false;
+            bool isEndOfCommand = false;
             if (value.find(';') != std::string::npos)
             {
-                isEoC = true;
+                isEndOfCommand = true;
                 value.pop_back();
             }
 
@@ -787,14 +793,14 @@ void Song::ProcessSMD(std::istringstream& file)
                 mSelectable = value == "YES";
             else if (key == "#BPMS")
             {
-                while (!isEoC)
+                while (!isEndOfCommand)
                 {
                     std::string currLine;
                     std::getline(file, currLine);
                     value += currLine;
-                    isEoC |= currLine.find(';') != std::string::npos;
+                    isEndOfCommand |= currLine.find(';') != std::string::npos;
 
-                    if (isEoC)
+                    if (isEndOfCommand)
                         value.pop_back();
                 }
 
@@ -815,15 +821,15 @@ void Song::ProcessSMD(std::istringstream& file)
             }
             else if (key == "#STOPS")
             {
-                while (!isEoC)
+                while (!isEndOfCommand)
                 {
                     std::string currLine;
                     std::getline(file, currLine);
 
                     value += currLine;
-                    isEoC |= currLine.find(';') != std::string::npos;
+                    isEndOfCommand |= currLine.find(';') != std::string::npos;
 
-                    if (isEoC)
+                    if (isEndOfCommand)
                         value.pop_back();
                 }
 
@@ -844,14 +850,14 @@ void Song::ProcessSMD(std::istringstream& file)
             }
             else if (key == "#SPEEDS")
             {
-                while (!isEoC)
+                while (!isEndOfCommand)
                 {
                     std::string currLine;
                     std::getline(file, currLine);
                     value += currLine;
-                    isEoC |= currLine.find(';') != std::string::npos;
+                    isEndOfCommand |= currLine.find(';') != std::string::npos;
 
-                    if (isEoC)
+                    if (isEndOfCommand)
                         value.pop_back();
                 }
 
@@ -888,14 +894,14 @@ void Song::ProcessSMD(std::istringstream& file)
             }
             else if (key == "#SCROLLS")
             {
-                while (!isEoC)
+                while (!isEndOfCommand)
                 {
                     std::string currLine;
                     std::getline(file, currLine);
                     value += currLine;
-                    isEoC |= currLine.find(';') != std::string::npos;
+                    isEndOfCommand |= currLine.find(';') != std::string::npos;
 
-                    if (isEoC)
+                    if (isEndOfCommand)
                         value.pop_back();
                 }
 
@@ -916,14 +922,14 @@ void Song::ProcessSMD(std::istringstream& file)
             }
             else if (key == "#TICKCOUNTS")
             {
-                while (!isEoC)
+                while (!isEndOfCommand)
                 {
                     std::string currLine;
                     std::getline(file, currLine);
                     value += currLine;
-                    isEoC |= currLine.find(';') != std::string::npos;
+                    isEndOfCommand |= currLine.find(';') != std::string::npos;
 
-                    if (isEoC)
+                    if (isEndOfCommand)
                         value.pop_back();
                 }
 
@@ -944,14 +950,14 @@ void Song::ProcessSMD(std::istringstream& file)
             }
             else if (key == "#TIMESIGNATURES")
             {
-                while (!isEoC)
+                while (!isEndOfCommand)
                 {
                     std::string currLine;
                     std::getline(file, currLine);
                     value += currLine;
-                    isEoC |= currLine.find(';') != std::string::npos;
+                    isEndOfCommand |= currLine.find(';') != std::string::npos;
 
-                    if (isEoC)
+                    if (isEndOfCommand)
                         value.pop_back();
                 }
 
@@ -977,14 +983,14 @@ void Song::ProcessSMD(std::istringstream& file)
             }
             else if (key == "#LABELS")
             {
-                while (!isEoC)
+                while (!isEndOfCommand)
                 {
                     std::string currLine;
                     std::getline(file, currLine);
                     value += currLine;
-                    isEoC |= currLine.find(';') != std::string::npos;
+                    isEndOfCommand |= currLine.find(';') != std::string::npos;
 
-                    if (isEoC)
+                    if (isEndOfCommand)
                         value.pop_back();
                 }
 
@@ -1034,14 +1040,14 @@ void Song::ProcessSMD(std::istringstream& file)
             }
             else if (key == "#BGCHANGES")
             {
-                while (!isEoC)
+                while (!isEndOfCommand)
                 {
                     std::string currLine;
                     std::getline(file, currLine);
                     value += currLine;
-                    isEoC |= currLine.find(';') != std::string::npos;
+                    isEndOfCommand |= currLine.find(';') != std::string::npos;
 
-                    if (isEoC)
+                    if (isEndOfCommand)
                         value.pop_back();
                 }
 
@@ -1066,15 +1072,15 @@ void Song::ProcessSMD(std::istringstream& file)
             }
             else if (key == "#CHARTS")
             {
-                while (!isEoC)
+                while (!isEndOfCommand)
                 {
                     std::getline(file, line);
                     colonPos = line.find(':');
                     key = line.substr(0, colonPos);
                     value = line.substr(colonPos + 1);
 
-                    isEoC |= line.find(';') != std::string::npos;
-                    if (isEoC)
+                    isEndOfCommand |= line.find(';') != std::string::npos;
+                    if (isEndOfCommand)
                     {
                         value.pop_back();
                         break;

@@ -45,7 +45,7 @@ private:
 template<typename T>
 inline Resource<T>* ResourceManager::LoadFromBasePath(const std::string& path)
 {
-	return Load<T>(mBasePath + '\\' + path);
+	return Load<T>(mBasePath + '/' + path);
 }
 
 template<typename T>

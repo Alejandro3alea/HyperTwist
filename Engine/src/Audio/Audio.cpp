@@ -3,11 +3,11 @@
 
 Audio::Audio(const std::string& file)
 {
-    if (!mAudio.openFromFile(file))
+    /*if (!mAudio.openFromFile(file))
     {
         const std::string reason = "Error loading the audio file: " + ResourceMgr->GetResourceName(file);
         throw ResourceLoadException(file, reason);
-    }
+    }*/
 }
 
 void Audio::Play(const float positionInMeasure)

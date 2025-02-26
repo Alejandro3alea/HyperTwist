@@ -211,11 +211,7 @@ void DevMenuGameSettings::UpdateSongVersions::UpdateSongs() const
 
 void DevMenuGameSettings::UpdateSongVersions::UpdateSong(const std::string& path) const
 {
-    const std::string ext = ResourceMgr->GetExtension(path);
-    if (ext == "sm")
-        GameUtils::UpdateSMSongToSMD(path);
-    else if (ext == "ssc")
-        GameUtils::UpdateSSCSongToSMD(path);
+    GameUtils::UpdateSongToSMD(path);
 }
 
 bool DevMenuGameSettings::UpdateSongVersions::IsSongUpToDate(const std::string& path) const

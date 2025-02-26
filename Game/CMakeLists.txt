@@ -40,13 +40,8 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
             SDL2_mixer
             freetype
             aubio
-            $<$<CONFIG:Debug>:libsfml-main-s-d.a>
-            $<$<CONFIG:Debug>:libsfml-system-d.a>
-            $<$<CONFIG:Debug>:libsfml-audio-d.a>
-            
-            $<$<CONFIG:Release>:libsfml-main-s.a>
-            $<$<CONFIG:Release>:libsfml-system.a>
-            $<$<CONFIG:Release>:libsfml-audio.a>
+            sfml-audio
+            sfml-system
     )
 else() # Windows
     message("Setting up libraries for Windows in ${TARGET_NAME} target...")
@@ -97,13 +92,10 @@ function(copy_required_files target)
   copy_dll(${target} sfml-system-d-3.dll)
 endfunction()
 
-function(echo_path target file )
-  message(STATUS "Configurations: ${configuration}") # Debug line
-  add_custom_command(TARGET ${target} POST_BUILD
-    CONFIGURATIONS ${TARGET_NAME}
-    COMMAND ${CMAKE_COMMAND} -E echo "Path for ${file}: "
-    COMMENT "Echoing path for ${file}..."
-  )
-endfunction()
-
 copy_required_files(Game)
+
+message("Exporting data folder to ${CMAKE_BINARY_DIR}")
+if (EXPORT_BUILD)
+  file(COPY "${CMAKE_SOURCE_DIR}/${TARGET_NAME}/data" DESTINATION "${CMAKE_BINARY_DIR}")
+else()
+endif()

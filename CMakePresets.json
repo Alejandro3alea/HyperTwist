@@ -6,7 +6,8 @@
         "generator": "MinGW Makefiles",
         "cacheVariables": {
           "BUILD_GAME": "OFF",
-          "BUILD_EDITOR": "OFF"
+          "BUILD_EDITOR": "OFF",
+          "EXPORT_BUILD": "OFF"
         }
       },
       {
@@ -14,7 +15,8 @@
         "generator": "Ninja",
         "cacheVariables": {
           "BUILD_GAME": "OFF",
-          "BUILD_EDITOR": "OFF"
+          "BUILD_EDITOR": "OFF",
+          "EXPORT_BUILD": "OFF"
         }
       },
 
@@ -98,6 +100,44 @@
         "cacheVariables": {
           "BUILD_GAME": "ON",
           "CMAKE_BUILD_TYPE": "Release"
+        }
+      },
+
+
+      {
+        "name": "Editor-Export-Windows",
+        "displayName": "[WINDOWS]  Editor - Export",
+        "inherits": "Editor-Release-Windows",
+        "binaryDir": "${sourceDir}/build/Editor-Export",
+        "cacheVariables": {
+          "EXPORT_BUILD": "ON"
+        }
+      },
+      {
+        "name": "Game-Export-Windows",
+        "displayName": "[WINDOWS]  Game - Export",
+        "inherits": "Game-Release-Windows",
+        "binaryDir": "${sourceDir}/build/Game-Export",
+        "cacheVariables": {
+          "EXPORT_BUILD": "ON"
+        }
+      },
+      {
+        "name": "Editor-Export-Linux",
+        "displayName": "[LINUX]  Editor - Export",
+        "inherits": "Editor-Release-Linux",
+        "binaryDir": "${sourceDir}/build/Editor-Export",
+        "cacheVariables": {
+          "EXPORT_BUILD": "ON"
+        }
+      },
+      {
+        "name": "Game-Export-Linux",
+        "displayName": "[LINUX]  Game - Export",
+        "inherits": "Game-Release-Linux",
+        "binaryDir": "${sourceDir}/build/Game-Export",
+        "cacheVariables": {
+          "EXPORT_BUILD": "ON"
         }
       }
     ]
