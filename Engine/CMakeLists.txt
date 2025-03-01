@@ -7,6 +7,13 @@ add_library(${TARGET_NAME} STATIC ${ALL_SOURCES})
 # Linux config
 if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
     message("Setting up libraries for Linux in ${TARGET_NAME} target...")
+    target_link_directories(${TARGET_NAME} PRIVATE /usr/lib)
+    target_link_libraries(${TARGET_NAME}
+        PRIVATE
+            GL
+            GLEW
+            freetype
+    )
 
 else() # Windows
     message("Setting up libraries for Windows in ${TARGET_NAME} target...")
