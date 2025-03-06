@@ -1,7 +1,7 @@
 #include "WindowMgr.h"
 #include "Misc/ColorConsole.h"
 #include "Input/InputMgr.h"
-#include "Misc/Ensure.h"
+#include "Misc/Requires.h"
 
 WindowManager* WindowManager::mpInstance;
 
