@@ -30,8 +30,8 @@ void SongListDisplayManager::MoveLeft()
 	UnfocusNode();
 	if (mSelectedNode == 0)
 	{
-		mSelectedNode = mRows[mMiddleRow].mNodes.size() - 1;
 		MoveUp();
+		mSelectedNode = mRows[mMiddleRow].mNodes.size() - 1;
 		return;
 	}
 	else
