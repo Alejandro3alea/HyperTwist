@@ -1,6 +1,7 @@
 #pragma once
 #include "Game/Phases/Phase.h"
 #include "SongSelectRenderables.h"
+#include "DifficultySelectRenderables.h"
 #include "SongSelectFilters.h"
 #include "SongListDisplayManager.h"
 
@@ -60,7 +61,8 @@ private:
 	float mTransitionVal = 0.0f;
 	SongSelectState mState = SongSelectState::FilterSelect;
 	std::vector<std::shared_ptr<SongSelectFilter>> mFilters;
-	std::shared_ptr<SongSelectRenderables> mRenderables;
+	std::shared_ptr<SongSelectRenderables> mSongSelectRenderables;
+	std::shared_ptr<DifficultySelectRenderables> mDifficultySelectRenderables;
 	std::array<int8_t, 2> mSelectorIndices;
 
 	SongListDisplayManager mSongDisplay;

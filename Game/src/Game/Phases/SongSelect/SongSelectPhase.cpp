@@ -12,7 +12,7 @@ void SongSelectPhase::OnEnter()
 	//GfxMgr->SetBackgroundShader(ResourceMgr->Load<Shader>("data/shaders/SongSelectBG.shader")); 
 	GfxMgr->SetBackgroundTexture(ResourceMgr->Load<Texture>("data/engine/texture/SongSelect/MainBG.png"));
 
-	mRenderables = std::make_shared<SongSelectRenderables>();
+	mSongSelectRenderables = std::make_shared<SongSelectRenderables>();
     ChangeToState(SongSelectState::FilterSelect);
     LoadSongs();
     SetupFilters();
@@ -65,9 +65,9 @@ void SongSelectPhase::ChangeToState(const SongSelectState& newState)
 
 void SongSelectPhase::TransitionToFilterSelect()
 {
-    mRenderables->mArrowDown.mbIsVisible = false;
-    mRenderables->mArrowUp.mbIsVisible = false;
-    mRenderables->HideSelectedSongData();
+    mSongSelectRenderables->mArrowDown.mbIsVisible = false;
+    mSongSelectRenderables->mArrowUp.mbIsVisible = false;
+    mSongSelectRenderables->HideSelectedSongData();
     
     for (auto& filter : mFilters)
         filter->mRenderable.mbIsVisible = true;
@@ -75,9 +75,9 @@ void SongSelectPhase::TransitionToFilterSelect()
 
 void SongSelectPhase::TransitionToSongSelect()
 {
-    mRenderables->mArrowDown.mbIsVisible = true;
-    mRenderables->mArrowUp.mbIsVisible = true;
-    mRenderables->ShowSelectedSongData();
+    mSongSelectRenderables->mArrowDown.mbIsVisible = true;
+    mSongSelectRenderables->mArrowUp.mbIsVisible = true;
+    mSongSelectRenderables->ShowSelectedSongData();
 
     for (auto& filter : mFilters)
         filter->mRenderable.mbIsVisible = false;
@@ -87,8 +87,8 @@ void SongSelectPhase::TransitionToSongSelect()
 
 void SongSelectPhase::TransitionToDifficultySelect()
 {
-    mRenderables->mArrowDown.mbIsVisible = false;
-    mRenderables->mArrowUp.mbIsVisible = false;
+    mSongSelectRenderables->mArrowDown.mbIsVisible = false;
+    mSongSelectRenderables->mArrowUp.mbIsVisible = false;
 }
 
 
@@ -168,7 +168,7 @@ void SongSelectPhase::UpdateSongSelect(const float dt)
         mSelectorIndices[0] = std::clamp(mSelectorIndices[0], static_cast<int8_t>(0), static_cast<int8_t>(mCurrSong->mChartDifficulties.size() - 1));
         mSelectorIndices[1] = std::clamp(mSelectorIndices[1], static_cast<int8_t>(0), static_cast<int8_t>(mCurrSong->mChartDifficulties.size() - 1));
     }
-    mRenderables->UpdateSelectorPositions(mSelectorIndices);
+    mSongSelectRenderables->UpdateSelectorPositions(mSelectorIndices);
 }
 
 void SongSelectPhase::UpdateDifficultySelect(const float dt)
@@ -338,7 +338,7 @@ void SongSelectPhase::FocusSong(Song* song)
     song->GetSong()->Play(song->mSampleStart);
 
     // Setup chart renderables
-    mRenderables->OnSongChange(song);
+    mSongSelectRenderables->OnSongChange(song);
 }
 
 void SongSelectPhase::UnfocusSong(Song* song)
@@ -347,7 +347,7 @@ void SongSelectPhase::UnfocusSong(Song* song)
     song->GetSong()->Stop();
 
     // No song, empty chart
-    mRenderables->OnSongChange(nullptr);
+    mSongSelectRenderables->OnSongChange(nullptr);
 }
 
 void SongSelectPhase::SelectSong(Song* song)

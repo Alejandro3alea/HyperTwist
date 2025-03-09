@@ -3,7 +3,7 @@
 #include "Utils/StringUtils.h"
 #include "Math/Easing.h"
 
-ChartRenderables::ChartRenderables(const ChartDifficulty& category, const uint8_t level)
+SongSelectChartRenderables::SongSelectChartRenderables(const ChartDifficulty& category, const uint8_t level)
 {
 	mBG.SetTexture("data/engine/texture/SongSelect/RectangleHorizontalFade.png");
 
@@ -52,9 +52,9 @@ void SongSelectRenderables::UpdateSelectorPositions(const std::array<int8_t, 2>&
 	mP2Selector.transform.pos.y = Math::Lerp(mP2Selector.transform.pos.y, posP2, 0.2f);
 }
 
-std::shared_ptr<ChartRenderables> SongSelectRenderables::CreateNewChartRenderables(const ChartDifficulty& category, const uint8_t level, const uint8_t idx)
+std::shared_ptr<SongSelectChartRenderables> SongSelectRenderables::CreateNewChartRenderables(const ChartDifficulty& category, const uint8_t level, const uint8_t idx)
 {
-	std::shared_ptr<ChartRenderables> result = std::make_shared<ChartRenderables>(category, level);
+	std::shared_ptr<SongSelectChartRenderables> result = std::make_shared<SongSelectChartRenderables>(category, level);
 
 	constexpr float textOffsetY = 12.5f;
 	const float pos = -155.0f - idx * 70.0f;

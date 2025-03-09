@@ -2,9 +2,9 @@
 #include "Graphics/Renderable.h"
 #include "Game/Song.h"
 
-struct ChartRenderables
+struct SongSelectChartRenderables
 {
-	ChartRenderables(const ChartDifficulty& category, const uint8_t level);
+	SongSelectChartRenderables(const ChartDifficulty& category, const uint8_t level);
 
 	Renderable mBG;
 	FontRenderer mDifficulty;
@@ -25,7 +25,7 @@ struct SongSelectRenderables
 	void HideSelectedSongData();
 
 private:
-	std::shared_ptr<ChartRenderables> CreateNewChartRenderables(const ChartDifficulty& category, const uint8_t level, const uint8_t idx);
+	std::shared_ptr<SongSelectChartRenderables> CreateNewChartRenderables(const ChartDifficulty& category, const uint8_t level, const uint8_t idx);
 	
 	void UpdateSelectedSongData(Song* song);
 
@@ -48,7 +48,7 @@ public:
 	FontRenderer mP2ScoreTitle;
 	FontRenderer mP2Score;
 
-	std::vector<std::shared_ptr<ChartRenderables>> mChartRenderables;
+	std::vector<std::shared_ptr<SongSelectChartRenderables>> mChartRenderables;
 	Renderable mP1Selector;
 	Renderable mP2Selector;
 
