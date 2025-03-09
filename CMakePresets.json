@@ -4,6 +4,7 @@
       {
         "name": "base-windows",
         "generator": "MinGW Makefiles",
+        "binaryDir": "${sourceDir}/build/",
         "cacheVariables": {
           "BUILD_GAME": "OFF",
           "BUILD_EDITOR": "OFF",
@@ -13,6 +14,7 @@
       {
         "name": "base-linux",
         "generator": "Ninja",
+        "binaryDir": "${sourceDir}/build/",
         "cacheVariables": {
           "BUILD_GAME": "OFF",
           "BUILD_EDITOR": "OFF",
