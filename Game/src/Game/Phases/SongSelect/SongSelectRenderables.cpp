@@ -130,9 +130,9 @@ void SongSelectRenderables::SetTextures()
 
 	mSongInfoBG.SetTexture("data/engine/texture/SongSelect/RectangleHorizontalFade.png");
 	mSongInfoTitle.SetFont("data/engine/fonts/Rubik.ttf");
-	mSongInfoTitle.SetText("Climax");
+	mSongInfoTitle.SetText("Title");
 	mSongInfoArtist.SetFont("data/engine/fonts/Rubik.ttf");
-	mSongInfoArtist.SetText("USAO");
+	mSongInfoArtist.SetText("Artist");
 
 	mP1ScoreBG.SetTexture("data/engine/texture/SongSelect/RectangleHorizontalFade.png");
 	mP1ScoreTitle.SetText("P1  Score");
