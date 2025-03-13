@@ -33,9 +33,6 @@ private:
 	void SetInitialVisibility();
 
 public:
-	Renderable mStageBG;
-	FontRenderer mStageText;
-
 	Renderable mSongThumb;
 	Renderable mSongInfoBG;
 	FontRenderer mSongInfoTitle;

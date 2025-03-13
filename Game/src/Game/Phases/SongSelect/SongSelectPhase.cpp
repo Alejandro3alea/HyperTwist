@@ -13,6 +13,9 @@ void SongSelectPhase::OnEnter()
 	GfxMgr->SetBackgroundTexture(ResourceMgr->Load<Texture>("data/engine/texture/SongSelect/MainBG.png"));
 
 	mSongSelectRenderables = std::make_shared<SongSelectRenderables>();
+    mCommonRenderables = std::make_shared<SongSelectCommonRenderables>();
+    //mDifficultySelectRenderables = std::make_shared<DifficultySelectRenderables>();
+
     ChangeToState(SongSelectState::FilterSelect);
     LoadSongs();
     SetupFilters();
