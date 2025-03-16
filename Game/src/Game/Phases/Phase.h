@@ -2,6 +2,7 @@
 
 struct Phase
 {
+	virtual ~Phase() = default;
 	virtual void Initialize() {};
 
 	virtual void OnEnter() {};

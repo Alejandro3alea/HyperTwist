@@ -39,12 +39,13 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
             SDL2
             SDL2_mixer
             freetype
-            aubio
             sfml-audio
             sfml-system
     )
 else() # Windows
     message("Setting up libraries for Windows in ${TARGET_NAME} target...")
+    message("${CMAKE_SOURCE_DIR}")
+
     target_link_libraries(${TARGET_NAME}
         PRIVATE 
             Engine
@@ -56,13 +57,13 @@ else() # Windows
             freetype.lib
             aubio.dll.a
             libaubio.a
-            $<$<CONFIG:Debug>:libsfml-main-s-d.a>
-            $<$<CONFIG:Debug>:libsfml-system-d.a>
-            $<$<CONFIG:Debug>:libsfml-audio-d.a>
-            
-            $<$<CONFIG:Release>:libsfml-main-s.a>
-            $<$<CONFIG:Release>:libsfml-system.a>
-            $<$<CONFIG:Release>:libsfml-audio.a>
+
+            $<$<CONFIG:Debug>:sfml-main-s-d>
+            $<$<CONFIG:Release>:sfml-main-s>
+            $<$<CONFIG:Debug>:sfml-system-d>
+            $<$<CONFIG:Release>:sfml-system>
+            $<$<CONFIG:Debug>:sfml-audio-d>
+            $<$<CONFIG:Release>:sfml-audio>
     )
 endif()
 

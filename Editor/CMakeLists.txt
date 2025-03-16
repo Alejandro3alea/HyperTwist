@@ -51,8 +51,6 @@ else() # Windows
             SDL2.lib
             SDL2_mixer.lib
             freetype.lib
-            aubio.dll.a
-            libaubio.a
             $<$<CONFIG:Debug>:libsfml-main-s-d.a>
             $<$<CONFIG:Debug>:libsfml-system-d.a>
             $<$<CONFIG:Debug>:libsfml-audio-d.a>

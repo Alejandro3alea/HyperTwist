@@ -19,24 +19,23 @@ else() # Windows
     message("Setting up libraries for Windows in ${TARGET_NAME} target...")
 
     target_link_directories(${TARGET_NAME}
-    PUBLIC  $<$<CONFIG:Debug>:${SFML_LIB_DIR}/Debug>
+    PUBLIC
+            $<$<CONFIG:Debug>:${SFML_LIB_DIR}/Debug>
             $<$<CONFIG:Release>:${SFML_LIB_DIR}/Release>
     )
 
     target_link_libraries(${TARGET_NAME}
     PUBLIC
-        $<$<CONFIG:Debug>:libsfml-main-s-d.a>
-        $<$<CONFIG:Debug>:libsfml-system-d.a>
-        $<$<CONFIG:Debug>:libsfml-audio-d.a>
-        
-        $<$<CONFIG:Release>:libsfml-main-s.a>
-        $<$<CONFIG:Release>:libsfml-system.a>
-        $<$<CONFIG:Release>:libsfml-audio.a>
+            $<$<CONFIG:Debug>:sfml-main-s-d>
+            $<$<CONFIG:Release>:sfml-main-s>
+            $<$<CONFIG:Debug>:sfml-system-d>
+            $<$<CONFIG:Release>:sfml-system>
+            $<$<CONFIG:Debug>:sfml-audio-d>
+            $<$<CONFIG:Release>:sfml-audio>
     )
 endif()
 
 
 target_compile_definitions(${TARGET_NAME} PUBLIC SFML_STATIC)
-target_link_options(${TARGET_NAME} PUBLIC -static-libgcc -static-libstdc++)
 
 target_compile_definitions(${TARGET_NAME} PRIVATE ENGINE_EXPORTS)
