@@ -6,18 +6,18 @@
 
 struct Texture
 {
-	Texture(const std::string& path);
+	explicit Texture(const std::string& path);
 	~Texture();
 
 public:
-	GLuint GetID() const { return mID; }
-	const glm::ivec2 GetSize() const { return mSize; }
-	const int GetColorChannels() const { return mColorChannels; }
+	[[nodiscard]] GLuint GetID() const { return mID; }
+	[[nodiscard]] glm::ivec2 GetSize() const { return mSize; }
+	[[nodiscard]] int GetColorChannels() const { return mColorChannels; }
 
-	void Bind();
+	void Bind() const;
 
 protected:
-	GLuint mID;
-	glm::ivec2 mSize;
-	int mColorChannels;
+	GLuint mID = 0;
+	glm::ivec2 mSize = {};
+	int mColorChannels = 0;
 };

@@ -14,6 +14,9 @@ Texture::Texture(const std::string& path)
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
 	stbi_set_flip_vertically_on_load(true);
 	unsigned char* data = stbi_load(path.c_str(), &mSize.x, &mSize.y, &mColorChannels, 4);
 	if (!data)
@@ -34,7 +37,7 @@ Texture::~Texture()
 	std::cout << "[DEBUG] Deleted texture with ID " << mID << std::endl;
 }
 
-void Texture::Bind()
+void Texture::Bind() const
 {
 	glBindTexture(GL_TEXTURE_2D, mID);
 }
