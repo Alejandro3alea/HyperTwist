@@ -40,18 +40,18 @@ struct SongSelectSongNode : public SongSelectNode
 {
 	SongSelectSongNode(Song* song) : SongSelectNode(song->mTitle), mSong(song) { ConstructRenderable(); }
 
-	virtual void Select() override;
-	virtual inline bool IsLeaf() const override { return true; }
-	virtual inline bool IsOpen() const override { return false; }
+	void Select() override;
+	bool IsLeaf() const override { return true; }
+	bool IsOpen() const override { return false; }
 
 	void ConstructRenderable();
 
-	virtual void OnOpen() override;
-	virtual void OnFocus() override;
-	virtual void OnUnfocus() override;
+	void OnOpen() override;
+	void OnFocus() override;
+	void OnUnfocus() override;
 
-	virtual void Show() override;
-	virtual void Hide() override;
+	void Show() override;
+	void Hide() override;
 
 	Song* GetSong() { return mSong; }
 
@@ -66,26 +66,26 @@ private:
 
 struct SongSelectGroup : public SongSelectNode
 {
-	SongSelectGroup(const std::string& name, const unsigned childrenPerRow = 3);
+	explicit SongSelectGroup(const std::string& name, unsigned childrenPerRow = 3);
 
-	virtual inline bool IsLeaf() const override { return false; }
-	virtual inline void Select() override { mIsOpen = !mIsOpen; }
-	virtual inline bool IsOpen() const override { return mIsOpen; }
+	bool IsLeaf() const override { return false; }
+	void Select() override { mIsOpen = !mIsOpen; }
+	bool IsOpen() const override { return mIsOpen; }
 
-	inline void Open() { mIsOpen = true; OnOpen(); }
-	inline void Close() { mIsOpen = false; OnClose(); }
+	void Open() { mIsOpen = true; OnOpen(); }
+	void Close() { mIsOpen = false; OnClose(); }
 
 	void OnClose() {}
-	virtual void OnOpen() override;
-	virtual void OnFocus() override;
-	virtual void OnUnfocus() override;
+	void OnOpen() override;
+	void OnFocus() override;
+	void OnUnfocus() override;
 
-	virtual void Show() override;
-	virtual void Hide() override;
+	void Show() override;
+	void Hide() override;
 
 	uint32_t GetChildrenPerRow() const { return mChildrenPerRow; }
 	uint32_t GetDisplayedNodesCount() const;
-	SongSelectNode* GetNodeByIdx(const uint32_t mSelectedIdx);
+	SongSelectNode* GetNodeByIdx(uint32_t mSelectedIdx) const;
 
 public:
 	FontRenderer mLabelText;

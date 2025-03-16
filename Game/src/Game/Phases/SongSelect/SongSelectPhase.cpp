@@ -70,28 +70,32 @@ void SongSelectPhase::TransitionToFilterSelect()
 {
     mSongSelectRenderables->mArrowDown.mbIsVisible = false;
     mSongSelectRenderables->mArrowUp.mbIsVisible = false;
-    mSongSelectRenderables->HideSelectedSongData();
+    mSongSelectRenderables->Hide();
     
     for (auto& filter : mFilters)
         filter->mRenderable.mbIsVisible = true;
+
+    mSongDisplay.Hide();
+    mSongDisplay.ResetIndices();
+    if (mCurrSong)
+        UnfocusSong(mCurrSong);
 }
 
 void SongSelectPhase::TransitionToSongSelect()
 {
     mSongSelectRenderables->mArrowDown.mbIsVisible = true;
     mSongSelectRenderables->mArrowUp.mbIsVisible = true;
-    mSongSelectRenderables->ShowSelectedSongData();
+    mSongSelectRenderables->Show();
 
     for (auto& filter : mFilters)
         filter->mRenderable.mbIsVisible = false;
-
-    mSongDisplay.Reconstruct(mFilters[mFilterIdx].get());
 }
 
 void SongSelectPhase::TransitionToDifficultySelect()
 {
-    mSongSelectRenderables->mArrowDown.mbIsVisible = false;
-    mSongSelectRenderables->mArrowUp.mbIsVisible = false;
+    mSongDisplay.Hide();
+    mSongSelectRenderables->Hide();
+    mDifficultySelectRenderables->Show();
 }
 
 
@@ -119,6 +123,7 @@ void SongSelectPhase::UpdateFilterSelect(const float dt)
     if (InputMgr->isKeyPressed(SDL_SCANCODE_RETURN))
     {
         mFilters[mFilterIdx]->OnOpen();
+        mSongDisplay.Reconstruct(mFilters[mFilterIdx].get());
         ChangeToState(SongSelectState::SongSelect);
     }
 }
@@ -183,7 +188,7 @@ void SongSelectPhase::UpdateDifficultySelect(const float dt)
 }
 
 #pragma region GetSongRegions
-SongSelectNode* SongSelectPhase::GetNodeByIdx(const uint32_t mSelectedIdx)
+SongSelectNode* SongSelectPhase::GetNodeByIdx(const uint32_t mSelectedIdx) const
 {
     return mFilters[mFilterIdx]->GetNodeByIdx(mSelectedIdx);
 }
@@ -250,7 +255,7 @@ std::vector<Song*> SongSelectPhase::GetSongsFromBPMRange(const uint32_t minBPM, 
     for (Resource<Song>* songRes : mSongs)
     {
         Song* song = songRes->get();
-        if (song->mDisplayBPM >= minBPM && song->mDisplayBPM < maxBPM)
+        if (song->mDisplayBPM >= static_cast<float>(minBPM) && song->mDisplayBPM < static_cast<float>(maxBPM))
             result.push_back(song);
     }
     return result;
@@ -284,10 +289,10 @@ void SongSelectPhase::SetupFilters()
     {
         int32_t diff = i - mFilterIdx;
         auto& t = mFilters[i]->mRenderable.transform;
-        t.pos.x = diff * 625.0f;
-        t.pos.z = 10 - std::abs(diff);
-        t.scale.x = std::max(350.0f - 120.0f * std::abs(diff), 0.01f);
-        t.scale.y = std::max(350.0f - 120.0f * std::abs(diff), 0.01f);
+        t.pos.x = static_cast<float>(diff * 625);
+        t.pos.z = static_cast<float>(10 - std::abs(diff));
+        t.scale.x = std::max(350.0f - 120.0f * static_cast<float>(std::abs(diff)), 0.01f);
+        t.scale.y = std::max(350.0f - 120.0f * static_cast<float>(std::abs(diff)), 0.01f);
     }
 }
 
@@ -298,7 +303,7 @@ uint32_t SongSelectPhase::GetDisplayedNodesInGroup(SongSelectGroup* group)
     {
         if (!child->IsLeaf())
         {
-            SongSelectGroup* childGroup = dynamic_cast<SongSelectGroup*>(child.get());
+            auto* childGroup = dynamic_cast<SongSelectGroup*>(child.get());
             if (childGroup->IsOpen())
                 result += GetDisplayedNodesInGroup(childGroup);
         }
@@ -324,8 +329,8 @@ std::pair<uint32_t, uint32_t> SongSelectPhase::GetDisplayData(
         nodeIdx--;
         if (!groupNode->IsOpen())
             continue;
-        
-        SongSelectGroup* group = dynamic_cast<SongSelectGroup*>(groupNode.get());
+
+        auto group = dynamic_cast<SongSelectGroup*>(groupNode.get());
         nodesTillIdx = group->mChildren.size();
         if (nodesTillIdx > nodeIdx)
             return std::make_pair(groupsTillIdx, nodeIdx);

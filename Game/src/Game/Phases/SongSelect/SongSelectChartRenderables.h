@@ -4,7 +4,10 @@
 
 struct SongSelectChartRenderables
 {
-	SongSelectChartRenderables(const ChartDifficulty& category, const uint8_t level);
+	SongSelectChartRenderables(const ChartDifficulty& category, uint8_t level);
+
+	void Show();
+	void Hide();
 
 	Renderable mBG;
 	FontRenderer mDifficulty;
@@ -21,16 +24,18 @@ struct SongSelectRenderables
 
 	void UpdateSelectorPositions(const std::array<int8_t, 2>& selectorIndices);
 
-	void ShowSelectedSongData();
-	void HideSelectedSongData();
+	void Show();
+	void Hide();
 
 private:
-	std::shared_ptr<SongSelectChartRenderables> CreateNewChartRenderables(const ChartDifficulty& category, const uint8_t level, const uint8_t idx);
-	
+	std::shared_ptr<SongSelectChartRenderables> CreateNewChartRenderables(const ChartDifficulty& category, uint8_t level, uint8_t idx);
+
 	void UpdateSelectedSongData(Song* song);
 
 	void SetTextures();
 	void SetInitialVisibility();
+
+	float GetYPosByIndex(uint8_t idx);
 
 public:
 	Renderable mSongThumb;

@@ -15,15 +15,15 @@ enum class SongSelectState
 	DifficultySelect
 };
 
-struct SongSelectPhase : public Phase
+struct SongSelectPhase final : public Phase
 {
-	virtual void OnEnter() override;
-	virtual void OnTick(const float dt) override;
-	virtual void OnExit() override;
+	void OnEnter() override;
+	void OnTick(float dt) override;
+	void OnExit() override;
 
 	void ChangeToState(const SongSelectState& newState);
 
-	SongSelectNode* GetNodeByIdx(const uint32_t mSelectedIdx);
+	SongSelectNode* GetNodeByIdx(uint32_t mSelectedIdx) const;
 
 public:
 	static std::map<uint8_t, std::vector<Song*>> GetSongsByName();
@@ -31,7 +31,7 @@ public:
 	static std::map<uint32_t, std::vector<Song*>> GetSongsByLevel();
 	static std::map<std::string, std::vector<Song*>> GetSongsByPlatform();
 	static std::vector<Song*> GetSongsByVersion(const std::vector<Song*>& platformSongs, const std::string& platformVersion);
-	static std::vector<Song*> GetSongsFromBPMRange(const uint32_t minBPM, const uint32_t maxBPM);
+	static std::vector<Song*> GetSongsFromBPMRange(uint32_t minBPM, uint32_t maxBPM);
 
 protected:
 	static void LoadSongs();
@@ -47,9 +47,9 @@ protected:
 	void TransitionToSongSelect();
 	void TransitionToDifficultySelect();
 
-	void UpdateFilterSelect(const float dt);
-	void UpdateSongSelect(const float dt);
-	void UpdateDifficultySelect(const float dt);
+	void UpdateFilterSelect(float dt);
+	void UpdateSongSelect(float dt);
+	void UpdateDifficultySelect(float dt);
 
 	void FocusSong(Song* song);
 	void UnfocusSong(Song* song);
@@ -65,7 +65,7 @@ private:
 	std::shared_ptr<SongSelectCommonRenderables> mCommonRenderables;
 	std::shared_ptr<SongSelectRenderables> mSongSelectRenderables;
 	std::shared_ptr<DifficultySelectRenderables> mDifficultySelectRenderables;
-	std::array<int8_t, 2> mSelectorIndices;
+	std::array<int8_t, 2> mSelectorIndices = {};
 
 	SongListDisplayManager mSongDisplay;
 

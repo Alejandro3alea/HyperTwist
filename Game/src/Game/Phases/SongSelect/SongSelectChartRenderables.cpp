@@ -17,6 +17,24 @@ SongSelectChartRenderables::SongSelectChartRenderables(const ChartDifficulty& ca
 	mP2Grade.SetTexture("data/engine/texture/Grades/AAA.png");
 }
 
+void SongSelectChartRenderables::Show()
+{
+	mBG.mbIsVisible = true;
+	mDifficulty.mbIsVisible = true;
+	mLevel.mbIsVisible = true;
+	mP1Grade.mbIsVisible = true;
+	mP2Grade.mbIsVisible = true;
+}
+
+void SongSelectChartRenderables::Hide()
+{
+	mBG.mbIsVisible = false;
+	mDifficulty.mbIsVisible = false;
+	mLevel.mbIsVisible = false;
+	mP1Grade.mbIsVisible = false;
+	mP2Grade.mbIsVisible = false;
+}
+
 SongSelectRenderables::SongSelectRenderables()
 {
 	SetTextures();
@@ -29,7 +47,7 @@ void SongSelectRenderables::OnSongChange(Song* song)
 
 	if (song == nullptr)
 	{
-		HideSelectedSongData();
+		Hide();
 		return;
 	}
 
@@ -46,8 +64,8 @@ void SongSelectRenderables::OnSongChange(Song* song)
 
 void SongSelectRenderables::UpdateSelectorPositions(const std::array<int8_t, 2>& selectorIndices) 
 {
-	const float posP1 = -155.0f - selectorIndices[0] * 70.0f;
-	const float posP2 = -155.0f - selectorIndices[1] * 70.0f;
+	const float posP1 = GetYPosByIndex(selectorIndices[0]);
+	const float posP2 = GetYPosByIndex(selectorIndices[1]);
 	mP1Selector.transform.pos.y = Math::Lerp(mP1Selector.transform.pos.y, posP1, 0.2f);
 	mP2Selector.transform.pos.y = Math::Lerp(mP2Selector.transform.pos.y, posP2, 0.2f);
 }
@@ -57,7 +75,7 @@ std::shared_ptr<SongSelectChartRenderables> SongSelectRenderables::CreateNewChar
 	std::shared_ptr<SongSelectChartRenderables> result = std::make_shared<SongSelectChartRenderables>(category, level);
 
 	constexpr float textOffsetY = 12.5f;
-	const float pos = -155.0f - idx * 70.0f;
+	const float pos = GetYPosByIndex(idx);
 	result->mBG.mColor = glm::vec4(1.0f, 1.0f, 1.0f, 0.4f);
 	result->mBG.transform.pos = glm::vec3(-580.0f, pos, 0.5f);
 	result->mBG.transform.scale = glm::vec3(260.0f, 32.5f, 0.1f);
@@ -77,7 +95,7 @@ std::shared_ptr<SongSelectChartRenderables> SongSelectRenderables::CreateNewChar
 
 void SongSelectRenderables::UpdateSelectedSongData(Song* song)
 {
-	ShowSelectedSongData();
+	Show();
 	mSongInfoTitle.SetText(song->mTitle);
 	mSongInfoArtist.SetText(song->mArtist);
 
@@ -87,7 +105,7 @@ void SongSelectRenderables::UpdateSelectedSongData(Song* song)
 		mSongThumb.SetTexture(song->GetPath() + song->mBannerPath);
 }
 
-void SongSelectRenderables::ShowSelectedSongData()
+void SongSelectRenderables::Show()
 {
 	mSongInfoBG.mbIsVisible = true;
 	mSongInfoTitle.mbIsVisible = true;
@@ -103,9 +121,12 @@ void SongSelectRenderables::ShowSelectedSongData()
 
 	mP1Selector.mbIsVisible = true;
 	mP2Selector.mbIsVisible = true;
+
+	for (auto it : mChartRenderables)
+		it->Show();
 }
 
-void SongSelectRenderables::HideSelectedSongData()
+void SongSelectRenderables::Hide()
 {
 	mSongInfoBG.mbIsVisible = false;
 	mSongInfoTitle.mbIsVisible = false;
@@ -121,6 +142,9 @@ void SongSelectRenderables::HideSelectedSongData()
 
 	mP1Selector.mbIsVisible = false;
 	mP2Selector.mbIsVisible = false;
+
+	for (auto it : mChartRenderables)
+		it->Hide();
 }
 
 void SongSelectRenderables::SetTextures()
@@ -188,4 +212,9 @@ void SongSelectRenderables::SetInitialVisibility()
 	mArrowUp.transform.pos = glm::vec3(890.0f, 490.0f, 0.01f);
 	mArrowUp.transform.scale = glm::vec3(30.0f, 15.0f, 0.1f);
 	mArrowUp.transform.rotation = 180.0f;
+}
+
+float SongSelectRenderables::GetYPosByIndex(const uint8_t idx)
+{
+	return static_cast<float>(-155 - idx * 70);
 }

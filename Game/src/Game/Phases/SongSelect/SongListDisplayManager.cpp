@@ -30,9 +30,8 @@ void SongListDisplayManager::MoveLeft()
 	UnfocusNode();
 	if (mSelectedNode == 0)
 	{
-		MoveUp();
+		mMiddleRow = (mMiddleRow != 0) ? mMiddleRow - 1 : mRows.size() - 1;
 		mSelectedNode = mRows[mMiddleRow].mNodes.size() - 1;
-		return;
 	}
 	else
 		mSelectedNode--;
@@ -65,9 +64,27 @@ void SongListDisplayManager::Select()
 		OpenGroup(dynamic_cast<SongSelectGroup*>(selectedNode));
 	else
 	{
-		SongSelectSongNode* songNode = dynamic_cast<SongSelectSongNode*>(selectedNode);
+		auto* songNode = dynamic_cast<SongSelectSongNode*>(selectedNode);
 		mOnSongSelect.Broadcast(songNode->GetSong());
 	}
+}
+
+void SongListDisplayManager::Show()
+{
+	UpdateDisplay(true);
+}
+
+void SongListDisplayManager::Hide()
+{
+	for (auto& row : mRows)
+		for (auto it : row.mNodes)
+			it->Hide();
+}
+
+void SongListDisplayManager::ResetIndices()
+{
+	mMiddleRow = 0;
+	mSelectedNode = 0;
 }
 
 void SongListDisplayManager::FocusNode()
@@ -77,7 +94,7 @@ void SongListDisplayManager::FocusNode()
 
 	if (node->IsLeaf())
 	{
-		SongSelectSongNode* songNode = dynamic_cast<SongSelectSongNode*>(node);
+		auto* songNode = dynamic_cast<SongSelectSongNode*>(node);
 		mOnSongFocus.Broadcast(songNode->GetSong());
 	}
 }
@@ -88,21 +105,22 @@ void SongListDisplayManager::UnfocusNode()
 	node->OnUnfocus();
 	if (node->IsLeaf())
 	{
-		SongSelectSongNode* songNode = dynamic_cast<SongSelectSongNode*>(node);
+		auto* songNode = dynamic_cast<SongSelectSongNode*>(node);
 		mOnSongUnfocus.Broadcast(songNode->GetSong());
 	}
 }
 
 
-void SongListDisplayManager::UpdateGroup(SongSelectGroup* group, const glm::vec3& newPos, const glm::vec3& newScale, const bool isSelected)
+void SongListDisplayManager::UpdateGroup(SongSelectGroup* group, const glm::vec3& newPos, const glm::vec3& newScale,
+	const bool isSelected, const bool force)
 {
 	group->Show();
 
 	auto& baseT = group->mRenderable.transform;
 	auto& labelT = group->mLabelText.transform;
-	baseT.pos = Math::Lerp(baseT.pos, newPos, 0.2f);
-	baseT.scale = Math::Lerp(baseT.scale, newScale, 0.2f);
-	labelT.pos = Math::Lerp(labelT.pos, newPos, 0.2f);
+	baseT.pos = force ? newPos		:	Math::Lerp(baseT.pos, newPos, 0.2f);
+	baseT.scale = force ? newScale  :	Math::Lerp(baseT.scale, newScale, 0.2f);
+	labelT.pos = force ? newPos		:	Math::Lerp(labelT.pos, newPos, 0.2f);
 	labelT.pos.z = 2.0f;
 
 	const glm::vec4 updateCol = isSelected ? glm::vec4(1.0f, 1.0f, 0.20f, 1.0f) : glm::vec4(1.0f);
@@ -110,7 +128,8 @@ void SongListDisplayManager::UpdateGroup(SongSelectGroup* group, const glm::vec3
 	selectedCol = Math::Lerp(selectedCol, updateCol, 0.2f);
 }
 
-void SongListDisplayManager::UpdateSongNode(SongSelectSongNode* node, const glm::vec3& newPos, const glm::vec3& newScale, const bool isSelected)
+void SongListDisplayManager::UpdateSongNode(SongSelectSongNode* node, const glm::vec3& newPos, const glm::vec3& newScale,
+	const bool isSelected, const bool force)
 {
 	node->Show();
 
@@ -118,19 +137,23 @@ void SongListDisplayManager::UpdateSongNode(SongSelectSongNode* node, const glm:
 	auto& cdT = node->mCDRenderable.transform;
 	auto& labelT = node->mLabel.transform;
 
-	baseT.pos = Math::Lerp(baseT.pos, newPos, 0.2f);
-	baseT.scale = Math::Lerp(baseT.scale, glm::vec3(newScale.x, newScale.y * 1.2f, 1.f), 0.2f);
-	cdT.pos = Math::Lerp(cdT.pos, newPos + glm::vec3(0.f, newScale.y / 5.f, 0.1f), 0.2f);
-	cdT.scale = Math::Lerp(cdT.scale, glm::vec3(newScale.x) / 1.25f, 0.2f);
-	labelT.pos = Math::Lerp(labelT.pos, newPos + glm::vec3(0.f, -newScale.y, 0.2f), 0.2f);
-	//labelT.scale = Math::Lerp(labelT.scale, glm::vec3(newScale.x) / 1.25f, 0.2f);
+	const glm::vec3 targetCDPos    = newPos + glm::vec3(0.f, newScale.y / 5.f, 0.1f);
+	const glm::vec3 targetLabelPos = newPos + glm::vec3(0.f, -newScale.y, 0.2f);
+	const glm::vec3 targetBaseScale = glm::vec3(newScale.x, newScale.y * 1.2f, 1.f);
+	const glm::vec3 targetCDScale   = glm::vec3(newScale.x) / 1.25f;
+
+	baseT.pos = force ? newPos				:	Math::Lerp(baseT.pos, newPos, 0.2f);
+	baseT.scale = force ? targetBaseScale	:	Math::Lerp(baseT.scale, targetBaseScale, 0.2f);
+	cdT.pos = force ? targetCDPos			:	Math::Lerp(cdT.pos, targetCDPos, 0.2f);
+	cdT.scale = force ? targetCDScale		:	Math::Lerp(cdT.scale, targetCDScale, 0.2f);
+	labelT.pos =force ? targetLabelPos		:	Math::Lerp(labelT.pos, targetLabelPos, 0.2f);
 
 	const glm::vec4 updateCol = isSelected ? glm::vec4(0.7f, 0.7f, 0.f, 1.0f) : glm::vec4(0.f, 0.f, 0.f, 1.0f);
 	glm::vec4& selectedCol = node->mRenderable.mColor;
 	selectedCol = Math::Lerp(selectedCol, updateCol, 0.2f);
 }
 
-void SongListDisplayManager::UpdateRow(const int32_t idx, const float yPos)
+void SongListDisplayManager::UpdateRow(const int32_t idx, const float yPos, const bool force)
 {
 	const auto getNodeDistributions = [](const uint32_t nodeCount) -> std::vector<float>
 		{
@@ -138,7 +161,7 @@ void SongListDisplayManager::UpdateRow(const int32_t idx, const float yPos)
 			switch (nodeCount)
 			{
 			case 0:
-				return std::vector<float>();
+				return {};
 			case 1:
 				return std::vector<float>({ 0.5f });
 			default:
@@ -162,16 +185,15 @@ void SongListDisplayManager::UpdateRow(const int32_t idx, const float yPos)
 	const float startX = distFromMidpoint * 175.0f;
 	const float sizeX = 650.0f - distFromMidpoint * 100.0f;
 
-	//std::vector<float> xVals = getNodeDistributions(rowNodeCount);
 	for (uint32_t i = 0; i < rowNodes.size(); i++)
 	{
 		const bool isSelected = (distFromMidpoint == 0.0f && i == mSelectedNode);
 		const glm::vec3 newPos(startX + nodeDists[i] * sizeX, yPos, 1.0f);
 
 		if (rowNodes[i]->IsLeaf())
-			UpdateSongNode(dynamic_cast<SongSelectSongNode*>(rowNodes[i]), newPos, newScale, isSelected);
+			UpdateSongNode(dynamic_cast<SongSelectSongNode*>(rowNodes[i]), newPos, newScale, isSelected, force);
 		else // group
-			UpdateGroup(dynamic_cast<SongSelectGroup*>(rowNodes[i]), newPos, newScale, isSelected);
+			UpdateGroup(dynamic_cast<SongSelectGroup*>(rowNodes[i]), newPos, newScale, isSelected, force);
 
 	}
 }
@@ -184,6 +206,7 @@ void SongListDisplayManager::DisableRow(const int32_t idx)
 		rowNode->Hide();
 }
 
+// ReSharper disable once CppMemberFunctionMayBeConst
 void SongListDisplayManager::ResetVisibility()
 {
 	const size_t rowCount = mRows.size();
@@ -197,7 +220,7 @@ void SongListDisplayManager::ResetVisibility()
 	}
 }
 
-void SongListDisplayManager::SetNodeIndicesFrom(SongSelectNode* node)
+void SongListDisplayManager::SetNodeIndicesFrom(const SongSelectNode* node)
 {
 	const size_t rowCount = mRows.size();
 	for (uint32_t i = 0; i < rowCount; i++)
@@ -216,23 +239,23 @@ void SongListDisplayManager::SetNodeIndicesFrom(SongSelectNode* node)
 	}
 }
 
-void SongListDisplayManager::UpdateDisplay()
+void SongListDisplayManager::UpdateDisplay(const bool force)
 {
-	int32_t midPoint = mDisplayedRows / 2 + 1;
-	const float yInc = 700 / midPoint;
-	float yPos = 700;
+	int32_t midPoint = static_cast<int32_t>(mDisplayedRows) / 2 + 1;
+	const float yInc = 700.0f / static_cast<float>(midPoint);
+	float yPos = 700.0f;
 	const int32_t startRow = mMiddleRow - midPoint;
 	const int32_t endRow = mMiddleRow + midPoint;
 	for (int32_t i = startRow; i <= endRow; i++)
 	{
-		UpdateRow(i, yPos);
+		UpdateRow(i, yPos, force);
 		yPos -= yInc;
 	}
 	DisableRow(startRow - 1);
 	DisableRow(endRow + 1);
 }
 
-void SongListDisplayManager::Construct(SongSelectGroup* mainGroup)
+void SongListDisplayManager::Construct(const SongSelectGroup* mainGroup)
 {
 	if (mainGroup == nullptr)
 		return;
