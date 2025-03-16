@@ -9,4 +9,6 @@ namespace GameUtils
 
 	std::string ChartDifficultyToStr(const ChartDifficulty& val);
 	ChartDifficulty StrToChartDifficulty(const std::string& str);
+
+	std::string GetBPMLabel(const std::map<float, float>& bpms);
 }

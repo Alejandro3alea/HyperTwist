@@ -10,11 +10,10 @@ std::vector<Resource<Song>*> SongSelectPhase::mSongs;
 void SongSelectPhase::OnEnter()
 {
 	//GfxMgr->SetBackgroundShader(ResourceMgr->Load<Shader>("data/shaders/SongSelectBG.shader")); 
-	GfxMgr->SetBackgroundTexture(ResourceMgr->Load<Texture>("data/engine/texture/SongSelect/MainBG.png"));
+	GfxMgr->SetBackgroundTexture(ResourceMgr->Load<Texture>("data/engine/texture/SongSelect/DifficultySelect/ReferenceDark.png"));
 
 	mSongSelectRenderables = std::make_shared<SongSelectRenderables>();
     mCommonRenderables = std::make_shared<SongSelectCommonRenderables>();
-    //mDifficultySelectRenderables = std::make_shared<DifficultySelectRenderables>();
 
     ChangeToState(SongSelectState::FilterSelect);
     LoadSongs();
@@ -86,6 +85,7 @@ void SongSelectPhase::TransitionToSongSelect()
     mSongSelectRenderables->mArrowDown.mbIsVisible = true;
     mSongSelectRenderables->mArrowUp.mbIsVisible = true;
     mSongSelectRenderables->Show();
+    mDifficultySelectRenderables.reset();
 
     for (auto& filter : mFilters)
         filter->mRenderable.mbIsVisible = false;
@@ -95,6 +95,7 @@ void SongSelectPhase::TransitionToDifficultySelect()
 {
     mSongDisplay.Hide();
     mSongSelectRenderables->Hide();
+    mDifficultySelectRenderables = std::make_shared<DifficultySelectRenderables>(mCurrSong);
     mDifficultySelectRenderables->Show();
 }
 

@@ -4,7 +4,7 @@
 
 struct DifficultySelectChartRenderables
 {
-	DifficultySelectChartRenderables(const ChartDifficulty& category, const uint8_t level);
+	DifficultySelectChartRenderables(const ChartDifficulty& category, uint8_t level);
 
 	Renderable mBG;
 	FontRenderer mDifficulty;
@@ -15,7 +15,7 @@ struct DifficultySelectChartRenderables
 
 struct DifficultySelectRenderables
 {
-	DifficultySelectRenderables(Song* song);
+	explicit DifficultySelectRenderables(Song* song);
 
 	void UpdateSelectorPositions(const std::array<int8_t, 2>& selectorIndices);
 
@@ -29,9 +29,6 @@ private:
 	void SetPositions();
 
 public:
-	Renderable mStageBG;
-	FontRenderer mStageText;
-
 	Renderable mSongThumb;
 	Renderable mSongInfoBG;
 	FontRenderer mSongInfoTitle;

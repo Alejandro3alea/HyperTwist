@@ -1,6 +1,8 @@
 #include "GameUtils.h"
 #include "Game/Song.h"
 
+#include <ranges>
+
 void GameUtils::UpdateSongToSMD(const std::string& path)
 {
     Song* pSong = ResourceMgr->Load<Song>(path)->get();
@@ -43,4 +45,23 @@ ChartDifficulty GameUtils::StrToChartDifficulty(const std::string& str)
         return ChartDifficulty::Challenge;
 
     return ChartDifficulty::Special;
+}
+
+std::string GameUtils::GetBPMLabel(const std::map<float, float>& bpms)
+{
+    if (bpms.size() == 1)
+        return std::to_string(bpms.begin()->second);
+
+    float smallest = std::numeric_limits<float>::max();
+    float biggest = std::numeric_limits<float>::min();
+    for (const float& currBPM : bpms | std::views::values)
+    {
+        if (currBPM < smallest)
+            smallest = currBPM;
+
+        if (currBPM > biggest)
+            biggest = currBPM;
+    }
+
+    return std::to_string(smallest) + " - " + std::to_string(biggest);
 }
