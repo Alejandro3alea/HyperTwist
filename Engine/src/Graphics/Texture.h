@@ -14,7 +14,7 @@ public:
 	[[nodiscard]] glm::ivec2 GetSize() const { return mSize; }
 	[[nodiscard]] int GetColorChannels() const { return mColorChannels; }
 
-	void Bind() const;
+	void Bind();
 
 protected:
 	GLuint mID = 0;

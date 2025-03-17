@@ -23,7 +23,7 @@ struct DifficultySelectRenderables
 	void Hide();
 
 private:
-	std::shared_ptr<DifficultySelectChartRenderables> CreateNewChartRenderables(const ChartDifficulty& category, const uint8_t level, const int8_t idx);
+	std::shared_ptr<DifficultySelectChartRenderables> CreateNewChartRenderables(const ChartDifficulty& category, uint8_t level, int8_t idx);
 
 	void SetTextures(Song* song);
 	void SetPositions();

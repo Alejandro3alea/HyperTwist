@@ -1,6 +1,7 @@
 #pragma once
 #include "Graphics/Renderable.h"
 #include "Game/Song.h"
+#include "UI/UITable.h"
 
 struct SongSelectChartRenderables
 {
@@ -38,6 +39,8 @@ private:
 	float GetYPosByIndex(uint8_t idx);
 
 public:
+	UITable mTable;
+
 	Renderable mSongThumb;
 	Renderable mSongInfoBG;
 	FontRenderer mSongInfoTitle;

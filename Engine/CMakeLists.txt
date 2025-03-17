@@ -2,7 +2,10 @@ set(TARGET_NAME Engine)
 
 file(GLOB_RECURSE ALL_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/*.cpp")
 
-add_library(${TARGET_NAME} STATIC ${ALL_SOURCES})
+add_library(${TARGET_NAME} STATIC ${ALL_SOURCES}
+        src/Utils/FileUtils.cpp
+        src/Utils/FileUtils.h
+        src/Misc/Serialization.h)
 
 # Linux config
 if(CMAKE_SYSTEM_NAME STREQUAL "Linux")

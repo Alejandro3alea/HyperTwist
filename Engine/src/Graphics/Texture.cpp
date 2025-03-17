@@ -37,7 +37,7 @@ Texture::~Texture()
 	std::cout << "[DEBUG] Deleted texture with ID " << mID << std::endl;
 }
 
-void Texture::Bind() const
+void Texture::Bind()
 {
 	glBindTexture(GL_TEXTURE_2D, mID);
 }

@@ -3,7 +3,9 @@ set(DATA_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 
 file(GLOB_RECURSE ALL_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp")
 
-add_executable(${TARGET_NAME} ${ALL_SOURCES})
+add_executable(${TARGET_NAME} ${ALL_SOURCES}
+        src/UI/UIElementData.h
+        src/UI/UITableException.h)
 
 option(TEST_MODE "Enable test accounts" ON)
 if(TEST_MODE)

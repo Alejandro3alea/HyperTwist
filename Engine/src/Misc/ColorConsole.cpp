@@ -16,9 +16,11 @@ void PrintColoredText(const std::string& text, const ConsoleColor color)
 		col = 3; break;
 	case Purple:
 		col = 5; break;
+	default:
+		break;
 	}
 
-	HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+	const HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
 	SetConsoleTextAttribute(hConsole, col);
 #endif
 	std::cout << text << std::endl;		

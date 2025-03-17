@@ -69,6 +69,30 @@ void DifficultySelectRenderables::Hide()
 	mArrowDown.mbIsVisible = false;
 }
 
+std::shared_ptr<DifficultySelectChartRenderables> DifficultySelectRenderables::CreateNewChartRenderables(
+	const ChartDifficulty& category, const uint8_t level, const int8_t idx)
+{
+	/*std::shared_ptr<DifficultySelectChartRenderables> result = std::make_shared<DifficultySelectChartRenderables>(category, level);
+
+	constexpr float textOffsetY = 12.5f;
+	const float pos = GetYPosByIndex(idx);
+	result->mBG.mColor = glm::vec4(1.0f, 1.0f, 1.0f, 0.4f);
+	result->mBG.transform.pos = glm::vec3(-580.0f, pos, 0.5f);
+	result->mBG.transform.scale = glm::vec3(260.0f, 32.5f, 0.1f);
+
+	result->mDifficulty.transform.pos = glm::vec3(-610.0f, pos - textOffsetY, 1.75f);
+	result->mDifficulty.transform.scale = glm::vec3(0.6f);
+	result->mLevel.transform.pos = glm::vec3(-460.0f, pos - textOffsetY, 1.75f);
+	result->mLevel.transform.scale = glm::vec3(0.6f);
+
+	result->mP1Grade.transform.pos = glm::vec3(-760.0f, pos, 1.8f);
+	result->mP1Grade.transform.scale = glm::vec3(40.0f);
+	result->mP2Grade.transform.pos = glm::vec3(-400.0f, pos, 1.8f);
+	result->mP2Grade.transform.scale = glm::vec3(40.0f);
+
+	return result;*/
+}
+
 void DifficultySelectRenderables::SetTextures(Song* song)
 {
     mSongInfoBG.SetTexture("data/engine/texture/SongSelect/RectangleHorizontalFadeOneSide.png");
