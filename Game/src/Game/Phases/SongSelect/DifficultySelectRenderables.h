@@ -1,5 +1,6 @@
 #pragma once
 #include "Graphics/Renderable.h"
+#include "UI/UITable.h"
 #include "Game/Song.h"
 
 struct DifficultySelectChartRenderables
@@ -25,10 +26,12 @@ struct DifficultySelectRenderables
 private:
 	std::shared_ptr<DifficultySelectChartRenderables> CreateNewChartRenderables(const ChartDifficulty& category, uint8_t level, int8_t idx);
 
-	void SetTextures(Song* song);
+	void SetTextures(const Song* song);
 	void SetPositions();
 
 public:
+	UITable mTable;
+
 	Renderable mSongThumb;
 	Renderable mSongInfoBG;
 	FontRenderer mSongInfoTitle;

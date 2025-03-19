@@ -22,16 +22,23 @@ void UITable::Update()
 void UITable::ReloadData()
 {
     mDataMap.clear();
-    json data = FileUtils::FileToJson(mDataPath);
+    json data = FileUtils::FileToJson(mDataPath)["Elements"];
     for (auto it = data.begin(); it != data.end(); ++it)
     {
         json& currVal = it.value();
         glm::vec2 scale;
         UIElementData currData;
-        currData.pos << currVal["pos"];
-        scale << currVal["scale"];
-        currData.scale = glm::vec3(scale, 1.0f);
-        currData.color << currVal["color"];
+        if (currVal.contains("pos"))
+            currData.pos << currVal["pos"];
+
+        if (currVal.contains("scale"))
+        {
+            scale << currVal["scale"];
+            currData.scale = glm::vec3(scale, 1.0f);
+        }
+
+        if (currVal.contains("color"))
+            currData.color << currVal["color"];
 
         std::string name;
         name << currVal["name"];

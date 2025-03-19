@@ -1,7 +1,7 @@
 {
   "Elements": [
     {
-      "name": "SongThumb",
+      "name": "mSongThumb",
       "pos": {
         "x": -580.0,
         "y": 245.0,
@@ -10,6 +10,18 @@
       "scale": {
         "x": 225.0,
         "y": 225.0
+      }
+    },
+    {
+      "name": "mSongInfoBG",
+      "pos": {
+        "x": -580.0,
+        "y": -32.5,
+        "z": 0.5
+      },
+      "scale": {
+        "x": 260.0,
+        "y": 40.0
       },
       "color": {
         "r": 1.0,
@@ -19,19 +31,7 @@
       }
     },
     {
-      "name": "SongInfoBG",
-      "pos": {
-        "x": -580.0,
-        "y": -32.5,
-        "z": 0.5
-      },
-      "scale": {
-        "x": 260.0,
-        "y": 40.0
-      }
-    },
-    {
-      "name": "SongInfoTitle",
+      "name": "mSongInfoTitle",
       "pos": {
         "x": -580.0,
         "y": -35.0,
@@ -43,7 +43,7 @@
       }
     },
     {
-      "name": "SongInfoArtist",
+      "name": "mSongInfoArtist",
       "pos": {
         "x": -580.0,
         "y": -64.0,
@@ -55,7 +55,7 @@
       }
     },
     {
-      "name": "P1ScoreBG",
+      "name": "mP1ScoreBG",
       "pos": {
         "x": -160.0,
         "y": 420.5,
@@ -73,7 +73,7 @@
       }
     },
     {
-      "name": "P1ScoreTitle",
+      "name": "mP1ScoreTitle",
       "pos": {
         "x": -160.0,
         "y": 437.0,
@@ -85,7 +85,7 @@
       }
     },
     {
-      "name": "P1Score",
+      "name": "mP1Score",
       "pos": {
         "x": -160.0,
         "y": 400.5,
@@ -97,7 +97,7 @@
       }
     },
     {
-      "name": "P2ScoreBG",
+      "name": "mP2ScoreBG",
       "pos": {
         "x": -160.0,
         "y": 315.0,
@@ -115,7 +115,7 @@
       }
     },
     {
-      "name": "P2ScoreTitle",
+      "name": "mP2ScoreTitle",
       "pos": {
         "x": -160.0,
         "y": 330.0,
@@ -127,7 +127,7 @@
       }
     },
     {
-      "name": "P2Score",
+      "name": "mP2Score",
       "pos": {
         "x": -160.0,
         "y": 290.0,
@@ -139,7 +139,7 @@
       }
     },
     {
-      "name": "P1Selector",
+      "name": "mP1Selector",
       "pos": {
         "x": -827.5,
         "y": -435.0,
@@ -151,7 +151,7 @@
       }
     },
     {
-      "name": "P2Selector",
+      "name": "mP2Selector",
       "pos": {
         "x": -332.5,
         "y": -295.0,
@@ -163,7 +163,7 @@
       }
     },
     {
-      "name": "ArrowDown",
+      "name": "mArrowDown",
       "pos": {
         "x": 890.0,
         "y": -490.0,
@@ -175,7 +175,7 @@
       }
     },
     {
-      "name": "ArrowUp",
+      "name": "mArrowUp",
       "pos": {
         "x": 890.0,
         "y": 490.0,

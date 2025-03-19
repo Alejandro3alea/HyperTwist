@@ -6,9 +6,9 @@
 #include <filesystem>
 
 #define SET_TABLE_VALUES(tableName, name) \
-##name.transform.pos   = tableName[#name].pos;   \
-##name.transform.scale = tableName[#name].scale; \
-##name.mColor = tableName[#name].color;
+name.transform.pos   = tableName[#name].pos;   \
+name.transform.scale = tableName[#name].scale; \
+name.mColor = tableName[#name].color;
 
 struct UITable
 {

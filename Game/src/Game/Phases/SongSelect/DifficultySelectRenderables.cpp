@@ -2,7 +2,18 @@
 
 #include <Utils/GameUtils.h>
 
-DifficultySelectRenderables::DifficultySelectRenderables(Song* song)
+DifficultySelectChartRenderables::DifficultySelectChartRenderables(const ChartDifficulty& category, uint8_t level)
+{
+	mBG.SetTexture("data/engine/texture/SongSelect/RectangleHorizontalFade.png");
+	mDifficulty.SetFont("data/engine/fonts/Rubik.ttf");
+	mDifficulty.SetText("Challenge");
+	mLevel.SetFont("data/engine/fonts/Rubik.ttf");
+	mLevel.SetText("17");
+	mGrade.SetTexture("data/engine/texture/SongSelect/RectangleHorizontalFade.png");
+	mFullComboIcon.SetTexture("data/engine/texture/SongSelect/RectangleHorizontalFade.png");
+}
+
+DifficultySelectRenderables::DifficultySelectRenderables(Song* song) : mTable("data/UI/DifficultySelect.json")
 {
 	SetTextures(song);
 	SetPositions();
@@ -91,11 +102,13 @@ std::shared_ptr<DifficultySelectChartRenderables> DifficultySelectRenderables::C
 	result->mP2Grade.transform.scale = glm::vec3(40.0f);
 
 	return result;*/
+	//return std::make_shared<DifficultySelectChartRenderables>(category, level);
+	return nullptr;
 }
 
-void DifficultySelectRenderables::SetTextures(Song* song)
+void DifficultySelectRenderables::SetTextures(const Song* song)
 {
-    mSongInfoBG.SetTexture("data/engine/texture/SongSelect/RectangleHorizontalFadeOneSide.png");
+    //mSongInfoBG.SetTexture("data/engine/texture/SongSelect/RectangleHorizontalFadeOneSide.png");
     mSongInfoTitle.SetFont("data/engine/fonts/Rubik.ttf");
     mSongInfoTitle.SetText(song->mTitle);
     mSongInfoArtist.SetFont("data/engine/fonts/Rubik.ttf");
@@ -120,39 +133,21 @@ void DifficultySelectRenderables::SetTextures(Song* song)
 
 void DifficultySelectRenderables::SetPositions()
 {
-	// Creepily staring at these values (maybe @TODO for making a UI file IO system?)
-	// TODO: Json system for UI elements
-	mSongThumb.transform.pos = glm::vec3(-280.0f, 450.0f, 0.5f);
-	mSongThumb.transform.scale = glm::vec3(100.0f);
-	mSongInfoBG.mColor = glm::vec4(1.0f, 1.0f, 1.0f, 0.75f);
-	mSongInfoBG.transform.pos = glm::vec3(0.0f, 350.0f, 0.5f);
-	mSongInfoBG.transform.scale = glm::vec3(260.0f, 40.0f, 0.1f);
-	mSongInfoTitle.transform.pos = glm::vec3(0.0f, 350.0f, 1.75f);
-	mSongInfoTitle.transform.scale = glm::vec3(0.7f);
-	mSongInfoArtist.transform.pos = glm::vec3(0.0f, 300.0f, 1.5f);
-	mSongInfoArtist.transform.scale = glm::vec3(0.35f);
-	mSongInfoBPM.transform.pos = glm::vec3(150.0f, 250.0f, 1.5f);
-	mSongInfoBPM.transform.scale = glm::vec3(0.35f);
+	SET_TABLE_VALUES(mTable, mSongThumb);
+	SET_TABLE_VALUES(mTable, mSongInfoBG);
+	SET_TABLE_VALUES(mTable, mSongInfoTitle);
+	SET_TABLE_VALUES(mTable, mSongInfoArtist);
+	SET_TABLE_VALUES(mTable, mSongInfoBPM);
 
-	mP1ScoreBG.transform.pos = glm::vec3(-600.0f, 0.0f, 0.5f);
-	mP1ScoreBG.transform.scale = glm::vec3(140.0f, 40.0f, 0.1f);
-	mP1ScoreBG.mColor = glm::vec4(1.0f, 1.0f, 1.0f, 0.4f);
-	mP1ScoreTitle.transform.pos = glm::vec3(-600.0f, 15.0f, 1.0f);
-	mP1ScoreTitle.transform.scale = glm::vec3(0.35f);
-	mP1Score.transform.pos = glm::vec3(-600.0f, 0.0f, 1.0f);
-	mP1Score.transform.scale = glm::vec3(0.5f);
+	SET_TABLE_VALUES(mTable, mP1ScoreBG);
+	SET_TABLE_VALUES(mTable, mP1ScoreTitle);
+	SET_TABLE_VALUES(mTable, mP1Score);
 
-	mP2ScoreBG.transform.pos = glm::vec3(600.0f, 0.0f, 0.5f);
-	mP2ScoreBG.transform.scale = glm::vec3(140.0f, 40.0f, 0.1f);
-	mP2ScoreBG.mColor = glm::vec4(1.0f, 1.0f, 1.0f, 0.4f);
-	mP2ScoreTitle.transform.pos = glm::vec3(600.0f, 15.0f, 1.0f);
-	mP2ScoreTitle.transform.scale = glm::vec3(0.35f);
-	mP2Score.transform.pos = glm::vec3(-600.0f, 0.0f, 1.0f);
-	mP2Score.transform.scale = glm::vec3(0.5f);
+	SET_TABLE_VALUES(mTable, mP2ScoreBG);
+	SET_TABLE_VALUES(mTable, mP2ScoreTitle);
+	SET_TABLE_VALUES(mTable, mP2Score);
 
-	mArrowDown.transform.pos = glm::vec3(890.0f, -490.0f, 0.01f);
-	mArrowDown.transform.scale = glm::vec3(30.0f, 15.0f, 0.1f);
-	mArrowUp.transform.pos = glm::vec3(890.0f, 490.0f, 0.01f);
-	mArrowUp.transform.scale = glm::vec3(30.0f, 15.0f, 0.1f);
+	SET_TABLE_VALUES(mTable, mArrowDown);
+	SET_TABLE_VALUES(mTable, mArrowUp);
 	mArrowUp.transform.rotation = 180.0f;
 }
