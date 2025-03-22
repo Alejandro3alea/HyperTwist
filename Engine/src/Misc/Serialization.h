@@ -8,12 +8,6 @@
 using json = nlohmann::json;
 
 #pragma region FROM_JSON
-template <typename T>
-json& operator<<(T& type, json& val)
-{
-	return val >> type;
-}
-
 #pragma region DEFAULT_DATATYPES
 inline json& operator>>(json& val, int8_t& type)
 {
@@ -143,15 +137,15 @@ inline json& operator>>(json& val, glm::quat& quat)
 	quat.w = val["w"].get<float>();
 	return val;
 }
+
+template <typename T>
+json& operator<<(T& type, json& val)
+{
+	return val >> type;
+}
 #pragma endregion
 
 #pragma region TO_JSON
-template <typename T>
-json& operator>>(T& type, json& val)
-{
-	return val << type;
-}
-
 #pragma region DEFAULT_DATATYPES
 inline json& operator<<(json& val, const int8_t type) { return val = type; }
 inline json& operator<<(json& val, const uint8_t type) { return val = type; }
@@ -209,4 +203,11 @@ inline json& operator<<(json& val, glm::quat& quat)
 	val = tVal;
 	return val;
 }
+
+template <typename T>
+json& operator>>(T& type, json& val)
+{
+	return val << type;
+}
+
 #pragma endregion

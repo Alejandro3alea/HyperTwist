@@ -57,8 +57,8 @@ else() # Windows
             SDL2.lib
             SDL2_mixer.lib
             freetype.lib
-            aubio.dll.a
-            libaubio.a
+            aubio.dll.a.lib
+            libaubio.a.lib
 
             $<$<CONFIG:Debug>:sfml-main-s-d>
             $<$<CONFIG:Release>:sfml-main-s>
