@@ -41,6 +41,7 @@ build/*
 *data/ignore/*
 *data/local/*
 .idea
+enc_temp_folder/*
 
 # Custom Files
 PlatformCategories.data
