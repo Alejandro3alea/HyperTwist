@@ -3,7 +3,7 @@
     "configurePresets": [
       {
         "name": "base-windows",
-        "generator": "MinGW Makefiles",
+        "generator": "Visual Studio 17 2022",
         "binaryDir": "${sourceDir}/build/",
         "cacheVariables": {
           "BUILD_GAME": "OFF",
