@@ -6,12 +6,12 @@
 
 void DevMenuPhase::OnEnter()
 {
-	GfxMgr->SetBackgroundTexture(ResourceMgr->Load<Texture>("data/engine/texture/Black.png"));
+	GfxMgr->SetBackgroundTexture(ResourceMgr->Load<Texture>("engine/texture/Black.png"));
 
-	mTitleRenderer = new FontRenderer("Dev Menu", ResourceMgr->Load<Font>("data/engine/fonts/Roboto-Medium.ttf"));
+	mTitleRenderer = new FontRenderer("Dev Menu", ResourceMgr->Load<Font>("engine/fonts/Roboto-Medium.ttf"));
 	mTitleRenderer->transform.pos.y = 450.0f;
 	mLineRenderer = new Renderable();
-	mLineRenderer->mTexture = ResourceMgr->Load<Texture>("data/engine/texture/GradientLine.png");
+	mLineRenderer->mTexture = ResourceMgr->Load<Texture>("engine/texture/GradientLine.png");
 	mLineRenderer->transform.pos.y = 425.0f;
 	mLineRenderer->transform.pos.z = 10.0f;
 	mLineRenderer->transform.scale = glm::vec3(750, 1, 1);

@@ -10,7 +10,6 @@
 #include <iostream>
 #include <filesystem>
 
-
 ResourceManager* ResourceManager::mpInstance;
 
 void ResourceManager::Initialize()
@@ -33,10 +32,10 @@ void ResourceManager::Initialize()
 
 void ResourceManager::LoadDefaultAssets()
 {
-	mDefaultResources[typeid(Shader).name()] = Load<Shader>("data/engine/shaders/Quad.shader");
-	mDefaultResources[typeid(Texture).name()] = Load<Texture>("data/engine/texture/Default.png");
-	mDefaultResources[typeid(Audio).name()] = Load<Audio>("data/engine/audio/Default.mp3");
-	mDefaultResources[typeid(Font).name()] = Load<Font>("data/engine/fonts/Cousine-Regular.ttf");
+	mDefaultResources[typeid(Shader).name()] = Load<Shader>("/engine/shaders/Quad.shader");
+	mDefaultResources[typeid(Texture).name()] = Load<Texture>("/engine/texture/Default.png");
+	mDefaultResources[typeid(Audio).name()] = Load<Audio>("/engine/audio/Default.mp3");
+	mDefaultResources[typeid(Font).name()] = Load<Font>("/engine/fonts/Cousine-Regular.ttf");
 }
 
 void ResourceManager::Shutdown()

@@ -3,13 +3,13 @@
 void MeasureLines::OnSongChange(Song* InSong)
 {
 	mNotesBackground = std::unique_ptr<Renderable>(new Renderable());
-	mNotesBackground->SetShader("data/engine/shaders/NotesUI.shader");
+	mNotesBackground->SetShader("engine/shaders/NotesUI.shader");
 	mNotesBackground.get()->mColor = { 0.0f, 0.0f, 0.0f, 0.75f };
 	mNotesBackground.get()->transform.pos = { 0.0f, 0.0f, 0.1f };
 	mNotesBackground.get()->transform.scale = { 5.5f, 100000.0f, 0.05f };
 
 	mBeatsBackground = std::unique_ptr<Renderable>(new Renderable());
-	mBeatsBackground->SetShader("data/engine/shaders/NotesUI.shader");
+	mBeatsBackground->SetShader("engine/shaders/NotesUI.shader");
 	mBeatsBackground.get()->mColor = { 0.0f, 0.0f, 0.0f, 0.75f };
 	mBeatsBackground.get()->transform.pos = { 6.75f, 0.0f, 0.1f };
 	mBeatsBackground.get()->transform.scale = { 1.0f, 100000.0f, 0.05f };

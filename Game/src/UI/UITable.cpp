@@ -8,7 +8,7 @@
 
 using json = nlohmann::json;
 
-UITable::UITable(std::string path) : mDataPath(std::move(path))
+UITable::UITable(std::string path) : mDataPath(FileUtils::JoinPath(DATA_PATH, path))
 {
     ReloadData();
 }

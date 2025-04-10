@@ -3,36 +3,36 @@
 
 Audio::Audio(const std::string& file)
 {
-    if (!mAudio.openFromFile(file))
+    //if (!mAudio.openFromFile(file))
     {
-        const std::string reason = "Error loading the audio file: " + ResourceMgr->GetResourceName(file);
-        throw ResourceLoadException(file, reason);
+        //const std::string reason = "Error loading the audio file: " + ResourceMgr->GetResourceName(file);
+        //throw ResourceLoadException(file, reason);
     }
 }
 
 void Audio::Play(const float positionInMeasure)
 {
-    mAudio.play();
+    //mAudio.play();
     SetPosition(positionInMeasure);
 }
 
 void Audio::Play()
 {
-    mAudio.play();
+    //mAudio.play();
 }
 
 void Audio::Stop()
 {
-    mAudio.stop();
+    //mAudio.stop();
 }
 
 
 void Audio::SetPosition(const float measure)
 {
-    mAudio.setPlayingOffset(sf::seconds(measure));
+   // mAudio.setPlayingOffset(sf::seconds(measure));
 }
 
 void Audio::SetVolume(const float val)
 {
-    mAudio.setVolume(val);
+    //mAudio.setVolume(val);
 }

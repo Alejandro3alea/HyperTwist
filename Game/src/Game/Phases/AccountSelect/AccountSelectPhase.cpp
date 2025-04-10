@@ -11,7 +11,7 @@
 
 void AccountSelectPhase::OnEnter()
 {
-	GfxMgr->SetBackgroundShader(ResourceMgr->Load<Shader>("data/shaders/AccountSelectBG.shader"));
+	GfxMgr->SetBackgroundShader(ResourceMgr->Load<Shader>("shaders/AccountSelectBG.shader"));
 
 	mTransitionTimer = 0.0f;
 
@@ -64,7 +64,7 @@ void AccountSelectPhase::TriggerTransition()
 	for (unsigned i = 0; i < mTransitionRenderers.size(); i++)
 	{
 		mTransitionRenderers[i] = new Renderable();
-		mTransitionRenderers[i]->SetTexture("data/textures/CircleLine.png");
+		mTransitionRenderers[i]->SetTexture("textures/CircleLine.png");
 		mTransitionRenderers[i]->mColor = transitionColors[i];
 		mTransitionRenderers[i]->transform.pos = transitionPosStart[i];
 		mTransitionRenderers[i]->transform.scale = glm::vec3(3000, 420 + i * 40, 1);

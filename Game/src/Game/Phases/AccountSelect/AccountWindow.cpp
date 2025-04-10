@@ -5,7 +5,7 @@
 
 AccountWindow::AccountWindow(const uint32_t playerID) : mPlayerID(playerID)
 {
-	SetTexture("data/textures/UIRoundedSquare.png");
+	SetTexture("textures/UIRoundedSquare.png");
 	mColor = Color::FromInt(186, 250, 55);
 	transform.pos = glm::vec3(playerID == ACCOUNTS_PLAYER_1 ? -950 : 950, 0.0f, 1.5f);
 	transform.scale = glm::vec3(1000, 1200, 1);

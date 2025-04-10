@@ -11,9 +11,9 @@ DancingBot::DancingBot() : mLeftFoot(false), mRightFoot(true)
     mFb = new Framebuffer({ &colBuf });
 	mFb->Initialize(false);
 
-    mPadTex = ResourceMgr->LoadFromBasePath<Texture>("data/engine/texture/TempPad.png");
-    mLFootTex = ResourceMgr->LoadFromBasePath<Texture>("data/engine/texture/LFoot.png");
-    mRFootTex = ResourceMgr->LoadFromBasePath<Texture>("data/engine/texture/RFoot.png");
+    mPadTex = ResourceMgr->LoadFromBasePath<Texture>("engine/texture/TempPad.png");
+    mLFootTex = ResourceMgr->LoadFromBasePath<Texture>("engine/texture/LFoot.png");
+    mRFootTex = ResourceMgr->LoadFromBasePath<Texture>("engine/texture/RFoot.png");
 
     GlobalEvents::gOnSongUpdate.Add([this](const float currMeasure) { UpdateFeetPosition(currMeasure); });
 

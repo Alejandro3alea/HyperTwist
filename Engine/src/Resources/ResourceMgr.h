@@ -2,9 +2,11 @@
 #include "ResourceImporter.h"
 #include "Misc/Singleton.h"
 #include "Misc/ColorConsole.h"
+#include "Utils/FileUtils.h"
 
 #include <iostream>
 #include <map>
+
 
 class ResourceManager
 {
@@ -45,13 +47,8 @@ private:
 template<typename T>
 inline Resource<T>* ResourceManager::LoadFromBasePath(const std::string& path)
 {
-	return Load<T>(mBasePath + '/' + path);
-}
-
-template<typename T>
-inline Resource<T>* ResourceManager::Load(const std::string& path)
-{
 	const std::string ext = GetExtension(path);
+	const std::string fullPath = FileUtils::JoinPath(mBasePath, path);
 
 	if (mAllImporters.find(ext) == mAllImporters.end())
 	{
@@ -59,20 +56,50 @@ inline Resource<T>* ResourceManager::Load(const std::string& path)
 		return nullptr;
 	}
 
-	if (mAllResources.find(path) != mAllResources.end())
-		return  dynamic_cast<Resource<T>*>(mAllResources[path].get());
-	
+	if (mAllResources.find(fullPath) != mAllResources.end())
+		return  dynamic_cast<Resource<T>*>(mAllResources[fullPath].get());
+
 	try
 	{
-		Resource<T>* resource = dynamic_cast<Resource<T>*>(mAllImporters[ext].get()->Import(path));
-		mAllResources[path] = std::shared_ptr<IResourceBase>(resource);
+		Resource<T>* resource = dynamic_cast<Resource<T>*>(mAllImporters[ext].get()->Import(fullPath));
+		mAllResources[fullPath] = std::shared_ptr<IResourceBase>(resource);
 		return resource;
 	}
 	catch (const ResourceLoadException& exc)
 	{
 		PrintWarning(exc.reason);
 		Resource<T>* resource = new Resource<T>(*GetDefautAsset<T>());
-		mAllResources[path] = std::shared_ptr<IResourceBase>(resource);
+		mAllResources[fullPath] = std::shared_ptr<IResourceBase>(resource);
+		return resource;
+	}
+}
+
+template<typename T>
+inline Resource<T>* ResourceManager::Load(const std::string& path)
+{
+	const std::string ext = GetExtension(path);
+	const std::string fullPath = FileUtils::JoinPath(DATA_PATH, path);
+
+	if (mAllImporters.find(ext) == mAllImporters.end())
+	{
+		PrintWarning("There is no proper extension for \"." + ext + "\" files yet.");
+		return nullptr;
+	}
+
+	if (mAllResources.find(fullPath) != mAllResources.end())
+		return  dynamic_cast<Resource<T>*>(mAllResources[fullPath].get());
+	
+	try
+	{
+		Resource<T>* resource = dynamic_cast<Resource<T>*>(mAllImporters[ext].get()->Import(fullPath));
+		mAllResources[fullPath] = std::shared_ptr<IResourceBase>(resource);
+		return resource;
+	}
+	catch (const ResourceLoadException& exc)
+	{
+		PrintWarning(exc.reason);
+		Resource<T>* resource = new Resource<T>(*GetDefautAsset<T>());
+		mAllResources[fullPath] = std::shared_ptr<IResourceBase>(resource);
 		return resource;
 	}
 }

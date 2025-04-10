@@ -8,9 +8,9 @@ SongSelectCommonRenderables::SongSelectCommonRenderables()
 
 void SongSelectCommonRenderables::SetTextures()
 {
-    mStageText.SetFont("data/engine/fonts/Impact.ttf");
+    mStageText.SetFont("engine/fonts/Impact.ttf");
     mStageText.SetText("1st STAGE");
-    mNote.SetTexture("data/engine/texture/SongSelect/ImportantNote.png");
+    mNote.SetTexture("engine/texture/SongSelect/ImportantNote.png");
 }
 
 void SongSelectCommonRenderables::SetPositions()

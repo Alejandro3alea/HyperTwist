@@ -4,8 +4,8 @@
 
 void Snappers::Initialize()
 {
-	LReceptor.mTexture = RReceptor.mTexture = ResourceMgr->LoadFromBasePath<Texture>("data/engine/texture/Beats.png");
-	LReceptor.mShader = RReceptor.mShader = ResourceMgr->LoadFromBasePath<Shader>("data/engine/shaders/Receptors.shader");
+	LReceptor.mTexture = RReceptor.mTexture = ResourceMgr->LoadFromBasePath<Texture>("engine/texture/Beats.png");
+	LReceptor.mShader = RReceptor.mShader = ResourceMgr->LoadFromBasePath<Shader>("engine/shaders/Receptors.shader");
 	LReceptor.SetTextureScale({ 32, 32 });
 	RReceptor.SetTextureScale({ 32, 32 });
 	LReceptor.SetTextureOffset({ 32, 0 });;

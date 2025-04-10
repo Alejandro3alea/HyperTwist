@@ -8,7 +8,7 @@ void SongSelectSongNode::Select()
 
 void SongSelectSongNode::ConstructRenderable()
 {
-	mRenderable.SetTexture("data/engine/texture/SongSelect/SongBase.png");
+	mRenderable.SetTexture("engine/texture/SongSelect/SongBase.png");
 	mRenderable.transform.scale = glm::vec3(200.0f, 200.0f, 1.0f);
 	mRenderable.mbIsVisible = false;
 

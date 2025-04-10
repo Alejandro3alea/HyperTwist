@@ -4,6 +4,18 @@
 
 namespace FileUtils
 {
+    std::string JoinPath(const std::string& lhs, const std::string& rhs)
+    {
+        std::string fixedRhs = rhs;
+        if (!fixedRhs.empty() && fixedRhs.front() == '/') 
+            fixedRhs.erase(0, 1);
+
+        std::filesystem::path fullPath = static_cast<std::filesystem::path>(lhs) / static_cast<std::filesystem::path>(fixedRhs);
+
+        return fullPath.generic_string();
+    }
+
+
     void JsonToFile(const nlohmann::json& val, const std::string& path)
     {
         std::ofstream file(path);

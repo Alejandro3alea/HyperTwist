@@ -9,8 +9,8 @@ std::vector<Resource<Song>*> SongSelectPhase::mSongs;
 
 void SongSelectPhase::OnEnter()
 {
-	//GfxMgr->SetBackgroundShader(ResourceMgr->Load<Shader>("data/shaders/SongSelectBG.shader")); 
-	GfxMgr->SetBackgroundTexture(ResourceMgr->Load<Texture>("data/engine/texture/SongSelect/DifficultySelect/ReferenceDark.png"));
+	//GfxMgr->SetBackgroundShader(ResourceMgr->Load<Shader>("shaders/SongSelectBG.shader")); 
+	GfxMgr->SetBackgroundTexture(ResourceMgr->Load<Texture>("engine/texture/SongSelect/DifficultySelect/ReferenceDark.png"));
 
 	mSongSelectRenderables = std::make_shared<SongSelectRenderables>();
     mCommonRenderables = std::make_shared<SongSelectCommonRenderables>();
@@ -265,7 +265,7 @@ std::vector<Song*> SongSelectPhase::GetSongsFromBPMRange(const uint32_t minBPM, 
 
 void SongSelectPhase::LoadSongs()
 {
-    std::string rootDirectory = "data/songs/";
+    std::string rootDirectory = FileUtils::JoinPath(DATA_PATH, "songs/");
 
     for (const auto& entry : std::filesystem::recursive_directory_iterator(rootDirectory))
     {

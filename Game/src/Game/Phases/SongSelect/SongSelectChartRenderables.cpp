@@ -5,16 +5,16 @@
 
 SongSelectChartRenderables::SongSelectChartRenderables(const ChartDifficulty& category, const uint8_t level)
 {
-	mBG.SetTexture("data/engine/texture/SongSelect/RectangleHorizontalFade.png");
+	mBG.SetTexture("engine/texture/SongSelect/RectangleHorizontalFade.png");
 
-	mDifficulty.SetFont("data/engine/fonts/Rubik.ttf");
+	mDifficulty.SetFont("engine/fonts/Rubik.ttf");
 	mDifficulty.SetText(ToUpper(GameUtils::ChartDifficultyToStr(category)));
 
-	mLevel.SetFont("data/engine/fonts/Rubik.ttf");
+	mLevel.SetFont("engine/fonts/Rubik.ttf");
 	mLevel.SetText(std::to_string(level));
 
-	mP1Grade.SetTexture("data/engine/texture/Grades/AAA.png");
-	mP2Grade.SetTexture("data/engine/texture/Grades/AAA.png");
+	mP1Grade.SetTexture("engine/texture/Grades/AAA.png");
+	mP2Grade.SetTexture("engine/texture/Grades/AAA.png");
 }
 
 void SongSelectChartRenderables::Show()
@@ -35,7 +35,7 @@ void SongSelectChartRenderables::Hide()
 	mP2Grade.mbIsVisible = false;
 }
 
-SongSelectRenderables::SongSelectRenderables() : mTable("data/UI/SongSelect.json")
+SongSelectRenderables::SongSelectRenderables() : mTable("UI/SongSelect.json")
 {
 	SetTextures();
 	SetInitialVisibility();
@@ -149,28 +149,28 @@ void SongSelectRenderables::Hide()
 
 void SongSelectRenderables::SetTextures()
 {
-	mSongInfoBG.SetTexture("data/engine/texture/SongSelect/RectangleHorizontalFade.png");
-	mSongInfoTitle.SetFont("data/engine/fonts/Rubik.ttf");
+	mSongInfoBG.SetTexture("engine/texture/SongSelect/RectangleHorizontalFade.png");
+	mSongInfoTitle.SetFont("engine/fonts/Rubik.ttf");
 	mSongInfoTitle.SetText("Title");
-	mSongInfoArtist.SetFont("data/engine/fonts/Rubik.ttf");
+	mSongInfoArtist.SetFont("engine/fonts/Rubik.ttf");
 	mSongInfoArtist.SetText("Artist");
 
-	mP1ScoreBG.SetTexture("data/engine/texture/SongSelect/RectangleHorizontalFade.png");
+	mP1ScoreBG.SetTexture("engine/texture/SongSelect/RectangleHorizontalFade.png");
 	mP1ScoreTitle.SetText("P1  Score");
-	mP1ScoreTitle.SetFont("data/engine/fonts/Rubik.ttf");
-	mP1Score.SetFont("data/engine/fonts/Rubik.ttf");
+	mP1ScoreTitle.SetFont("engine/fonts/Rubik.ttf");
+	mP1Score.SetFont("engine/fonts/Rubik.ttf");
 	mP1Score.SetText("-");
-	mP2ScoreBG.SetTexture("data/engine/texture/SongSelect/RectangleHorizontalFade.png");
+	mP2ScoreBG.SetTexture("engine/texture/SongSelect/RectangleHorizontalFade.png");
 	mP2ScoreTitle.SetText("P2  Score");
-	mP2ScoreTitle.SetFont("data/engine/fonts/Rubik.ttf");
-	mP2Score.SetFont("data/engine/fonts/Rubik.ttf");
+	mP2ScoreTitle.SetFont("engine/fonts/Rubik.ttf");
+	mP2Score.SetFont("engine/fonts/Rubik.ttf");
 	mP2Score.SetText("-");
 
-	mP1Selector.SetTexture("data/engine/texture/SongSelect/P1 Selector.png");
-	mP2Selector.SetTexture("data/engine/texture/SongSelect/P2 Selector.png");
+	mP1Selector.SetTexture("engine/texture/SongSelect/P1 Selector.png");
+	mP2Selector.SetTexture("engine/texture/SongSelect/P2 Selector.png");
 
-	mArrowUp.SetTexture("data/engine/texture/SongSelect/ArrowDown.png");
-	mArrowDown.SetTexture("data/engine/texture/SongSelect/ArrowDown.png");
+	mArrowUp.SetTexture("engine/texture/SongSelect/ArrowDown.png");
+	mArrowDown.SetTexture("engine/texture/SongSelect/ArrowDown.png");
 }
 
 void SongSelectRenderables::SetInitialVisibility()

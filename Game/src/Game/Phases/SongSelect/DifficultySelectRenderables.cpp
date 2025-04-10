@@ -4,16 +4,16 @@
 
 DifficultySelectChartRenderables::DifficultySelectChartRenderables(const ChartDifficulty& category, uint8_t level)
 {
-	mBG.SetTexture("data/engine/texture/SongSelect/RectangleHorizontalFade.png");
-	mDifficulty.SetFont("data/engine/fonts/Rubik.ttf");
+	mBG.SetTexture("engine/texture/SongSelect/RectangleHorizontalFade.png");
+	mDifficulty.SetFont("engine/fonts/Rubik.ttf");
 	mDifficulty.SetText("Challenge");
-	mLevel.SetFont("data/engine/fonts/Rubik.ttf");
+	mLevel.SetFont("engine/fonts/Rubik.ttf");
 	mLevel.SetText("17");
-	mGrade.SetTexture("data/engine/texture/SongSelect/RectangleHorizontalFade.png");
-	mFullComboIcon.SetTexture("data/engine/texture/SongSelect/RectangleHorizontalFade.png");
+	mGrade.SetTexture("engine/texture/SongSelect/RectangleHorizontalFade.png");
+	mFullComboIcon.SetTexture("engine/texture/SongSelect/RectangleHorizontalFade.png");
 }
 
-DifficultySelectRenderables::DifficultySelectRenderables(Song* song) : mTable("data/UI/DifficultySelect.json")
+DifficultySelectRenderables::DifficultySelectRenderables(Song* song) : mTable("UI/DifficultySelect.json")
 {
 	SetTextures(song);
 	SetPositions();
@@ -108,27 +108,27 @@ std::shared_ptr<DifficultySelectChartRenderables> DifficultySelectRenderables::C
 
 void DifficultySelectRenderables::SetTextures(const Song* song)
 {
-    //mSongInfoBG.SetTexture("data/engine/texture/SongSelect/RectangleHorizontalFadeOneSide.png");
-    mSongInfoTitle.SetFont("data/engine/fonts/Rubik.ttf");
+    //mSongInfoBG.SetTexture("engine/texture/SongSelect/RectangleHorizontalFadeOneSide.png");
+    mSongInfoTitle.SetFont("engine/fonts/Rubik.ttf");
     mSongInfoTitle.SetText(song->mTitle);
-    mSongInfoArtist.SetFont("data/engine/fonts/Rubik.ttf");
+    mSongInfoArtist.SetFont("engine/fonts/Rubik.ttf");
     mSongInfoArtist.SetText(song->mArtist);
-	mSongInfoBPM.SetFont("data/engine/fonts/Rubik.ttf");
+	mSongInfoBPM.SetFont("engine/fonts/Rubik.ttf");
     mSongInfoBPM.SetText("BPM: " + GameUtils::GetBPMLabel(song->mBPMs));
 
-    mP1ScoreBG.SetTexture("data/engine/texture/SongSelect/RectangleHorizontalFade.png");
+    mP1ScoreBG.SetTexture("engine/texture/SongSelect/RectangleHorizontalFade.png");
     mP1ScoreTitle.SetText("Score");
-    mP1ScoreTitle.SetFont("data/engine/fonts/Rubik.ttf");
-    mP1Score.SetFont("data/engine/fonts/Rubik.ttf");
+    mP1ScoreTitle.SetFont("engine/fonts/Rubik.ttf");
+    mP1Score.SetFont("engine/fonts/Rubik.ttf");
     mP1Score.SetText("-");
-    mP2ScoreBG.SetTexture("data/engine/texture/SongSelect/RectangleHorizontalFade.png");
+    mP2ScoreBG.SetTexture("engine/texture/SongSelect/RectangleHorizontalFade.png");
     mP2ScoreTitle.SetText("Score");
-    mP2ScoreTitle.SetFont("data/engine/fonts/Rubik.ttf");
-    mP2Score.SetFont("data/engine/fonts/Rubik.ttf");
+    mP2ScoreTitle.SetFont("engine/fonts/Rubik.ttf");
+    mP2Score.SetFont("engine/fonts/Rubik.ttf");
     mP2Score.SetText("-");
 
-    mArrowUp.SetTexture("data/engine/texture/SongSelect/ArrowDown.png");
-    mArrowDown.SetTexture("data/engine/texture/SongSelect/ArrowDown.png");
+    mArrowUp.SetTexture("engine/texture/SongSelect/ArrowDown.png");
+    mArrowDown.SetTexture("engine/texture/SongSelect/ArrowDown.png");
 }
 
 void DifficultySelectRenderables::SetPositions()

@@ -5,7 +5,7 @@
 
 void SongSelectFilter::SetupFilterTexture(const std::string& name)
 {
-	mRenderable.SetTexture("data/engine/texture/SongSelect/Filters/" + name + ".png");
+	mRenderable.SetTexture("engine/texture/SongSelect/Filters/" + name + ".png");
 	mRenderable.transform.scale = glm::vec3(350.0f, 350.0f, 1.0f);
 }
 
@@ -93,7 +93,7 @@ std::map<std::string, std::vector<std::string>> SongSelectSortByVersion::LoadPla
 {
 	std::map<std::string, std::vector<std::string>> list;
 
-	std::ifstream file("data/local/PlatformCategories.data");
+	std::ifstream file("local/PlatformCategories.data");
 	if (!file || !file.is_open())
 	{
 		PrintWarning("\"PlatformCategories.data\" not found.");

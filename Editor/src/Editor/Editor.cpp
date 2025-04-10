@@ -43,8 +43,8 @@ void ImGuiEditor::Initialize()
 	ImGui_ImplOpenGL3_Init(glsl_version);
 
 	// HyperTwist
-	mBeatTick = ResourceMgr->LoadFromBasePath<Audio>("data/engine/audio/sfx/BeatTick.wav");
-	mNoteTick = ResourceMgr->LoadFromBasePath<Audio>("data/engine/audio/sfx/NoteTick.wav");
+	mBeatTick = ResourceMgr->LoadFromBasePath<Audio>("engine/audio/sfx/BeatTick.wav");
+	mNoteTick = ResourceMgr->LoadFromBasePath<Audio>("engine/audio/sfx/NoteTick.wav");
 	mSnappers.Initialize();
 	mDancingBotWindow = std::unique_ptr<DancingBot>(new DancingBot());
 
@@ -729,7 +729,7 @@ void ImGuiEditor::NewChartPopup()
 
 void ImGuiEditor::LoadIcon(const std::string& name)
 {
-	mIcons[name] = ResourceMgr->LoadFromBasePath<Texture>("data/engine/icons/" + name + ".png");
+	mIcons[name] = ResourceMgr->LoadFromBasePath<Texture>("engine/icons/" + name + ".png");
 }
 
 bool ImGuiEditor::HandlePauseTimers(const double dt)

@@ -196,7 +196,7 @@ void DevMenuGameSettings::UpdateSongVersions::OnSelected()
 
 void DevMenuGameSettings::UpdateSongVersions::UpdateSongs() const
 {
-    std::string rootDirectory = "data/songs/";
+    std::string rootDirectory = "songs/";
 
     for (const auto& entry : std::filesystem::recursive_directory_iterator(rootDirectory))
     {

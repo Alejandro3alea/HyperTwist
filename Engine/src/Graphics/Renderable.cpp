@@ -14,8 +14,8 @@
 
 Renderable::Renderable()
 {
-    SetShader("data/engine/shaders/Quad.shader");
-    SetTexture("data/engine/texture/White.png");
+    SetShader("engine/shaders/Quad.shader");
+    SetTexture("engine/texture/White.png");
 
     GfxMgr->mRenderComps.push_back(this);
 }
@@ -66,7 +66,7 @@ void Renderable::Render(Shader* shader)
 
 Resource<Shader>* Renderable::SetShader(const std::string& path)
 {
-    mShader = ResourceMgr->LoadFromBasePath<Shader>(path);
+    mShader = ResourceMgr->Load<Shader>(path);
     return mShader;
 }
 
@@ -76,7 +76,7 @@ Resource<Shader>* Renderable::SetShader(const std::string& path)
 
 Resource<Texture>* Renderable::SetTexture(const std::string& path)
 {
-    mTexture = ResourceMgr->LoadFromBasePath<Texture>(path);
+    mTexture = ResourceMgr->Load<Texture>(path);
     return mTexture;
 }
 
@@ -86,7 +86,7 @@ Resource<Texture>* Renderable::SetTexture(const std::string& path)
 
 TextureAtlas::TextureAtlas() : Renderable()
 {
-    SetShader("data/engine/shaders/TextureAtlas.shader");
+    SetShader("engine/shaders/TextureAtlas.shader");
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -158,7 +158,7 @@ LineList::LineList(const std::vector<glm::vec2>& positions) : mLineCount(positio
 
     glBindVertexArray(0);
 
-    SetShader("data/engine/shaders/Line.shader");
+    SetShader("engine/shaders/Line.shader");
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -228,8 +228,8 @@ bool isAttributeEnabled(GLuint vao, GLuint attributeIndex) {
 
 NoteRenderer::NoteRenderer(Chart* inChart) : mChart(inChart)
 {
-    SetShader("data/engine/shaders/NoteRenderer.shader");
-    mTexture = ResourceMgr->LoadFromBasePath<Texture>("data/noteskins/USWCelSM5/_Down Tap Note 16x8.png");
+    SetShader("engine/shaders/NoteRenderer.shader");
+    mTexture = ResourceMgr->LoadFromBasePath<Texture>("noteskins/USWCelSM5/_Down Tap Note 16x8.png");
 
     UpdateParams();
 
@@ -379,11 +379,11 @@ void NoteRenderer::UpdateVBOs()
 
 HoldNoteBodyRenderer::HoldNoteBodyRenderer(Chart* inChart) : mChart(inChart)
 {
-    SetShader("data/engine/shaders/HoldNoteBodyRenderer.shader");
-    mTexture = ResourceMgr->LoadFromBasePath<Texture>("data/noteskins/USWCelSM5/Down Hold Body Inactive.png");
-    mRollNoteTexture = ResourceMgr->LoadFromBasePath<Texture>("data/noteskins/USWCelSM5/Down Roll Body Inactive.png");
-    mHoldBottomCapTexture = ResourceMgr->LoadFromBasePath<Texture>("data/noteskins/USWCelSM5/Down Hold BottomCap inactive.png");
-    mRollBottomCapTexture = ResourceMgr->LoadFromBasePath<Texture>("data/noteskins/USWCelSM5/Down Roll BottomCap Inactive.png");
+    SetShader("engine/shaders/HoldNoteBodyRenderer.shader");
+    mTexture = ResourceMgr->LoadFromBasePath<Texture>("noteskins/USWCelSM5/Down Hold Body Inactive.png");
+    mRollNoteTexture = ResourceMgr->LoadFromBasePath<Texture>("noteskins/USWCelSM5/Down Roll Body Inactive.png");
+    mHoldBottomCapTexture = ResourceMgr->LoadFromBasePath<Texture>("noteskins/USWCelSM5/Down Hold BottomCap inactive.png");
+    mRollBottomCapTexture = ResourceMgr->LoadFromBasePath<Texture>("noteskins/USWCelSM5/Down Roll BottomCap Inactive.png");
 
     UpdateParams();
 
@@ -502,8 +502,8 @@ void HoldNoteBodyRenderer::UpdateVBOs()
 
 MineRenderer::MineRenderer(Chart* inChart) : mChart(inChart)
 {
-    SetShader("data/engine/shaders/MineRenderer.shader");
-    mTexture = ResourceMgr->LoadFromBasePath<Texture>("data/noteskins/USWCelSM5/_Down Tap Mine 8x1.png");
+    SetShader("engine/shaders/MineRenderer.shader");
+    mTexture = ResourceMgr->LoadFromBasePath<Texture>("noteskins/USWCelSM5/_Down Tap Mine 8x1.png");
 
     UpdateParams();
 
@@ -602,7 +602,7 @@ void MineRenderer::UpdateVBOs()
 
 FontRenderer::FontRenderer(const std::string& text, Resource<Font>* font)
 {
-    SetShader("data/engine/shaders/FontRenderer.shader");
+    SetShader("engine/shaders/FontRenderer.shader");
 
     SetText(text);
     mFont = font;
@@ -690,7 +690,7 @@ void FontRenderer::Render(Shader* shader)
 
 Resource<Font>* FontRenderer::SetFont(const std::string& path)
 {
-    mFont = ResourceMgr->LoadFromBasePath<Font>(path);
+    mFont = ResourceMgr->Load<Font>(path);
     return mFont;
 }
 

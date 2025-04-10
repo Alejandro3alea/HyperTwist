@@ -15,5 +15,5 @@ struct Audio
     void SetVolume(const float val);
 
 private:
-    sf::Music mAudio;
+    //sf::Music mAudio;
 };

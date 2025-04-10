@@ -10,7 +10,7 @@
 
 void IntroScreenPhase::OnEnter()
 {
-	GfxMgr->SetBackgroundTexture(ResourceMgr->Load<Texture>("data/textures/NextageLogo.png"));
+	GfxMgr->SetBackgroundTexture(ResourceMgr->Load<Texture>("textures/NextageLogo.png"));
 	
 	glm::uvec2 windowSize = WindowMgr->mCurrentWindow->Size();
 	mIsTransitionTriggered = false;
@@ -58,7 +58,7 @@ void IntroScreenPhase::TriggerTransition()
 	for (unsigned i = 0; i < mTransitionRenderers.size(); i++)
 	{
 		mTransitionRenderers[i] = new Renderable();
-		mTransitionRenderers[i]->SetTexture("data/textures/CircleLine.png");
+		mTransitionRenderers[i]->SetTexture("textures/CircleLine.png");
 		mTransitionRenderers[i]->mColor = transitionColors[i];
 		mTransitionRenderers[i]->transform.pos = transitionPosStart[i];
 		mTransitionRenderers[i]->transform.scale = glm::vec3(3000, 420 + i * 40, 1);

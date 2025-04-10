@@ -7,9 +7,9 @@ void Receptors::Initialize()
 	const float rotations[4] = { -90.0f, 0.0f, 180.0f, 90.0f };
 	for (unsigned i = 0; i < 4; i++)
 	{
-		mReceptorOn[i].mShader = mReceptorOff[i].mShader = ResourceMgr->LoadFromBasePath<Shader>("data/engine/shaders/Receptors.shader");
+		mReceptorOn[i].mShader = mReceptorOff[i].mShader = ResourceMgr->LoadFromBasePath<Shader>("engine/shaders/Receptors.shader");
 		// @TODO
-		mReceptorOn[i].mTexture = mReceptorOff[i].mTexture = ResourceMgr->LoadFromBasePath<Texture>("data/noteskins/USWCelSM5/_Down Receptor Go 4x1.png");
+		mReceptorOn[i].mTexture = mReceptorOff[i].mTexture = ResourceMgr->LoadFromBasePath<Texture>("noteskins/USWCelSM5/_Down Receptor Go 4x1.png");
 		mReceptorOn[i].SetTextureScale({64, 64});
 		mReceptorOn[i].SetTextureOffset({ 64, 0 });
 		mReceptorOff[i].SetTextureScale({ 64, 64 });

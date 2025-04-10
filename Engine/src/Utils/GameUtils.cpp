@@ -50,7 +50,7 @@ ChartDifficulty GameUtils::StrToChartDifficulty(const std::string& str)
 std::string GameUtils::GetBPMLabel(const std::map<float, float>& bpms)
 {
     if (bpms.size() == 1)
-        return std::to_string(bpms.begin()->second);
+        return std::to_string(static_cast<int32_t>(bpms.begin()->second));
 
     float smallest = std::numeric_limits<float>::max();
     float biggest = std::numeric_limits<float>::min();
@@ -63,5 +63,5 @@ std::string GameUtils::GetBPMLabel(const std::map<float, float>& bpms)
             biggest = currBPM;
     }
 
-    return std::to_string(smallest) + " - " + std::to_string(biggest);
+    return std::to_string(static_cast<int32_t>(smallest)) + " - " + std::to_string(static_cast<int32_t>(biggest));
 }

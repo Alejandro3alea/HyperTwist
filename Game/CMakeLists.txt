@@ -60,12 +60,12 @@ else() # Windows
             aubio.dll.a.lib
             libaubio.a.lib
 
-            $<$<CONFIG:Debug>:sfml-main-s-d>
-            $<$<CONFIG:Release>:sfml-main-s>
-            $<$<CONFIG:Debug>:sfml-system-d>
-            $<$<CONFIG:Release>:sfml-system>
-            $<$<CONFIG:Debug>:sfml-audio-d>
-            $<$<CONFIG:Release>:sfml-audio>
+            $<$<CONFIG:Debug>:sfml-main-s-d.lib>
+            $<$<CONFIG:Release>:sfml-main-s.lib>
+            $<$<CONFIG:Debug>:sfml-system-d.lib>
+            $<$<CONFIG:Release>:sfml-system.lib>
+            $<$<CONFIG:Debug>:sfml-audio-d.lib>
+            $<$<CONFIG:Release>:sfml-audio.lib>
     )
 endif()
 
@@ -99,6 +99,10 @@ copy_required_files(Game)
 
 message("Exporting data folder to ${CMAKE_BINARY_DIR}")
 if (EXPORT_BUILD)
-  file(COPY "${CMAKE_SOURCE_DIR}/${TARGET_NAME}/data" DESTINATION "${CMAKE_BINARY_DIR}")
+    file(COPY "${CMAKE_SOURCE_DIR}/${TARGET_NAME}/data" DESTINATION "${CMAKE_BINARY_DIR}")
+    set(DATA_PATH "${CMAKE_BINARY_DIR}/data")
 else()
+    set(DATA_PATH "${CMAKE_SOURCE_DIR}/Game/data")
 endif()
+target_compile_definitions(Engine PUBLIC DATA_PATH="${DATA_PATH}")
+target_compile_definitions(${TARGET_NAME} PUBLIC DATA_PATH="${DATA_PATH}")
