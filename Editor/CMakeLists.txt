@@ -12,13 +12,9 @@ target_include_directories(${TARGET_NAME}
 )
 
 target_link_directories(${TARGET_NAME}
-    PRIVATE ${CMAKE_SOURCE_DIR}/lib/AL
             ${CMAKE_SOURCE_DIR}/lib/GL
             ${CMAKE_SOURCE_DIR}/lib/SDL2
             ${CMAKE_SOURCE_DIR}/lib/freetype
-            $<$<CONFIG:Debug>:${SFML_LIB_DIR}/Debug>
-            $<$<CONFIG:Release>:${SFML_LIB_DIR}/Release>
-            ${CMAKE_SOURCE_DIR}/lib/aubio
 )
 
 
@@ -29,35 +25,22 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
     target_link_libraries(${TARGET_NAME}
         PRIVATE
             Engine
-            openal
             GL
             GLEW
             SDL2
             SDL2_mixer
             freetype
-            aubio
-            sfml-main
-            sfml-system
-            sfml-audio
     )
 else() # Windows
     message("Setting up libraries for Windows...")
     target_link_libraries(${TARGET_NAME}
         PRIVATE 
             Engine
-            OpenAL32.lib
             opengl32.lib
             glew32.lib
             SDL2.lib
             SDL2_mixer.lib
             freetype.lib
-            $<$<CONFIG:Debug>:libsfml-main-s-d.a>
-            $<$<CONFIG:Debug>:libsfml-system-d.a>
-            $<$<CONFIG:Debug>:libsfml-audio-d.a>
-            
-            $<$<CONFIG:Release>:libsfml-main-s.a>
-            $<$<CONFIG:Release>:libsfml-system.a>
-            $<$<CONFIG:Release>:libsfml-audio.a>
     )
 endif()
 
