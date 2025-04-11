@@ -74,9 +74,29 @@ Resource<Shader>* Renderable::SetShader(const std::string& path)
 // 
 //////////////////////////////////////////////////////////////////////////
 
+Resource<Shader>* Renderable::SetShader(Resource<Shader>* shader)
+{
+    mShader = shader;
+    return mShader;
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//////////////////////////////////////////////////////////////////////////
+
 Resource<Texture>* Renderable::SetTexture(const std::string& path)
 {
     mTexture = ResourceMgr->Load<Texture>(path);
+    return mTexture;
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//////////////////////////////////////////////////////////////////////////
+
+Resource<Texture>* Renderable::SetTexture(Resource<Texture>* texture)
+{
+    mTexture = texture;
     return mTexture;
 }
 
@@ -229,7 +249,7 @@ bool isAttributeEnabled(GLuint vao, GLuint attributeIndex) {
 NoteRenderer::NoteRenderer(Chart* inChart) : mChart(inChart)
 {
     SetShader("engine/shaders/NoteRenderer.shader");
-    mTexture = ResourceMgr->LoadFromBasePath<Texture>("noteskins/USWCelSM5/_Down Tap Note 16x8.png");
+    mTexture = ResourceMgr->Load<Texture>("noteskins/USWCelSM5/_Down Tap Note 16x8.png");
 
     UpdateParams();
 
@@ -380,10 +400,10 @@ void NoteRenderer::UpdateVBOs()
 HoldNoteBodyRenderer::HoldNoteBodyRenderer(Chart* inChart) : mChart(inChart)
 {
     SetShader("engine/shaders/HoldNoteBodyRenderer.shader");
-    mTexture = ResourceMgr->LoadFromBasePath<Texture>("noteskins/USWCelSM5/Down Hold Body Inactive.png");
-    mRollNoteTexture = ResourceMgr->LoadFromBasePath<Texture>("noteskins/USWCelSM5/Down Roll Body Inactive.png");
-    mHoldBottomCapTexture = ResourceMgr->LoadFromBasePath<Texture>("noteskins/USWCelSM5/Down Hold BottomCap inactive.png");
-    mRollBottomCapTexture = ResourceMgr->LoadFromBasePath<Texture>("noteskins/USWCelSM5/Down Roll BottomCap Inactive.png");
+    mTexture = ResourceMgr->Load<Texture>("noteskins/USWCelSM5/Down Hold Body Inactive.png");
+    mRollNoteTexture = ResourceMgr->Load<Texture>("noteskins/USWCelSM5/Down Roll Body Inactive.png");
+    mHoldBottomCapTexture = ResourceMgr->Load<Texture>("noteskins/USWCelSM5/Down Hold BottomCap inactive.png");
+    mRollBottomCapTexture = ResourceMgr->Load<Texture>("noteskins/USWCelSM5/Down Roll BottomCap Inactive.png");
 
     UpdateParams();
 
@@ -503,7 +523,7 @@ void HoldNoteBodyRenderer::UpdateVBOs()
 MineRenderer::MineRenderer(Chart* inChart) : mChart(inChart)
 {
     SetShader("engine/shaders/MineRenderer.shader");
-    mTexture = ResourceMgr->LoadFromBasePath<Texture>("noteskins/USWCelSM5/_Down Tap Mine 8x1.png");
+    mTexture = ResourceMgr->Load<Texture>("noteskins/USWCelSM5/_Down Tap Mine 8x1.png");
 
     UpdateParams();
 

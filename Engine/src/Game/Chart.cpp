@@ -136,7 +136,7 @@ int GetMultipleOfBiggetsPrimeNumbers(const std::vector<int>& nums)
 
     int lcm = 1;
     for (const auto& [factor, count] : maxFactors)
-        lcm *= pow(factor, count);
+        lcm *= static_cast<int>(pow(factor, count));
     return lcm;
 }
 

@@ -108,7 +108,8 @@ std::shared_ptr<DifficultySelectChartRenderables> DifficultySelectRenderables::C
 
 void DifficultySelectRenderables::SetTextures(const Song* song)
 {
-    //mSongInfoBG.SetTexture("engine/texture/SongSelect/RectangleHorizontalFadeOneSide.png");
+	mSongThumb.SetTexture(ResourceMgr->LoadFromGlobalPath<Texture>(FileUtils::JoinPath(song->GetPath(), song->mCDTitlePath)));
+	mSongInfoBG.SetTexture("engine/texture/SongSelect/RectangleHorizontalFadeOneSide.png");
     mSongInfoTitle.SetFont("engine/fonts/Rubik.ttf");
     mSongInfoTitle.SetText(song->mTitle);
     mSongInfoArtist.SetFont("engine/fonts/Rubik.ttf");
@@ -120,12 +121,24 @@ void DifficultySelectRenderables::SetTextures(const Song* song)
     mP1ScoreTitle.SetText("Score");
     mP1ScoreTitle.SetFont("engine/fonts/Rubik.ttf");
     mP1Score.SetFont("engine/fonts/Rubik.ttf");
-    mP1Score.SetText("-");
+    mP1Score.SetText("347.880");
     mP2ScoreBG.SetTexture("engine/texture/SongSelect/RectangleHorizontalFade.png");
     mP2ScoreTitle.SetText("Score");
     mP2ScoreTitle.SetFont("engine/fonts/Rubik.ttf");
     mP2Score.SetFont("engine/fonts/Rubik.ttf");
-    mP2Score.SetText("-");
+    mP2Score.SetText("1.000.000");
+
+	mP1StepArtistBG.SetTexture("engine/texture/SongSelect/RectangleHorizontalFade.png");
+	mP1StepArtistTitle.SetText("Step Artist");
+	mP1StepArtistTitle.SetFont("engine/fonts/Rubik.ttf");
+	mP1StepArtist.SetText("IAmChris4Life");
+	mP1StepArtist.SetFont("engine/fonts/Rubik.ttf");
+
+	mP2StepArtistBG.SetTexture("engine/texture/SongSelect/RectangleHorizontalFade.png");
+	mP2StepArtistTitle.SetText("Step Artist");
+	mP2StepArtistTitle.SetFont("engine/fonts/Rubik.ttf");
+	mP2StepArtist.SetText("Balea");
+	mP2StepArtist.SetFont("engine/fonts/Rubik.ttf");
 
     mArrowUp.SetTexture("engine/texture/SongSelect/ArrowDown.png");
     mArrowDown.SetTexture("engine/texture/SongSelect/ArrowDown.png");
@@ -146,6 +159,14 @@ void DifficultySelectRenderables::SetPositions()
 	SET_TABLE_VALUES(mTable, mP2ScoreBG);
 	SET_TABLE_VALUES(mTable, mP2ScoreTitle);
 	SET_TABLE_VALUES(mTable, mP2Score);
+
+	SET_TABLE_VALUES(mTable, mP1StepArtistBG);
+	SET_TABLE_VALUES(mTable, mP1StepArtistTitle);
+	SET_TABLE_VALUES(mTable, mP1StepArtist);
+
+	SET_TABLE_VALUES(mTable, mP2StepArtistBG);
+	SET_TABLE_VALUES(mTable, mP2StepArtistTitle);
+	SET_TABLE_VALUES(mTable, mP2StepArtist);
 
 	SET_TABLE_VALUES(mTable, mArrowDown);
 	SET_TABLE_VALUES(mTable, mArrowUp);

@@ -21,7 +21,7 @@ public:
 	Resource<T>* Load(const std::string& path);
 
 	template <typename T>
-	Resource<T>* LoadFromBasePath(const std::string& path);
+	Resource<T>* LoadFromGlobalPath(const std::string& fullPath);
 
 	template <typename T>
 	Resource<T>* GetDefautAsset();
@@ -45,10 +45,9 @@ private:
 
 
 template<typename T>
-inline Resource<T>* ResourceManager::LoadFromBasePath(const std::string& path)
+inline Resource<T>* ResourceManager::LoadFromGlobalPath(const std::string& fullPath)
 {
-	const std::string ext = GetExtension(path);
-	const std::string fullPath = FileUtils::JoinPath(mBasePath, path);
+	const std::string ext = GetExtension(fullPath);
 
 	if (mAllImporters.find(ext) == mAllImporters.end())
 	{

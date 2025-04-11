@@ -41,9 +41,9 @@ void GraphicsManager::Initialize()
 
 void GraphicsManager::LoadMainResources()
 {
-	mQuadShader = ResourceMgr->LoadFromBasePath<Shader>("data/engine/shaders/Quad.shader");
-	mBGShader = ResourceMgr->LoadFromBasePath<Shader>("data/engine/shaders/BG.shader");
-	mLineShader = ResourceMgr->LoadFromBasePath<Shader>("data/engine/shaders/Line.shader");
+	mQuadShader = ResourceMgr->Load<Shader>("engine/shaders/Quad.shader");
+	mBGShader = ResourceMgr->Load<Shader>("engine/shaders/BG.shader");
+	mLineShader = ResourceMgr->Load<Shader>("engine/shaders/Line.shader");
 
 	// Load Quad
 	mQuad = CreateQuadModel();

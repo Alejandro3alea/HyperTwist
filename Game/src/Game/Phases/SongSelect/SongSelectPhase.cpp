@@ -10,7 +10,7 @@ std::vector<Resource<Song>*> SongSelectPhase::mSongs;
 void SongSelectPhase::OnEnter()
 {
 	//GfxMgr->SetBackgroundShader(ResourceMgr->Load<Shader>("shaders/SongSelectBG.shader")); 
-	GfxMgr->SetBackgroundTexture(ResourceMgr->Load<Texture>("engine/texture/SongSelect/DifficultySelect/ReferenceDark.png"));
+	GfxMgr->SetBackgroundTexture(ResourceMgr->Load<Texture>("engine/texture/SongSelect/MainBG.png"));
 
 	mSongSelectRenderables = std::make_shared<SongSelectRenderables>();
     mCommonRenderables = std::make_shared<SongSelectCommonRenderables>();

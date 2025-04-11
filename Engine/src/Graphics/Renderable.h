@@ -18,7 +18,9 @@ struct Renderable
 
 	virtual void Render(Shader* shader = nullptr);
 	Resource<Shader>* SetShader(const std::string& path);
+	Resource<Shader>* SetShader(Resource<Shader>* shader);
 	Resource<Texture>* SetTexture(const std::string& path);
+	Resource<Texture>* SetTexture(Resource<Texture>* texture);
 
 public:
 	Resource<Shader>* mShader = nullptr;
