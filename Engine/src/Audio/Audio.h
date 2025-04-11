@@ -1,6 +1,5 @@
 #pragma once
 #include "Resources/ResourceMgr.h"
-#include <SFML/Audio.hpp>
 
 struct Audio
 {
@@ -15,5 +14,4 @@ struct Audio
     void SetVolume(const float val);
 
 private:
-    //sf::Music mAudio;
 };

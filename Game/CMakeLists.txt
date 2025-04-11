@@ -18,13 +18,9 @@ target_include_directories(${TARGET_NAME}
 )
 
 target_link_directories(${TARGET_NAME}
-    PRIVATE ${CMAKE_SOURCE_DIR}/lib/AL
-            ${CMAKE_SOURCE_DIR}/lib/GL
+    PRIVATE ${CMAKE_SOURCE_DIR}/lib/GL
             ${CMAKE_SOURCE_DIR}/lib/SDL2
             ${CMAKE_SOURCE_DIR}/lib/freetype
-            $<$<CONFIG:Debug>:${SFML_LIB_DIR}/Debug>
-            $<$<CONFIG:Release>:${SFML_LIB_DIR}/Release>
-            ${CMAKE_SOURCE_DIR}/lib/aubio
 )
 
 
@@ -35,14 +31,11 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
     target_link_libraries(${TARGET_NAME}
         PRIVATE
             Engine
-            openal
             GL
             GLEW
             SDL2
             SDL2_mixer
             freetype
-            sfml-audio
-            sfml-system
     )
 else() # Windows
     message("Setting up libraries for Windows in ${TARGET_NAME} target...")
@@ -51,21 +44,11 @@ else() # Windows
     target_link_libraries(${TARGET_NAME}
         PRIVATE 
             Engine
-            OpenAL32.lib
             opengl32.lib
             glew32.lib
             SDL2.lib
             SDL2_mixer.lib
             freetype.lib
-            aubio.dll.a.lib
-            libaubio.a.lib
-
-            $<$<CONFIG:Debug>:sfml-main-s-d.lib>
-            $<$<CONFIG:Release>:sfml-main-s.lib>
-            $<$<CONFIG:Debug>:sfml-system-d.lib>
-            $<$<CONFIG:Release>:sfml-system.lib>
-            $<$<CONFIG:Debug>:sfml-audio-d.lib>
-            $<$<CONFIG:Release>:sfml-audio.lib>
     )
 endif()
 
@@ -88,11 +71,8 @@ endfunction()
 function(copy_required_files target)
   copy_dll(${target} freetype.dll)
   copy_dll(${target} glew32.dll)
-  copy_dll(${target} libaubio-5.dll)
   copy_dll(${target} SDL2_mixer.dll)
   copy_dll(${target} SDL2.dll)
-  copy_dll(${target} sfml-audio-d-3.dll)
-  copy_dll(${target} sfml-system-d-3.dll)
 endfunction()
 
 copy_required_files(Game)

@@ -18,21 +18,6 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
 else() # Windows
     message("Setting up libraries for Windows in ${TARGET_NAME} target...")
 
-    target_link_directories(${TARGET_NAME}
-    PUBLIC
-            $<$<CONFIG:Debug>:${SFML_LIB_DIR}/Debug>
-            $<$<CONFIG:Release>:${SFML_LIB_DIR}/Release>
-    )
-
-    target_link_libraries(${TARGET_NAME}
-    PUBLIC
-            $<$<CONFIG:Debug>:sfml-main-s-d>
-            $<$<CONFIG:Release>:sfml-main-s>
-            $<$<CONFIG:Debug>:sfml-system-d>
-            $<$<CONFIG:Release>:sfml-system>
-            $<$<CONFIG:Debug>:sfml-audio-d>
-            $<$<CONFIG:Release>:sfml-audio>
-    )
 endif()
 
 
