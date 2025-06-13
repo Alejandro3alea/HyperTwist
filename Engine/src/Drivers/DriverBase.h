@@ -5,5 +5,5 @@ class DriverBase
 public:
 	virtual	~DriverBase() {}
 
-	virtual void Initialize() = 0;
+	virtual bool Initialize() = 0;
 };

@@ -6,18 +6,18 @@ TimeManager* TimeManager::mpInstance;
 
 void TimeManager::StartFrame()
 {
-    mStartTime = std::chrono::high_resolution_clock::now();
+    mFrameStartTime = std::chrono::high_resolution_clock::now();
 }
 
 void TimeManager::EndFrame()
 {
     auto endTime = std::chrono::high_resolution_clock::now();
-    std::chrono::duration<double> elapsed = endTime - mStartTime;
+    std::chrono::duration<double> elapsed = endTime - mFrameStartTime;
 
     // @TODO: FixedDeltaTime
     // Calculate the frame time
     deltaTime = fixedDeltaTime = elapsed.count();
 
     // Update the start time for the next frame
-    mStartTime = endTime;
+    mFrameStartTime = endTime;
 }
