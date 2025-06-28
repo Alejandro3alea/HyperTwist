@@ -8,7 +8,7 @@ void InputManager::Initialize()
 {
 	int keyboardSize;
 	SDL_GetKeyboardState(&keyboardSize);
-	mCurrentKeyState = new Uint8[keyboardSize];
+	mCurrentKeyState = new u8[keyboardSize];
 }
 
 void InputManager::Shutdown()
@@ -61,29 +61,23 @@ SDL_Event InputManager::ProcessInput()
 	//--------------------------------- EVENTS ---------------------------------
 	SDL_Event event_sdl;
 
+	
 	while (SDL_PollEvent(&event_sdl))
 	{
+		u32 newWidth; 
+		u32 newHeight;
+
 		switch (event_sdl.type)
 		{
-		/*case SDL_MOUSEMOTION:
-			onMouseMove(event);
-			break;*/
-
-		case SDL_MOUSEWHEEL:
-			//onMouseWheelScroll(event);
+		case SDL_EVENT_WINDOW_RESIZED:
+			newWidth = event_sdl.window.data1;
+			newHeight = event_sdl.window.data2;
+			mOnWindowResize.Broadcast(newWidth, newHeight);
 			break;
 
-		case SDL_QUIT:
+
+		[[unlikely]] case SDL_EVENT_QUIT:
 			WindowMgr->mCurrentWindow->Close();
-			break;
-
-		case SDL_WINDOWEVENT:
-			if (event_sdl.window.event == SDL_WINDOWEVENT_RESIZED)
-			{
-				uint32_t newWidth = event_sdl.window.data1;
-				uint32_t newHeight = event_sdl.window.data2;
-				mOnWindowResize.Broadcast(newWidth, newHeight);
-			}
 			break;
 
 		default:
@@ -93,7 +87,7 @@ SDL_Event InputManager::ProcessInput()
 
 	//--------------------------------- KEYS ---------------------------------
 	int keyboardSize;
-	const Uint8* newKeyboardState = SDL_GetKeyboardState(&keyboardSize);
+	const bool* newKeyboardState = SDL_GetKeyboardState(&keyboardSize);
 
 	for (int i = 0; i < keyboardSize; i++)
 	{
@@ -113,10 +107,10 @@ SDL_Event InputManager::ProcessInput()
 	}
 
 	//-------------------------------- BUTTONS ----------------------------------
-	int x, y;
-	const Uint32 newMouseState = SDL_GetMouseState(&x, &y);
+	f32 x, y;
+	const u32 newMouseState = SDL_GetMouseState(&x, &y);
 
-	for (int i = 0; i < 5; i++) // for each mouse button
+	for (u32 i = 0; i < 5; i++) // for each mouse button
 	{
 		mMouseState.mMouseMask[i] = 0;
 

@@ -4,6 +4,7 @@
 #include "Resources/ResourceMgr.h"
 #include "Graphics/WindowMgr.h"
 #include "Graphics/GfxMgr.h"
+#include "Audio/AudioMgr.h"
 #include "Input/InputMgr.h"
 #include "Misc/Timer.h"
 
@@ -13,6 +14,7 @@ int main(void)
 	ResourceMgr->Initialize();
 	WindowMgr->Initialize("Nextage");
 	GfxMgr->Initialize();
+	AudioMgr->Initialize();
 	ResourceMgr->LoadDefaultAssets();
 	InputMgr->Initialize();
 	PhaseMgr->Initialize();

@@ -14,13 +14,15 @@ endif()
 
 target_include_directories(${TARGET_NAME}
     PRIVATE 
+        ${SDL3_INCLUDE_DIRS}
+        ${SDL3_MIXER_INCLUDE_DIRS}
         ${CMAKE_CURRENT_SOURCE_DIR}/src
 )
 
 target_link_directories(${TARGET_NAME}
-    PRIVATE ${CMAKE_SOURCE_DIR}/lib/GL
-            ${CMAKE_SOURCE_DIR}/lib/SDL2
-            ${CMAKE_SOURCE_DIR}/lib/freetype
+    PRIVATE 
+        ${CMAKE_SOURCE_DIR}/lib/GL     
+        ${CMAKE_SOURCE_DIR}/lib/freetype
 )
 
 
@@ -33,9 +35,9 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
             Engine
             GL
             GLEW
-            SDL2
-            SDL2_mixer
             freetype
+            SDL3::SDL3
+            SDL3_mixer::SDL3_mixer
     )
 else() # Windows
     message("Setting up libraries for Windows in ${TARGET_NAME} target...")
@@ -46,9 +48,9 @@ else() # Windows
             Engine
             opengl32.lib
             glew32.lib
-            SDL2.lib
-            SDL2_mixer.lib
             freetype.lib
+            SDL3::SDL3
+            SDL3_mixer::SDL3_mixer
     )
 endif()
 
@@ -68,11 +70,22 @@ function(copy_dll target file)
   )
 endfunction()
 
+function(copy_dll_from_build target dll_target)
+  add_custom_command(
+    TARGET     ${target}
+    POST_BUILD
+    COMMAND    ${CMAKE_COMMAND} -E copy_if_different
+               "$<TARGET_FILE:${dll_target}>"
+               "$<TARGET_FILE_DIR:${target}>/$<TARGET_FILE_NAME:${dll_target}>"
+    COMMENT    "Copying $<TARGET_FILE_NAME:${dll_target}> to $<TARGET_FILE_DIR:${target}>"
+  )
+endfunction()
+
 function(copy_required_files target)
   copy_dll(${target} freetype.dll)
   copy_dll(${target} glew32.dll)
-  copy_dll(${target} SDL2_mixer.dll)
-  copy_dll(${target} SDL2.dll)
+  copy_dll_from_build(${target} SDL3-shared)
+  copy_dll_from_build(${target} SDL3_mixer-shared)
 endfunction()
 
 copy_required_files(Game)

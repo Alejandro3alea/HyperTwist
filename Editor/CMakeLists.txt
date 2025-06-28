@@ -27,8 +27,8 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
             Engine
             GL
             GLEW
-            SDL2
-            SDL2_mixer
+            SDL3
+            SDL3_mixer
             freetype
     )
 else() # Windows

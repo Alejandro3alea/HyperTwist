@@ -4,6 +4,7 @@
 #include "GameVariables.h"
 #include "Graphics/GfxMgr.h"
 #include "Utils/GameUtils.h"
+#include "Audio/Audio.h"
 
 #include <sstream>
 #include <fstream>
@@ -147,7 +148,7 @@ Audio* Song::GetSong()
     if (mSong) 
         return mSong->get();
 
-    mSong = ResourceMgr->Load<Audio>(mPath + mSongPath);
+    mSong = ResourceMgr->Load<Audio>(mPath + mSongPath, AudioType::BGM);
 
     return mSong->get();
 }
@@ -185,7 +186,7 @@ Texture* Song::GetCDTitle()
 void Song::GetResources()
 {
     // There should be ALWAYS a song path (No audios, no party)
-    //mSong = ResourceMgr->Load<Audio>(mPath + mSongPath);
+    //mSong = ResourceMgr->Load<Audio>(mPath + mSongPath, AudioType::BGM);
 
     /*if (!mBannerPath.empty())
         mBanner     = ResourceMgr->Load<Texture>(mPath + mBannerPath);

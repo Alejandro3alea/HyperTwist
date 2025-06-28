@@ -3,6 +3,7 @@
 #include "Misc/Concepts.h"
 
 #include <map>
+#include <stdexcept>
 
 namespace Math
 {

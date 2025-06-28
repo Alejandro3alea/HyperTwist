@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.10)
+cmake_minimum_required(VERSION 3.25)
 project(HyperTwist VERSION 0.1.0 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 20)
@@ -15,21 +15,24 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
     include_directories(/usr/include)
     find_package(SFML 2.5 COMPONENTS system audio REQUIRED)
 else()
-    set(SFML_INCLUDE_DIR "${CMAKE_SOURCE_DIR}/include/SFML")
+    set(SFML_INCLUDE_DIR "${CMAKE_SOURCE_DIR}/external/SFML")
     set(SFML_LIB_DIR "${CMAKE_SOURCE_DIR}/lib/SFML")
 endif()
 
+# External includes
+add_subdirectory(extern/SDL)
+add_subdirectory(extern/SDL_mixer)
+
 include_directories(
-    ${CMAKE_SOURCE_DIR}/include
-    ${CMAKE_SOURCE_DIR}/include/AL
-    ${CMAKE_SOURCE_DIR}/include/GL
-    ${CMAKE_SOURCE_DIR}/include/glm
-    ${CMAKE_SOURCE_DIR}/include/gltf
-    ${CMAKE_SOURCE_DIR}/include/json
-    ${CMAKE_SOURCE_DIR}/include/SDL2
-    ${CMAKE_SOURCE_DIR}/include/STB
+    ${CMAKE_SOURCE_DIR}/extern
+    ${CMAKE_SOURCE_DIR}/extern/AL
+    ${CMAKE_SOURCE_DIR}/extern/GL
+    ${CMAKE_SOURCE_DIR}/extern/glm
+    ${CMAKE_SOURCE_DIR}/extern/gltf
+    ${CMAKE_SOURCE_DIR}/extern/json
+    ${CMAKE_SOURCE_DIR}/extern/STB
     ${SFML_INCLUDE_DIR}
-    ${CMAKE_SOURCE_DIR}/include/freetype
+    ${CMAKE_SOURCE_DIR}/extern/freetype
     ${CMAKE_SOURCE_DIR}/Engine/src
 )
 
@@ -40,5 +43,5 @@ if (BUILD_GAME)
 endif()
 
 if (BUILD_EDITOR)
-    add_subdirectory(Editor)
+    #add_subdirectory(Editor)
 endif()

@@ -81,6 +81,13 @@
         "numbers": "cpp",
         "span": "cpp",
         "text_encoding": "cpp",
-        "cinttypes": "cpp"
+        "cinttypes": "cpp",
+        "mutex": "cpp",
+        "any": "cpp",
+        "coroutine": "cpp",
+        "filesystem": "cpp",
+        "ranges": "cpp",
+        "stop_token": "cpp",
+        "thread": "cpp"
     }
 }

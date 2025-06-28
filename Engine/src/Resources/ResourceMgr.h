@@ -7,7 +7,6 @@
 #include <iostream>
 #include <map>
 
-
 class ResourceManager
 {
 	Singleton(ResourceManager);
@@ -17,14 +16,14 @@ public:
 	void LoadDefaultAssets();
 	void Shutdown();
 
-	template <typename T>
-	Resource<T>* Load(const std::string& path);
+	template <typename T, typename... Args>
+	Resource<T>* Load(const std::string& path, Args&&... args);
+
+	template <typename T, typename... Args>
+	Resource<T>* LoadFromGlobalPath(const std::string& fullPath, Args&&... args);
 
 	template <typename T>
-	Resource<T>* LoadFromGlobalPath(const std::string& fullPath);
-
-	template <typename T>
-	Resource<T>* GetDefautAsset();
+	Resource<T>* GetDefaultAsset();
 
 	const std::string GetExtension(const std::string& filePath) const;
 	const std::string GetResourceName(const std::string& filePath) const;
@@ -44,37 +43,8 @@ private:
 #define ResourceMgr ResourceManager::Instance()
 
 
-template<typename T>
-inline Resource<T>* ResourceManager::LoadFromGlobalPath(const std::string& fullPath)
-{
-	const std::string ext = GetExtension(fullPath);
-
-	if (mAllImporters.find(ext) == mAllImporters.end())
-	{
-		PrintWarning("There is no proper extension for \"." + ext + "\" files yet.");
-		return nullptr;
-	}
-
-	if (mAllResources.find(fullPath) != mAllResources.end())
-		return  dynamic_cast<Resource<T>*>(mAllResources[fullPath].get());
-
-	try
-	{
-		Resource<T>* resource = dynamic_cast<Resource<T>*>(mAllImporters[ext].get()->Import(fullPath));
-		mAllResources[fullPath] = std::shared_ptr<IResourceBase>(resource);
-		return resource;
-	}
-	catch (const ResourceLoadException& exc)
-	{
-		PrintWarning(exc.reason);
-		Resource<T>* resource = new Resource<T>(*GetDefautAsset<T>());
-		mAllResources[fullPath] = std::shared_ptr<IResourceBase>(resource);
-		return resource;
-	}
-}
-
-template<typename T>
-inline Resource<T>* ResourceManager::Load(const std::string& path)
+template<typename T, typename... Args>
+inline Resource<T>* ResourceManager::Load(const std::string& path, Args&&... args)
 {
 	const std::string ext = GetExtension(path);
 	const std::string fullPath = FileUtils::JoinPath(DATA_PATH, path);
@@ -90,21 +60,52 @@ inline Resource<T>* ResourceManager::Load(const std::string& path)
 	
 	try
 	{
-		Resource<T>* resource = dynamic_cast<Resource<T>*>(mAllImporters[ext].get()->Import(fullPath));
+		ResourceImporter<T>* importer = dynamic_cast<ResourceImporter<T>*>(mAllImporters[ext].get());
+		Resource<T>* resource = dynamic_cast<Resource<T>*>(importer->Import(fullPath, std::forward<Args>(args)...));
 		mAllResources[fullPath] = std::shared_ptr<IResourceBase>(resource);
 		return resource;
 	}
 	catch (const ResourceLoadException& exc)
 	{
 		PrintWarning(exc.reason);
-		Resource<T>* resource = new Resource<T>(*GetDefautAsset<T>());
+		Resource<T>* resource = new Resource<T>(*GetDefaultAsset<T>());
+		mAllResources[fullPath] = std::shared_ptr<IResourceBase>(resource);
+		return resource;
+	}
+}
+
+template<typename T, typename... Args>
+inline Resource<T>* ResourceManager::LoadFromGlobalPath(const std::string& fullPath, Args&&... args)
+{
+	const std::string ext = GetExtension(fullPath);
+
+	if (mAllImporters.find(ext) == mAllImporters.end())
+	{
+		PrintWarning("There is no proper extension for \"." + ext + "\" files yet.");
+		return nullptr;
+	}
+
+	if (mAllResources.find(fullPath) != mAllResources.end())
+		return  dynamic_cast<Resource<T>*>(mAllResources[fullPath].get());
+
+	try
+	{
+		ResourceImporter<T>* importer = dynamic_cast<ResourceImporter<T>*>(mAllImporters[ext].get());
+		Resource<T>* resource = dynamic_cast<Resource<T>*>(importer->Import(fullPath, std::forward<Args>(args)...));
+		mAllResources[fullPath] = std::shared_ptr<IResourceBase>(resource);
+		return resource;
+	}
+	catch (const ResourceLoadException& exc)
+	{
+		PrintWarning(exc.reason);
+		Resource<T>* resource = new Resource<T>(*GetDefaultAsset<T>());
 		mAllResources[fullPath] = std::shared_ptr<IResourceBase>(resource);
 		return resource;
 	}
 }
 
 template<typename T>
-inline Resource<T>* ResourceManager::GetDefautAsset()
+inline Resource<T>* ResourceManager::GetDefaultAsset()
 {
 	const std::string assetName = typeid(T).name();
 	if (mDefaultResources.find(assetName) == mDefaultResources.end())

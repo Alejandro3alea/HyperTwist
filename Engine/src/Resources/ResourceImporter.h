@@ -7,7 +7,7 @@
 
 struct IResourceImporterBase
 {
-	~IResourceImporterBase();
+	virtual ~IResourceImporterBase();
 
 	virtual IResourceBase* Import(const std::string& path) = 0;
 };

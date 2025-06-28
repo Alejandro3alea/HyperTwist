@@ -8,7 +8,7 @@ WindowManager* WindowManager::mpInstance;
 Window::Window(const std::string& winName, const unsigned winWidth, const unsigned winHeight) : mSize(winWidth, winHeight)
 {
 	// Create an instance of an SDLWindow
-	mWindow_SDL = SDL_CreateWindow(winName.c_str(), SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, winWidth, winHeight, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE | SDL_WINDOW_OPENGL);
+	mWindow_SDL = SDL_CreateWindow(winName.c_str(), winWidth, winHeight, SDL_WINDOW_RESIZABLE | SDL_WINDOW_OPENGL);
 	if (mWindow_SDL == nullptr)
 	{
 		PrintColoredText(std::string("SDL_CreateWindow Error : ") + SDL_GetError(), ConsoleColor::Red);
@@ -41,7 +41,7 @@ Window::Window(const std::string& winName, const unsigned winWidth, const unsign
 
 Window::~Window()
 {
-	SDL_GL_DeleteContext(mWinContext);
+	SDL_GL_DestroyContext(mWinContext);
 	SDL_DestroyWindow(mWindow_SDL);
 	SDL_Quit();
 }

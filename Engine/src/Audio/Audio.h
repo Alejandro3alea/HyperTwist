@@ -1,12 +1,23 @@
 #pragma once
 #include "Resources/ResourceMgr.h"
+#include "Misc/DataTypes.h"
 #include "AudioInfo.h"
 
 #include <mutex>
 
+struct Mix_Music;
+struct Mix_Chunk;
+
+enum class AudioType
+{
+    BGM,
+    SFX
+};
+
+// Audios should be created with AudioMgr using LoadSound/LoadMusic respectively
 struct Audio
 {
-    Audio(const std::string& file);
+    Audio(const std::string& file, const AudioType audioType = AudioType::BGM);
 
     void Play(const float positionInMeasure);
     void Play();
@@ -16,26 +27,26 @@ struct Audio
     void SetPosition(const float measure);
     void SetVolume(const float val);
 
-    std::vector<float> GetSamples(const size_t numSamples);
-
-
     bool IsPlaying() { return mIsPlaying; }
 
-    void Cleanup();
+private:
+    Mix_Music* LoadBGM(const std::string& path);
+    Mix_Chunk* LoadSFX(const std::string& path);
+    
+    bool PlayBGM();
+    bool PlaySFX();
+
+    void StopBGM();
+    void StopSFX();
 
 private:
-    AudioInfo LoadWav(const std::string& path);
-    AudioInfo LoadMp3(const std::string& path);
-    AudioInfo LoadOgg(const std::string& path);
-
-private:
+    const AudioType mType;
+    void* mData = nullptr;
     bool mIsPlaying = false;
+    bool mIsLooping = false;
     float mVolume = 1.0f;
-    size_t mCurrSample = 0;
-    std::vector<float> mSamples;
 
-    int32_t mSampleRate = 44100;
-
-    std::mutex mMutex;
+    // For sounds too
+    i32 mSFXChannel = -1;
 };
 
