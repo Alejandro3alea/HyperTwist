@@ -26,6 +26,14 @@ bool AccountManager::IsPlayerSlotOccupied(const uint32_t playerIdx)
 	return mPlayers[playerIdx].get() != nullptr;
 }
 
+std::array<bool, MAX_PLAYER_COUNT> AccountManager::GetOccupiedSlots()
+{
+	std::array<bool, MAX_PLAYER_COUNT> result;
+	for (u8 i = 0; i < result.size(); i++)
+		result[i] = mPlayers[i] != nullptr;
+    return result;
+}
+
 bool AccountManager::AreAllPlayerSlotsFree()
 {
 	for (uint32_t i = 0; i < mPlayers.size(); i++)

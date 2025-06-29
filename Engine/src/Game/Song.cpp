@@ -1,7 +1,7 @@
 #include "Song.h"
 #include "Misc/Requires.h"
 #include "GlobalEvents.h"
-#include "GameVariables.h"
+#include "GlobalVariables.h"
 #include "Graphics/GfxMgr.h"
 #include "Utils/GameUtils.h"
 #include "Audio/Audio.h"
@@ -99,6 +99,8 @@ Song::Song(const std::string& path)
         ProcessSSCSong(cleanContents);
     else if (extension == "smd")
         ProcessSMD(cleanContents);
+    else
+        PrintError("Unknown extension for song: {}", mPath);
 
 	file.close();
     
@@ -200,6 +202,8 @@ void Song::GetResources()
 
 void Song::ProcessSMSong(std::istringstream& file)
 {
+    mFileType = FileType::SM;
+
     std::string line;
     while (std::getline(file, line))
     {
@@ -320,6 +324,7 @@ void Song::ProcessSMSong(std::istringstream& file)
 
 void Song::ProcessSSCSong(std::istringstream& file)
 {
+    mFileType = FileType::SSC;
     std::string line;
     while (std::getline(file, line))
     {
@@ -739,6 +744,7 @@ Chart* Song::ProcessSSCChart(std::istringstream& file)
 
 void Song::ProcessSMD(std::istringstream& file)
 {
+    mFileType = FileType::SMD_SCD;
     std::string line;
     while (std::getline(file, line))
     {
@@ -1304,8 +1310,8 @@ void Song::SaveToSMD(const std::string& outPath)
     std::ofstream file(path);
     Requires(file.is_open() && file.good(), " " + path);
 
-    file << "#VERSION:" << gGameVariables.mMajorVersion << "." << gGameVariables.mMinorVersion << "."
-         << gGameVariables.mPatchVersion << ";" << std::endl;
+    file << "#VERSION:" << gGlobalVariables.mMajorVersion << "." << gGlobalVariables.mMinorVersion << "."
+         << gGlobalVariables.mPatchVersion << ";" << std::endl;
     file << "#TITLE:" << mTitle << ";" << std::endl;
     file << "#SUBTITLE:" << mSubtitle << ";" << std::endl;
     file << "#ARTIST:" << mArtist << ";" << std::endl;
@@ -1455,4 +1461,27 @@ void Song::SaveToSCD(const std::string& outPath)
     }
 
     file.close();
+}
+
+void Song::LoadChartsSCD()
+{
+    if (mFileType != FileType::SMD_SCD)
+    {
+        PrintError("Trying to load charts for an unsupported file extension: {}", mPath);
+    }
+
+    const std::string pathSCD = FileUtils::JoinPath(mPath, mTitle + ".scd");
+	std::ifstream file(pathSCD);
+	if (!file.is_open() || !file.good())
+    {
+        PrintError("File not read in {}", pathSCD);
+        return;
+    } 
+
+    std::string fileContents((std::istreambuf_iterator<char>(file)),
+        std::istreambuf_iterator<char>());
+
+    RemoveContents(fileContents);
+    std::istringstream cleanContents(fileContents);
+    ProcessSCD(cleanContents);
 }

@@ -787,15 +787,15 @@ void ImGuiEditor::HandleEditorInput()
 
 	if (InputMgr->isKeyDown(SDL_SCANCODE_N))
 	{
-		gGameVariables.mZoom += TimeMgr->deltaTime * 50;
+		gGlobalVariables.mZoom += TimeMgr->deltaTime * 50;
 	}
 
 	if (InputMgr->isKeyDown(SDL_SCANCODE_M))
 	{
-		gGameVariables.mZoom -= TimeMgr->deltaTime * 50;
+		gGlobalVariables.mZoom -= TimeMgr->deltaTime * 50;
 	}
 
-	gGameVariables.mZoom = std::clamp(gGameVariables.mZoom, 50.0f, 200.0f);
+	gGlobalVariables.mZoom = std::clamp(gGlobalVariables.mZoom, 50.0f, 200.0f);
 
 	Editor->mReceptors.Update(GfxMgr->mCam.mPos);
 	Editor->mSnappers.Update(GfxMgr->mCam.mPos);

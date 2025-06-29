@@ -1,4 +1,5 @@
 #pragma once
+#include "Misc/DataTypes.h"
 #include "DevMenuItem.h"
 
 struct DevMenuNode : public DevMenuItem
@@ -6,7 +7,7 @@ struct DevMenuNode : public DevMenuItem
 public:
     DevMenuNode(const std::string& name) : DevMenuItem(name) {}
 
-    virtual void InitializeRenderables(int32_t yStartPos);
+    virtual void InitializeRenderables(i32 yStartPos);
     void ShowRenderables();
     void HideRenderables();
 
@@ -28,7 +29,7 @@ private:
     std::vector<std::shared_ptr<DevMenuItem>> mItems;
     std::vector<std::shared_ptr<Renderable>> mItemRenderables;
     std::vector<std::shared_ptr<Renderable>> mCustomRenderables;
-    int32_t mSelectedIdx = 0;
+    i32 mSelectedIdx = 0;
 };
 
 struct DevMenuMainMenu : public DevMenuNode

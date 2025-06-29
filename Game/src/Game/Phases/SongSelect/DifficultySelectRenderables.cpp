@@ -1,27 +1,87 @@
 #include "DifficultySelectRenderables.h"
+#include "Game/Account.h"
+#include "Math/Easing.h"
+#include "Utils/GfxUtils.h"
 
 #include <Utils/GameUtils.h>
 
-DifficultySelectChartRenderables::DifficultySelectChartRenderables(const ChartDifficulty& category, uint8_t level)
+DifficultySelectChartRenderables::DifficultySelectChartRenderables(const ChartDifficulty& category, uint8_t level, i8 chartIdx, u8 playerIdx) : mChartIdx(chartIdx), mPlayerIdx(playerIdx)
 {
 	mBG.SetTexture("engine/texture/SongSelect/RectangleHorizontalFade.png");
-	mDifficulty.SetFont("engine/fonts/Rubik.ttf");
+	mDifficulty.SetFont("engine/fonts/Glaser Stencil D Regular.ttf");
 	mDifficulty.SetText("Challenge");
-	mLevel.SetFont("engine/fonts/Rubik.ttf");
+	mLevel.SetFont("engine/fonts/Glaser Stencil D Regular.ttf");
 	mLevel.SetText("17");
-	mGrade.SetTexture("engine/texture/SongSelect/RectangleHorizontalFade.png");
-	mFullComboIcon.SetTexture("engine/texture/SongSelect/RectangleHorizontalFade.png");
+	mGrade.SetTexture("engine/texture/Grades/AAA.png");
+	mFullComboIcon.SetTexture("engine/texture/Grades/MarvelousFullCombo.png");
 }
 
-DifficultySelectRenderables::DifficultySelectRenderables(Song* song) : mTable("UI/DifficultySelect.json")
+void DifficultySelectChartRenderables::Show()
+{
+	mBG.mbIsVisible = true;
+	mDifficulty.mbIsVisible = true;
+	mLevel.mbIsVisible = true;
+	mGrade.mbIsVisible = true;
+	mFullComboIcon.mbIsVisible = true;
+}
+
+void DifficultySelectChartRenderables::Hide()
+{
+	mBG.mbIsVisible = false;
+	mDifficulty.mbIsVisible = false;
+	mLevel.mbIsVisible = false;
+	mGrade.mbIsVisible = false;
+	mFullComboIcon.mbIsVisible = false;
+}
+
+Transform DifficultySelectChartRenderables::GetTransformByIndex(const std::array<i8, 2> &selectorIndices)
+{
+	const bool isPlayer2 = mPlayerIdx == ACCOUNTS_PLAYER_2;
+	const i8 dist = mChartIdx - selectorIndices[mPlayerIdx];
+	auto sign = [](int d){ return d < 0 ? -1.0f : 1.0f; };
+
+	// const float playerPos = isPlayer2 ? 1.0f : -1.0f;
+	// const float xPos = (50.0f * std::abs(dist) + 275.0f) * playerPos;
+	// float magnitude = std::pow(std::abs(dist), 0.7f);
+	// const float yPos = sign(dist) * -275.0f * magnitude - 25.0f;
+	// const float scaleVal = 1.0f - 0.24f * std::abs(dist);
+	// const glm::vec3 pos = glm::vec3(xPos, yPos, -1.0f);
+	// const glm::vec2 scale(scaleVal);
+	
+	const float playerPos = isPlayer2 ? 1.0f : -1.0f;
+	const float xPos = (50.0f * std::abs(dist) + 275.0f) * playerPos;
+	float magnitude = std::pow(std::abs(dist), 0.7f);
+	const float yPos = sign(dist) * -275.0f * magnitude - 25.0f;
+	const float scaleVal = 0.9f - 0.24f * std::abs(dist);
+	const glm::vec3 pos = glm::vec3(xPos, yPos, -1.0f);
+	const glm::vec2 scale(scaleVal);
+    return Transform(pos, scale, 0.0f);
+}
+
+DifficultySelectRenderables::DifficultySelectRenderables(const Song* song, const std::array<i8, 2>& selectorIndices) : mTable("UI/DifficultySelect.json")
 {
 	SetTextures(song);
 	SetPositions();
+	SetChartRenderables(song, selectorIndices);
 }
 
-void DifficultySelectRenderables::UpdateSelectorPositions(const std::array<int8_t, 2>& selectorIndices)
+void DifficultySelectRenderables::UpdateChartPositions(const std::array<i8, 2> &selectorIndices)
 {
+	for (auto& chartRenderable : mChartRenderables)
+	{
+		auto& transformBG 			 = chartRenderable->mBG.mParentTransform;
+		auto& transformDifficulty 	 = chartRenderable->mDifficulty.mParentTransform;
+		auto& transformLevel 		 = chartRenderable->mLevel.mParentTransform;
+		auto& transformGrade 		 = chartRenderable->mGrade.mParentTransform;
+		auto& transformFullComboIcon = chartRenderable->mFullComboIcon.mParentTransform;
 
+		const Transform newRenderableT = Math::Lerp(transformBG.value(), chartRenderable->GetTransformByIndex(selectorIndices), 0.2f);
+		transformBG 			= newRenderableT;
+		transformDifficulty 	= newRenderableT;
+		transformLevel		 	= newRenderableT;
+		transformGrade 		   	= newRenderableT;
+		transformFullComboIcon 	= newRenderableT;
+	}
 }
 
 void DifficultySelectRenderables::Show()
@@ -81,29 +141,42 @@ void DifficultySelectRenderables::Hide()
 }
 
 std::shared_ptr<DifficultySelectChartRenderables> DifficultySelectRenderables::CreateNewChartRenderables(
-	const ChartDifficulty& category, const uint8_t level, const int8_t idx)
+	const ChartDifficulty& category, const u8 level, const i8 chartIdx, const u8 playerIdx, const std::array<i8, 2> &selectorIndices)
 {
-	/*std::shared_ptr<DifficultySelectChartRenderables> result = std::make_shared<DifficultySelectChartRenderables>(category, level);
+	std::shared_ptr<DifficultySelectChartRenderables> result = std::make_shared<DifficultySelectChartRenderables>(category, level, chartIdx, playerIdx);
+	Transform globalTransform = result->GetTransformByIndex(selectorIndices);
 
-	constexpr float textOffsetY = 12.5f;
-	const float pos = GetYPosByIndex(idx);
-	result->mBG.mColor = glm::vec4(1.0f, 1.0f, 1.0f, 0.4f);
-	result->mBG.transform.pos = glm::vec3(-580.0f, pos, 0.5f);
-	result->mBG.transform.scale = glm::vec3(260.0f, 32.5f, 0.1f);
+	Renderable& chartRenderableBG = result->mBG;
+	FontRenderer& chartRenderableDifficulty = result->mDifficulty;
+	FontRenderer& chartRenderableLevel = result->mLevel;
+	Renderable& chartRenderableGrade = result->mGrade;
+	Renderable& chartRenderableFullComboIcon = result->mFullComboIcon;
 
-	result->mDifficulty.transform.pos = glm::vec3(-610.0f, pos - textOffsetY, 1.75f);
-	result->mDifficulty.transform.scale = glm::vec3(0.6f);
-	result->mLevel.transform.pos = glm::vec3(-460.0f, pos - textOffsetY, 1.75f);
-	result->mLevel.transform.scale = glm::vec3(0.6f);
+	chartRenderableBG.mParentTransform 				= globalTransform;
+	chartRenderableDifficulty.mParentTransform 		= globalTransform;
+	chartRenderableLevel.mParentTransform 			= globalTransform;
+	chartRenderableGrade.mParentTransform 			= globalTransform;
+	chartRenderableFullComboIcon.mParentTransform 	= globalTransform;
 
-	result->mP1Grade.transform.pos = glm::vec3(-760.0f, pos, 1.8f);
-	result->mP1Grade.transform.scale = glm::vec3(40.0f);
-	result->mP2Grade.transform.pos = glm::vec3(-400.0f, pos, 1.8f);
-	result->mP2Grade.transform.scale = glm::vec3(40.0f);
+	SET_TABLE_VALUES(mTable, chartRenderableBG);
+	SET_TABLE_VALUES(mTable, chartRenderableDifficulty);
+	SET_TABLE_VALUES(mTable, chartRenderableLevel);
+	SET_TABLE_VALUES(mTable, chartRenderableGrade);
+	SET_TABLE_VALUES(mTable, chartRenderableFullComboIcon);
 
-	return result;*/
-	//return std::make_shared<DifficultySelectChartRenderables>(category, level);
-	return nullptr;
+	const std::array<glm::vec3, 6> bgColors = {
+		GfxUtils::IntToRGB(0x3affd3),
+		GfxUtils::IntToRGB(0xffce3a),
+		GfxUtils::IntToRGB(0xff3a3a),
+		GfxUtils::IntToRGB(0x3aff43),
+		GfxUtils::IntToRGB(0xff3af3),
+		GfxUtils::IntToRGB(0xff843a)
+	};
+	chartRenderableBG.mColor = glm::vec4(bgColors[category], 0.4f);
+	chartRenderableDifficulty.SetText(GameUtils::ChartDifficultyToStr(category));
+	chartRenderableLevel.SetText(std::to_string(level));
+
+	return result;
 }
 
 void DifficultySelectRenderables::SetTextures(const Song* song)
@@ -171,4 +244,20 @@ void DifficultySelectRenderables::SetPositions()
 	SET_TABLE_VALUES(mTable, mArrowDown);
 	SET_TABLE_VALUES(mTable, mArrowUp);
 	mArrowUp.transform.rotation = 180.0f;
+}
+
+void DifficultySelectRenderables::SetChartRenderables(const Song* song, const std::array<i8, 2>& selectorIndices)
+{
+	auto generateChartsForPlayer = [&](u8 playerIdx)
+	{
+		if (selectorIndices[playerIdx] == -1)
+			return;
+
+		i8 chartIdx = 0;
+		for (auto& chart : song->mCharts)
+			mChartRenderables.push_back(CreateNewChartRenderables(chart.first, chart.second->mDifficultyVal, chartIdx++, playerIdx, selectorIndices));
+	};
+
+	generateChartsForPlayer(ACCOUNTS_PLAYER_1);
+	generateChartsForPlayer(ACCOUNTS_PLAYER_2);
 }

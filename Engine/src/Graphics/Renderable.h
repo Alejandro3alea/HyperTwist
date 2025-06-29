@@ -27,6 +27,7 @@ public:
 	Resource<Texture>* mTexture = nullptr;
 	bool mbIsVisible = true;
 
+	std::optional<Transform> mParentTransform;
 	Transform transform;
 	glm::vec4 mColor = { 1.0f, 1.0f, 1.0f, 1.0f };
 };

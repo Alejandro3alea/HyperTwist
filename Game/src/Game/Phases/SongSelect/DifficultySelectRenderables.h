@@ -5,29 +5,41 @@
 
 struct DifficultySelectChartRenderables
 {
-	DifficultySelectChartRenderables(const ChartDifficulty& category, uint8_t level);
+	DifficultySelectChartRenderables(const ChartDifficulty& category, u8 level, i8 chartIdx, u8 playerIdx);
 
+	Transform GetTransformByIndex(const std::array<i8, 2> &selectorIndices);
+
+	void Show();
+	void Hide();
+
+public:
 	Renderable mBG;
 	FontRenderer mDifficulty;
 	FontRenderer mLevel;
 	Renderable mGrade;
 	Renderable mFullComboIcon;
+
+private:
+	const i8 mChartIdx;
+	const u8 mPlayerIdx;
 };
 
 struct DifficultySelectRenderables
 {
-	explicit DifficultySelectRenderables(Song* song);
+	explicit DifficultySelectRenderables(const Song* song, const std::array<i8, 2>& selectorIndices);
 
-	void UpdateSelectorPositions(const std::array<int8_t, 2>& selectorIndices);
+	void UpdateChartPositions(const std::array<i8, 2>& selectorIndices);
 
 	void Show();
 	void Hide();
 
 private:
-	std::shared_ptr<DifficultySelectChartRenderables> CreateNewChartRenderables(const ChartDifficulty& category, uint8_t level, int8_t idx);
+	std::shared_ptr<DifficultySelectChartRenderables> CreateNewChartRenderables(const ChartDifficulty& category, 
+		const u8 level, const i8 chartIdx, const u8 playerIdx, const std::array<i8, 2> &selectorIndices);
 
 	void SetTextures(const Song* song);
 	void SetPositions();
+	void SetChartRenderables(const Song* song, const std::array<i8, 2>& selectorIndices);
 
 public:
 	UITable mTable;

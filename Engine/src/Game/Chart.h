@@ -45,8 +45,4 @@ public:
 	std::string mStepArtist;
 
 	std::multiset<Note*, NoteCompare> mNotes;
-
-	NoteRenderer* mNoteRenderer = nullptr;
-	HoldNoteBodyRenderer* mHoldRenderer = nullptr;
-	MineRenderer* mMineRenderer = nullptr;
 };

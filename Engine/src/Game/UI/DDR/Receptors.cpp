@@ -1,5 +1,5 @@
 #include "Receptors.h"
-#include "Game/GameVariables.h"
+#include "Game/GlobalVariables.h"
 
 void Receptors::Initialize()
 {
@@ -15,16 +15,16 @@ void Receptors::Initialize()
 		mReceptorOff[i].SetTextureScale({ 64, 64 });
 		mReceptorOff[i].SetTextureOffset({ 64, 0 });
 		mReceptorOn[i].transform.rotation	= mReceptorOff[i].transform.rotation = rotations[i];
-		mReceptorOn[i].transform.pos.x		= mReceptorOff[i].transform.pos.x	= offset * gGameVariables.mZoom;
+		mReceptorOn[i].transform.pos.x		= mReceptorOff[i].transform.pos.x	= offset * gGlobalVariables.mZoom;
 		offset += 2.0f;
 	}
 }
 
 void Receptors::Update(const glm::vec3& camPos)
 {
-	float offset = gGameVariables.ReceptorsOffset * gGameVariables.Inverse;
+	float offset = gGlobalVariables.ReceptorsOffset * gGlobalVariables.Inverse;
 	for (unsigned i = 0; i < 4; i++)
 	{
-		mReceptorOn[i].transform.pos.y = mReceptorOff[i].transform.pos.y = camPos.y * gGameVariables.mZoom + offset;
+		mReceptorOn[i].transform.pos.y = mReceptorOff[i].transform.pos.y = camPos.y * gGlobalVariables.mZoom + offset;
 	}
 }

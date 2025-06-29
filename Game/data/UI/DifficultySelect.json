@@ -275,6 +275,66 @@
         "x": 30.0,
         "y": 15.0
       }
+    },
+    {
+      "name": "chartRenderableBG",
+      "pos": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.3
+      },
+      "scale": {
+        "x": 230.0,
+        "y": 120.0
+      }
+    },
+    {
+      "name": "chartRenderableDifficulty",
+      "pos": {
+        "x": -75.0,
+        "y": 65.0,
+        "z": 0.35
+      },
+      "scale": {
+        "x": 0.7,
+        "y": 0.7
+      }
+    },
+    {
+      "name": "chartRenderableLevel",
+      "pos": {
+        "x": 80.0,
+        "y": -80.0,
+        "z": 0.34
+      },
+      "scale": {
+        "x": 2.5,
+        "y": 2.5
+      }
+    },
+    {
+      "name": "chartRenderableGrade",
+      "pos": {
+        "x": -120.0,
+        "y": -30.0,
+        "z": 0.31
+      },
+      "scale": {
+        "x": 90.0,
+        "y": 90.0
+      }
+    },
+    {
+      "name": "chartRenderableFullComboIcon",
+      "pos": {
+        "x": 160.0,
+        "y": 90.0,
+        "z": 0.32
+      },
+      "scale": {
+        "x": 90.0,
+        "y": 90.0
+      }
     }
   ]
 }

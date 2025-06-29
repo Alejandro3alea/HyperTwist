@@ -1,6 +1,6 @@
 #include "Camera.h"
 #include "WindowMgr.h"
-#include "Game/GameVariables.h"
+#include "Game/GlobalVariables.h"
 
 #include <glm/gtc/matrix_transform.hpp>
 
@@ -33,5 +33,5 @@ void Camera::Move(const glm::vec3& vec)
 
 void Camera::SetPositionFromMeasure(const float measure)
 {
-	mPos.y = (gGameVariables.ReceptorsOffset + measure * 4.0f * mZoom) * gGameVariables.Inverse * -1.0f;
+	mPos.y = (gGlobalVariables.ReceptorsOffset + measure * 4.0f * mZoom) * gGlobalVariables.Inverse * -1.0f;
 }

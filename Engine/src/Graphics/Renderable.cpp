@@ -2,7 +2,7 @@
 #include "GfxMgr.h"
 #include "Game/Note.h"
 #include "Game/Chart.h"
-#include "Game/GameVariables.h"
+#include "Game/GlobalVariables.h"
 
 #include <glm/gtc/matrix_transform.hpp>
 #include <algorithm>
@@ -28,11 +28,11 @@ Renderable::~Renderable()
 {
     auto& rendercomps = GfxMgr->mRenderComps;
     int renderCompsB = GfxMgr->mRenderComps.size();
-    GfxMgr->mRenderComps.erase(
-        std::remove(GfxMgr->mRenderComps.begin(), GfxMgr->mRenderComps.end(), this),
-        GfxMgr->mRenderComps.end()
-    );
-    std::remove(GfxMgr->mRenderComps.begin(), GfxMgr->mRenderComps.end(), this);
+    // GfxMgr->mRenderComps.erase(
+    //     std::remove(GfxMgr->mRenderComps.begin(), GfxMgr->mRenderComps.end(), this),
+    //     GfxMgr->mRenderComps.end()
+    // );
+    std::erase(GfxMgr->mRenderComps, this);
     int renderCompsA = GfxMgr->mRenderComps.size();
     bool isDiff = renderCompsA != renderCompsB;
 }
@@ -47,7 +47,7 @@ void Renderable::Render(Shader* shader)
     currShader->Bind();
 
     currShader->SetUniform("uColor", mColor);
-    currShader->SetUniform("uZoom", gGameVariables.mZoom);
+    currShader->SetUniform("uZoom", gGlobalVariables.mZoom);
 
     glActiveTexture(GL_TEXTURE1);
     mTexture->get()->Bind();
@@ -122,7 +122,7 @@ void TextureAtlas::Render(Shader* shader)
     currShader->SetUniform("uTextureOffset", mTextureOffset);
 
     currShader->SetUniform("uColor", mColor);
-    currShader->SetUniform("uZoom", gGameVariables.mZoom);
+    currShader->SetUniform("uZoom", gGlobalVariables.mZoom);
 
     glActiveTexture(GL_TEXTURE1);
     mTexture->get()->Bind();
@@ -201,7 +201,7 @@ void LineList::Render(Shader* shader)
     currShader->Bind();
 
     currShader->SetUniform("uColor", mColor);
-    currShader->SetUniform("uZoom", gGameVariables.mZoom);
+    currShader->SetUniform("uZoom", gGlobalVariables.mZoom);
 
     glBindVertexArray(mVAO);
 
@@ -290,7 +290,7 @@ void NoteRenderer::Render(Shader* shader)
     Shader* currShader = (shader != nullptr) ? shader : mShader->get();
     currShader->Bind();
 
-    currShader->SetUniform("uZoom", gGameVariables.mZoom);
+    currShader->SetUniform("uZoom", gGlobalVariables.mZoom);
 
     glActiveTexture(GL_TEXTURE1);
     mTexture->get()->Bind();
@@ -442,7 +442,7 @@ void HoldNoteBodyRenderer::Render(Shader* shader)
     Shader* currShader = (shader != nullptr) ? shader : mShader->get();
     currShader->Bind();
 
-    currShader->SetUniform("uZoom", gGameVariables.mZoom);
+    currShader->SetUniform("uZoom", gGlobalVariables.mZoom);
 
     glActiveTexture(GL_TEXTURE1);
     mTexture->get()->Bind();
@@ -559,7 +559,7 @@ void MineRenderer::Render(Shader* shader)
     Shader* currShader = (shader != nullptr) ? shader : mShader->get();
     currShader->Bind();
 
-    currShader->SetUniform("uZoom", gGameVariables.mZoom);
+    currShader->SetUniform("uZoom", gGlobalVariables.mZoom);
 
     glActiveTexture(GL_TEXTURE1);
     mTexture->get()->Bind();
@@ -650,8 +650,9 @@ void FontRenderer::Render(Shader* shader)
     Shader* currShader = (shader != nullptr) ? shader : mShader->get();
     currShader->Bind();
 
+    const Transform t = mParentTransform.has_value() ? transform + mParentTransform.value() : transform;
     currShader->SetUniform("uTextColor", glm::vec3(mColor.x, mColor.y, mColor.z));
-    currShader->SetUniform("zLayer", transform.pos.z);
+    currShader->SetUniform("zLayer", t.pos.z);
     
     glActiveTexture(GL_TEXTURE0); 
     mFont->get()->BindFontTexture();
@@ -660,8 +661,8 @@ void FontRenderer::Render(Shader* shader)
 
     glm::uvec2 textSize = GetTextSize();
     int workingIndex = 0;
-    float x = transform.pos.x - textSize.x / 2;
-    float y = transform.pos.y - textSize.y / 2;
+    float x = t.pos.x - textSize.x / 2;
+    float y = t.pos.y - textSize.y / 2;
 
     // iterate through all characters
     std::string::const_iterator c;
@@ -671,23 +672,23 @@ void FontRenderer::Render(Shader* shader)
 
         if (*c == '\n')
         {
-            y -= ((ch.Size.y)) * 1.3 * transform.scale.y * FONTRENDERER_TEXTDEFAULTSIZE;
-            x = transform.pos.x;
+            y -= ((ch.Size.y)) * 1.3 * t.scale.y * FONTRENDERER_TEXTDEFAULTSIZE;
+            x = t.pos.x;
         }
         else if (*c == ' ') {
-            x += (ch.Advance >> 6) * transform.scale.x * FONTRENDERER_TEXTDEFAULTSIZE;
+            x += (ch.Advance >> 6) * t.scale.x * FONTRENDERER_TEXTDEFAULTSIZE;
         }
         else {
-            float xpos = x + ch.Bearing.x * transform.scale.x * FONTRENDERER_TEXTDEFAULTSIZE;
-            float ypos = y - (256 - ch.Bearing.y) * transform.scale.y * FONTRENDERER_TEXTDEFAULTSIZE;
+            float xpos = x + ch.Bearing.x * t.scale.x * FONTRENDERER_TEXTDEFAULTSIZE;
+            float ypos = y - (256 - ch.Bearing.y) * t.scale.y * FONTRENDERER_TEXTDEFAULTSIZE;
 
-            mTransforms[workingIndex] = glm::translate(glm::mat4(1.0f), glm::vec3(xpos, ypos, transform.pos.z + workingIndex * 0.0001f)) *
-                                        glm::scale(glm::mat4(1.0f), glm::vec3(256 * transform.scale.x * FONTRENDERER_TEXTDEFAULTSIZE, 256 * transform.scale.y * FONTRENDERER_TEXTDEFAULTSIZE, 0));
+            mTransforms[workingIndex] = glm::translate(glm::mat4(1.0f), glm::vec3(xpos, ypos, t.pos.z + workingIndex * 0.0001f)) *
+                                        glm::scale(glm::mat4(1.0f), glm::vec3(256 * t.scale.x * FONTRENDERER_TEXTDEFAULTSIZE, 256 * t.scale.y * FONTRENDERER_TEXTDEFAULTSIZE, 0));
             mLetterMap[workingIndex] = ch.TextureID;
             
             // render quad
             // now advance cursors for next glyph (note that advance is number of 1/64 pixels)
-            x += (ch.Advance >> 6) * transform.scale.x * FONTRENDERER_TEXTDEFAULTSIZE; // bitshift by 6 to get value in pixels (2^6 = 64 (divide amount of 1/64th pixels by 64 to get amount of pixels))
+            x += (ch.Advance >> 6) * t.scale.x * FONTRENDERER_TEXTDEFAULTSIZE; // bitshift by 6 to get value in pixels (2^6 = 64 (divide amount of 1/64th pixels by 64 to get amount of pixels))
             workingIndex++;
             if (workingIndex == FONTRENDERER_STRING_LIMIT) 
             {
@@ -767,6 +768,7 @@ glm::uvec2 FontRenderer::GetTextSize()
 
     glm::uint currX = 0;
 
+    const Transform t = mParentTransform.has_value() ? transform + mParentTransform.value() : transform;
     std::string::const_iterator c;
     for (c = mText.begin(); c != mText.end(); c++)
     {
@@ -774,13 +776,13 @@ glm::uvec2 FontRenderer::GetTextSize()
 
         if (*c == '\n')
         {
-            totalSize.y -= ((ch.Size.y)) * 1.3 * transform.scale.y * FONTRENDERER_TEXTDEFAULTSIZE;
+            totalSize.y -= ((ch.Size.y)) * 1.3 * t.scale.y * FONTRENDERER_TEXTDEFAULTSIZE;
             totalSize.x = std::max(totalSize.x, currX);
-            currX = transform.pos.x;
+            currX = t.pos.x;
         }
         else
         {
-            currX += (ch.Advance >> 6) * transform.scale.x * FONTRENDERER_TEXTDEFAULTSIZE;
+            currX += (ch.Advance >> 6) * t.scale.x * FONTRENDERER_TEXTDEFAULTSIZE;
         }
     }
 

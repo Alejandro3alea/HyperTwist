@@ -11,6 +11,14 @@ using TimeSignatureValues = std::pair<int, int>;
 
 struct Song
 {
+	enum class FileType 
+	{
+		SM,
+		SSC,
+		SMD_SCD,
+		Unknown
+	};
+
 	Song(const std::string& path);
 
 	std::string GetPath() const { return mPath; }
@@ -31,6 +39,8 @@ struct Song
 	void SaveToSMD(const std::string& outSong = "");
 	void SaveToSCD(const std::string& outSong = "");
 
+	void LoadChartsSCD();
+
 private:
 	void GetResources();
 
@@ -45,8 +55,8 @@ private:
 	void ProcessSCD(std::istringstream& file);
 	Chart* ProcessSCDChart(std::istringstream& file);
 
-
 public:
+	FileType mFileType = FileType::Unknown;
 	std::string mTitle = "unknown";
 	std::string mSubtitle;
 	std::string mArtist;
@@ -61,32 +71,32 @@ public:
 	std::string mBannerPath;
 	std::string mBackgroundPath;
 	std::string mCDTitlePath;
-	float mSampleStart = 0.0f;
-	float mSampleLength = 0.0f;
+	f32 mSampleStart = 0.0f;
+	f32 mSampleLength = 0.0f;
 	bool mSelectable = true;
-	float mOffset = 0.0f;
+	f32 mOffset = 0.0f;
 
-	std::map<float, float> mBPMs;
-	std::map<float, float> mStops;
-	std::map<float, SpeedValues> mSpeeds;
-	std::map<float, float> mScrolls;
+	std::map<f32, f32> mBPMs;
+	std::map<f32, f32> mStops;
+	std::map<f32, SpeedValues> mSpeeds;
+	std::map<f32, f32> mScrolls;
 
-	std::map<float, int> mTickCounts;
-	std::map<float, TimeSignatureValues> mTimeSignatures;
-	std::map<float, std::string> mLabels;
-	std::map<float, int> mCombos; // @TODO: Figure out how this works
+	std::map<f32, i32> mTickCounts;
+	std::map<f32, TimeSignatureValues> mTimeSignatures;
+	std::map<f32, std::string> mLabels;
+	std::map<f32, i32> mCombos; // @TODO: Figure out how this works
 
-	float mDisplayBPM; 
+	f32 mDisplayBPM; 
 	
 	std::string mOrigin; // @TODO: Figure out how this works   #ORIGIN:;
 	std::string mPreviewVID; // @TODO: Figure out how this works   #PREVIEWVID:;
 	std::string mJacket; // @TODO: Figure out how this works   #JACKET:;
 	std::string mCDImage; // @TODO: Figure out how this works   #CDIMAGE:;
 	std::string mDiscImage; // @TODO: Figure out how this works   #DISCIMAGE:;
-	std::map<float, std::string> mBGChanges; // @TODO: Figure out how this works   #BGCHANGES:;
+	std::map<f32, std::string> mBGChanges; // @TODO: Figure out how this works   #BGCHANGES:;
 	std::string mFGChanges; // @TODO: Figure out how this works   #FGCHANGES:;
 
-	std::map<ChartDifficulty, uint8_t> mChartDifficulties;
+	std::map<ChartDifficulty, u8> mChartDifficulties;
 	std::map<ChartDifficulty, Chart*> mCharts;
 
 private:

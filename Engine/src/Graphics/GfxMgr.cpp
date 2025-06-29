@@ -166,7 +166,8 @@ void GraphicsManager::RenderScene(Camera* cam, Shader* shader)
 				shader->SetUniform("uViewPos", offset);
 				shader->SetUniform("uTime", mTime);
 
-				glm::mat4 model = comp->transform.GetModelMtx();
+    			const Transform t = comp->mParentTransform.has_value() ? comp->transform + comp->mParentTransform.value() : comp->transform;
+				glm::mat4 model = t.GetModelMtx();
 				shader->SetUniform("model", model);
 				shader->SetUniform("view", view_cam);
 				shader->SetUniform("proj", proj_cam);

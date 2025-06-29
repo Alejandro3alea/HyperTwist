@@ -1,6 +1,7 @@
 #include "Snappers.h"
-#include "Game/GameVariables.h"
+#include "Game/GlobalVariables.h"
 #include "Editor/Editor.h"
+#include "ResourceMgr.h"
 
 void Snappers::Initialize()
 {
@@ -18,7 +19,7 @@ void Snappers::Initialize()
 
 void Snappers::Update(const glm::vec3& camPos)
 {
-	float offset = gGameVariables.ReceptorsOffset * gGameVariables.Inverse;
+	float offset = gGlobalVariables.ReceptorsOffset * gGlobalVariables.Inverse;
 	LReceptor.transform.pos.y = RReceptor.transform.pos.y = camPos.y + offset;
 }
 

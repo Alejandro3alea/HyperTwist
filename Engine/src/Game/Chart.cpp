@@ -19,12 +19,6 @@ Chart::Chart(const std::string& stepArtist, const std::string& difficulty, const
 
 Chart::~Chart()
 {
-    if (mNoteRenderer)
-        delete mNoteRenderer;
-    if (mHoldRenderer)
-        delete mHoldRenderer;
-    if (mMineRenderer)
-        delete mMineRenderer;
 }
 
 void Chart::ProcessNotes(std::istringstream& file)
@@ -65,13 +59,6 @@ void Chart::ProcessNotes(std::istringstream& file)
 
             if (eoChart)
             {
-                // Initialize renderers
-                mHoldRenderer = new HoldNoteBodyRenderer(this); 
-                mNoteRenderer = new NoteRenderer(this);
-                mMineRenderer = new MineRenderer(this);
-                mHoldRenderer->mbIsVisible = false;
-                mNoteRenderer->mbIsVisible = false;
-                mMineRenderer->mbIsVisible = false;
                 return;
             }
 

@@ -15,7 +15,7 @@ Transform& Transform::Concatenate(const Transform& rhs)
 {
 	scale *= rhs.scale;
 	rotation += rhs.rotation;
-	pos = rhs.rotation * (rhs.scale * pos) + rhs.pos;
+	pos = (rhs.scale * pos) + rhs.pos;
 
 	return *this;
 }
@@ -31,10 +31,12 @@ Transform& Transform::InvConcatenate(const Transform& rhs)
 
 const Transform Transform::operator+(const Transform& rhs)
 {
-	return Concatenate(rhs);
+	Transform t(*this);
+	return t.Concatenate(rhs);
 }
 
 const Transform Transform::operator-(const Transform& rhs)
 {
-	return InvConcatenate(rhs);
+	Transform t(*this);
+	return t.InvConcatenate(rhs);
 }
