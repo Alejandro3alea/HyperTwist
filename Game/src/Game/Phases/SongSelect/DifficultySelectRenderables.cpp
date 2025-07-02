@@ -181,14 +181,15 @@ std::shared_ptr<DifficultySelectChartRenderables> DifficultySelectRenderables::C
 
 void DifficultySelectRenderables::SetTextures(const Song* song)
 {
-	mSongThumb.SetTexture(ResourceMgr->LoadFromGlobalPath<Texture>(FileUtils::JoinPath(song->GetPath(), song->mCDTitlePath)));
+	const SongInfo& info = song->mSongInfo;
+	mSongThumb.SetTexture(ResourceMgr->LoadFromGlobalPath<Texture>(FileUtils::JoinPath(song->GetPath(), info.mCDTitlePath)));
 	mSongInfoBG.SetTexture("engine/texture/SongSelect/RectangleHorizontalFadeOneSide.png");
     mSongInfoTitle.SetFont("engine/fonts/Rubik.ttf");
-    mSongInfoTitle.SetText(song->mTitle);
+    mSongInfoTitle.SetText(info.mTitle);
     mSongInfoArtist.SetFont("engine/fonts/Rubik.ttf");
-    mSongInfoArtist.SetText(song->mArtist);
+    mSongInfoArtist.SetText(info.mArtist);
 	mSongInfoBPM.SetFont("engine/fonts/Rubik.ttf");
-    mSongInfoBPM.SetText("BPM: " + GameUtils::GetBPMLabel(song->mBPMs));
+    mSongInfoBPM.SetText("BPM: " + GameUtils::GetBPMLabel(info.mBPMs));
 
     mP1ScoreBG.SetTexture("engine/texture/SongSelect/RectangleHorizontalFade.png");
     mP1ScoreTitle.SetText("Score");
@@ -248,6 +249,19 @@ void DifficultySelectRenderables::SetPositions()
 
 void DifficultySelectRenderables::SetChartRenderables(const Song* song, const std::array<i8, 2>& selectorIndices)
 {
+    auto getChart = [](i8 idx, const std::map<ChartDifficulty, Chart*>& charts) -> Chart* {
+        for (const auto& [_diff, chart] : charts)
+        {
+            if (idx == 0)
+                return chart;
+
+            idx--;
+        }
+        return nullptr;
+    };
+	//mP1StepArtist.SetText(getChart(selectorIndices[ACCOUNTS_PLAYER_1], song->mCharts)->mStepArtist);
+	//mP2StepArtist.SetText(getChart(selectorIndices[ACCOUNTS_PLAYER_2], song->mCharts)->mStepArtist);
+
 	auto generateChartsForPlayer = [&](u8 playerIdx)
 	{
 		if (selectorIndices[playerIdx] == -1)
@@ -257,7 +271,6 @@ void DifficultySelectRenderables::SetChartRenderables(const Song* song, const st
 		for (auto& chart : song->mCharts)
 			mChartRenderables.push_back(CreateNewChartRenderables(chart.first, chart.second->mDifficultyVal, chartIdx++, playerIdx, selectorIndices));
 	};
-
 	generateChartsForPlayer(ACCOUNTS_PLAYER_1);
 	generateChartsForPlayer(ACCOUNTS_PLAYER_2);
 }

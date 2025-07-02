@@ -15,7 +15,7 @@ void SongSelectSongNode::ConstructRenderable()
 	mCDRenderable.mbIsVisible = false;
 
 	mLabel.transform.scale = glm::vec3(0.4f);
-	mLabel.SetText(mSong->mTitle);
+	mLabel.SetText(mSong->mSongInfo.mTitle);
 	mLabel.mbIsVisible = false;
 }
 
@@ -38,10 +38,11 @@ void SongSelectSongNode::Show()
 	mCDRenderable.mbIsVisible = true;
 	mLabel.mbIsVisible = true;
 
-	if (!mSong->mCDTitlePath.empty())
-		mCDRenderable.mTexture = ResourceMgr->Load<Texture>(mSong->GetPath() + mSong->mCDTitlePath);
-	else if(!mSong->mBannerPath.empty())
-		mCDRenderable.mTexture = ResourceMgr->Load<Texture>(mSong->GetPath() + mSong->mBannerPath);
+	const SongInfo& info = mSong->mSongInfo;
+	if (!info.mCDTitlePath.empty())
+		mCDRenderable.mTexture = ResourceMgr->Load<Texture>(mSong->GetPath() + info.mCDTitlePath);
+	else if(!info.mBannerPath.empty())
+		mCDRenderable.mTexture = ResourceMgr->Load<Texture>(mSong->GetPath() + info.mBannerPath);
 }
 
 void SongSelectSongNode::Hide()

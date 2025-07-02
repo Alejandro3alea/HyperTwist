@@ -9,4 +9,4 @@ struct GameVariables
     std::array<std::shared_ptr<Chart>, MAX_PLAYER_COUNT> mSelectedCharts;
 };
 
-static GameVariables gGameVariables;
+extern GameVariables gGameVariables;

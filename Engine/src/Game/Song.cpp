@@ -105,16 +105,15 @@ Song::Song(const std::string& path)
 	file.close();
     
     GlobalEvents::gOnSongCreate.Broadcast(this);
-
-    GetResources();
 }
 
 void Song::Play(const float measure)
 {
-    if (measure >= mOffset)
+    if (measure >= mSongInfo.mOffset)
     {
         mSong->get()->Play();
-        mSong->get()->SetPosition(measure - mOffset);
+        mSong->get()->SetPosition(measure - mSongInfo.mOffset);
+        GlobalEvents::gOnSongPlay.Broadcast(this);
     }
     mIsPlaying = true;
 }
@@ -122,17 +121,17 @@ void Song::Play(const float measure)
 #undef max
 float Song::GetBPMAt(const float time)
 {
-    switch (mBPMs.size())
+    switch (mSongInfo.mBPMs.size())
     {
     case 0:
         return std::numeric_limits<float>::max();
     case 1:
-        return mBPMs.begin()->second;
+        return mSongInfo.mBPMs.begin()->second;
     default:
-        auto it = mBPMs.begin();
+        auto it = mSongInfo.mBPMs.begin();
         std::advance(it, 1);
 
-        for (; it != mBPMs.end(); ++it)
+        for (; it != mSongInfo.mBPMs.end(); ++it)
         {
             if (time < it->first)
             {
@@ -141,63 +140,48 @@ float Song::GetBPMAt(const float time)
             }
         }
 
-        return mBPMs.rbegin()->second;
+        return mSongInfo.mBPMs.rbegin()->second;
     }
 }
 
-Audio* Song::GetSong()
+Resource<Audio>* Song::GetSong()
 {
     if (mSong) 
-        return mSong->get();
+        return mSong;
 
-    mSong = ResourceMgr->Load<Audio>(mPath + mSongPath, AudioType::BGM);
+    mSong = !mSongInfo.mSongPath.empty() ? ResourceMgr->Load<Audio>(mPath + mSongInfo.mSongPath) : ResourceMgr->GetDefaultAsset<Audio>();
 
-    return mSong->get();
+    return mSong;
 }
 
-Texture* Song::GetBanner()
+Resource<Texture>* Song::GetBanner()
 {
     if (mBanner)
-        return mBanner->get();
+        return mBanner;
 
-    mBanner = ResourceMgr->Load<Texture>(mPath + mBannerPath);
+    mBanner = !mSongInfo.mBannerPath.empty() ? ResourceMgr->Load<Texture>(mPath + mSongInfo.mBannerPath) : ResourceMgr->GetDefaultAsset<Texture>();
 
-    return mBanner->get();
+    return mBanner;
 }
 
-Texture* Song::GetBackground()
+Resource<Texture>* Song::GetBackground()
 {
     if (mBackground)
-        return mBackground->get();
+        return mBackground;
 
-    mBackground = ResourceMgr->Load<Texture>(mPath + mBackgroundPath);
+    mBackground = !mSongInfo.mBackgroundPath.empty() ? ResourceMgr->Load<Texture>(mPath + mSongInfo.mBackgroundPath) : ResourceMgr->GetDefaultAsset<Texture>();
 
-    return mBackground->get();
+    return mBackground;
 }
 
-Texture* Song::GetCDTitle()
+Resource<Texture>* Song::GetCDTitle()
 {
     if (mCDTitle)
-        return mCDTitle->get();
+        return mCDTitle;
 
-    mCDTitle = ResourceMgr->Load<Texture>(mPath + mCDTitlePath);
+    mCDTitle = !mSongInfo.mCDTitlePath.empty() ? ResourceMgr->Load<Texture>(mPath + mSongInfo.mCDTitlePath) : ResourceMgr->GetDefaultAsset<Texture>();
 
-    return mCDTitle->get();
-}
-
-void Song::GetResources()
-{
-    // There should be ALWAYS a song path (No audios, no party)
-    //mSong = ResourceMgr->Load<Audio>(mPath + mSongPath, AudioType::BGM);
-
-    /*if (!mBannerPath.empty())
-        mBanner     = ResourceMgr->Load<Texture>(mPath + mBannerPath);
-    if (!mBackgroundPath.empty())
-    {
-        mBackground = ResourceMgr->Load<Texture>(mPath + mBackgroundPath);
-    }
-    if (!mCDTitlePath.empty())
-        mCDTitle    = ResourceMgr->Load<Texture>(mPath + mCDTitlePath);*/
+    return mCDTitle;
 }
 
 void Song::ProcessSMSong(std::istringstream& file)
@@ -226,37 +210,37 @@ void Song::ProcessSMSong(std::istringstream& file)
 
             // Store the value in the appropriate member of the SongData struct
             if (key == "#TITLE")
-                mTitle = value;
+                mSongInfo.mTitle = value;
             else if (key == "#SUBTITLE")
-                mSubtitle = value;
+                mSongInfo.mSubtitle = value;
             else if (key == "#ARTIST")
-                mArtist = value;
+                mSongInfo.mArtist = value;
             else if (key == "#TITLETRANSLIT")
-                mTitleTranslit = value;
+                mSongInfo.mTitleTranslit = value;
             else if (key == "#SUBTITLETRANSLIT")
-                mSubtitleTranslit = value;
+                mSongInfo.mSubtitleTranslit = value;
             else if (key == "#ARTISTTRANSLIT")
-                mArtistTranslit = value;
+                mSongInfo.mArtistTranslit = value;
             else if (key == "#GENRE")
-                mGenre = value;
+                mSongInfo.mGenre = value;
             else if (key == "#CREDIT")
-                mCredit = value;
+                mSongInfo.mCredit = value;
             else if (key == "#BANNER")
-                mBannerPath = value;
+                mSongInfo.mBannerPath = value;
             else if (key == "#BACKGROUND")
-                mBackgroundPath = value;
+                mSongInfo.mBackgroundPath = value;
             else if (key == "#CDTITLE")
-                mCDTitlePath = value;
+                mSongInfo.mCDTitlePath = value;
             else if (key == "#MUSIC")
-                mSongPath = value;
+                mSongInfo.mSongPath = value;
             else if (key == "#OFFSET")
-                mOffset = std::stof(value);
+                mSongInfo.mOffset = std::stof(value);
             else if (key == "#SAMPLESTART")
-                mSampleStart = std::stof(value);
+                mSongInfo.mSampleStart = std::stof(value);
             else if (key == "#SAMPLELENGTH")
-                mSampleLength = std::stof(value);
+                mSongInfo.mSampleLength = std::stof(value);
             else if (key == "#SELECTABLE")
-                mSelectable = value == "YES";
+                mSongInfo.mSelectable = value == "YES";
             else if (key == "#BPMS")
             {
                 while (!isEndOfCommand)
@@ -281,7 +265,7 @@ void Song::ProcessSMSong(std::istringstream& file)
                         const float measurePos = std::stof(part.substr(0, equalPos));
                         const float bpm = std::stof(part.substr(equalPos + 1));
 
-                        mBPMs[measurePos] = bpm;
+                        mSongInfo.mBPMs[measurePos] = bpm;
                     }
                 }
             }
@@ -309,7 +293,7 @@ void Song::ProcessSMSong(std::istringstream& file)
                         const float measurePos = std::stof(part.substr(0, equalPos));
                         const float stopTime = std::stof(part.substr(equalPos + 1));
 
-                        mStops[measurePos] = stopTime;
+                        mSongInfo.mStops[measurePos] = stopTime;
                     }
                 }
             }
@@ -347,37 +331,37 @@ void Song::ProcessSSCSong(std::istringstream& file)
 
             // Store the value in the appropriate member of the SongData struct
             if (key == "#TITLE")
-                mTitle = value;
+                mSongInfo.mTitle = value;
             else if (key == "#SUBTITLE")
-                mSubtitle = value;
+                mSongInfo.mSubtitle = value;
             else if (key == "#ARTIST")
-                mArtist = value;
+                mSongInfo.mArtist = value;
             else if (key == "#TITLETRANSLIT")
-                mTitleTranslit = value;
+                mSongInfo.mTitleTranslit = value;
             else if (key == "#SUBTITLETRANSLIT")
-                mSubtitleTranslit = value;
+                mSongInfo.mSubtitleTranslit = value;
             else if (key == "#ARTISTTRANSLIT")
-                mArtistTranslit = value;
+                mSongInfo.mArtistTranslit = value;
             else if (key == "#GENRE")
-                mGenre = value;
+                mSongInfo.mGenre = value;
             else if (key == "#CREDIT")
-                mCredit = value;
+                mSongInfo.mCredit = value;
             else if (key == "#BANNER")
-                mBannerPath = value;
+                mSongInfo.mBannerPath = value;
             else if (key == "#BACKGROUND")
-                mBackgroundPath = value;
+                mSongInfo.mBackgroundPath = value;
             else if (key == "#CDTITLE")
-                mCDTitlePath = value;
+                mSongInfo.mCDTitlePath = value;
             else if (key == "#MUSIC")
-                mSongPath = value;
+                mSongInfo.mSongPath = value;
             else if (key == "#OFFSET")
-                mOffset = std::stof(value);
+                mSongInfo.mOffset = std::stof(value);
             else if (key == "#SAMPLESTART")
-                mSampleStart = std::stof(value);
+                mSongInfo.mSampleStart = std::stof(value);
             else if (key == "#SAMPLELENGTH")
-                mSampleLength = std::stof(value);
+                mSongInfo.mSampleLength = std::stof(value);
             else if (key == "#SELECTABLE")
-                mSelectable = value == "YES";
+                mSongInfo.mSelectable = value == "YES";
             else if (key == "#BPMS")
             {
                 while (!isEndOfCommand)
@@ -402,7 +386,7 @@ void Song::ProcessSSCSong(std::istringstream& file)
                         const float measurePos = std::stof(part.substr(0, equalPos));
                         const float bpm = std::stof(part.substr(equalPos + 1));
 
-                        mBPMs[measurePos] = bpm;
+                        mSongInfo.mBPMs[measurePos] = bpm;
                     }
                 }
             }
@@ -430,7 +414,7 @@ void Song::ProcessSSCSong(std::istringstream& file)
                         const float measurePos = std::stof(part.substr(0, equalPos));
                         const float stopTime = std::stof(part.substr(equalPos + 1));
 
-                        mStops[measurePos] = stopTime;
+                        mSongInfo.mStops[measurePos] = stopTime;
                     }
                 }
             }
@@ -474,7 +458,7 @@ void Song::ProcessSSCSong(std::istringstream& file)
                             }
                         }
 
-                        mSpeeds[measurePos] = { speedVal, speedTime, isBeatsOrSeconds };
+                        mSongInfo.mSpeeds[measurePos] = { speedVal, speedTime, isBeatsOrSeconds };
                     }
                 }
             }
@@ -502,7 +486,7 @@ void Song::ProcessSSCSong(std::istringstream& file)
                         const float measurePos = std::stof(part.substr(0, equalPos));
                         const float scrollSpeed = std::stof(part.substr(equalPos + 1));
 
-                        mScrolls[measurePos] = scrollSpeed;
+                        mSongInfo.mScrolls[measurePos] = scrollSpeed;
                     }
                 }
             }
@@ -530,7 +514,7 @@ void Song::ProcessSSCSong(std::istringstream& file)
                         const float measurePos = std::stof(part.substr(0, equalPos));
                         const int tickCount = std::stoi(part.substr(equalPos + 1));
 
-                        mTickCounts[measurePos] = tickCount;
+                        mSongInfo.mTickCounts[measurePos] = tickCount;
                     }
                 }
             }
@@ -561,7 +545,7 @@ void Song::ProcessSSCSong(std::istringstream& file)
                         equalPos = part.find('=');
                         if (equalPos != std::string::npos)
                         {
-                            mTimeSignatures[measurePos] = { std::stoi(part.substr(0, equalPos)),
+                            mSongInfo.mTimeSignatures[measurePos] = { std::stoi(part.substr(0, equalPos)),
                                                             std::stoi(part.substr(equalPos + 1)) };
                         }
                     }
@@ -591,7 +575,7 @@ void Song::ProcessSSCSong(std::istringstream& file)
                         const float measurePos = std::stof(part.substr(0, equalPos));
                         const std::string label = part.substr(equalPos + 1);
 
-                        mLabels[measurePos] = label;
+                        mSongInfo.mLabels[measurePos] = label;
                     }
                 }
             }
@@ -601,7 +585,7 @@ void Song::ProcessSSCSong(std::istringstream& file)
             }
             else if (key == "#DISPLAYBPM")
             {
-                mDisplayBPM = std::stof(value);
+                mSongInfo.mDisplayBPM = std::stof(value);
             }
             else if (key == "#ORIGIN")
             {
@@ -647,7 +631,7 @@ void Song::ProcessSSCSong(std::istringstream& file)
                         const float measurePos = std::stof(part.substr(0, equalPos));
                         const std::string label = part.substr(equalPos + 1);
 
-                        mBGChanges[measurePos] = label;
+                        mSongInfo.mBGChanges[measurePos] = label;
                     }
                 }
             }
@@ -767,37 +751,37 @@ void Song::ProcessSMD(std::istringstream& file)
 
             // Store the value in the appropriate member of the SongData struct
             if (key == "#TITLE")
-                mTitle = value;
+                mSongInfo.mTitle = value;
             else if (key == "#SUBTITLE")
-                mSubtitle = value;
+                mSongInfo.mSubtitle = value;
             else if (key == "#ARTIST")
-                mArtist = value;
+                mSongInfo.mArtist = value;
             else if (key == "#TITLETRANSLIT")
-                mTitleTranslit = value;
+                mSongInfo.mTitleTranslit = value;
             else if (key == "#SUBTITLETRANSLIT")
-                mSubtitleTranslit = value;
+                mSongInfo.mSubtitleTranslit = value;
             else if (key == "#ARTISTTRANSLIT")
-                mArtistTranslit = value;
+                mSongInfo.mArtistTranslit = value;
             else if (key == "#GENRE")
-                mGenre = value;
+                mSongInfo.mGenre = value;
             else if (key == "#CREDIT")
-                mCredit = value;
+                mSongInfo.mCredit = value;
             else if (key == "#BANNER")
-                mBannerPath = value;
+                mSongInfo.mBannerPath = value;
             else if (key == "#BACKGROUND")
-                mBackgroundPath = value;
+                mSongInfo.mBackgroundPath = value;
             else if (key == "#CDTITLE")
-                mCDTitlePath = value;
+                mSongInfo.mCDTitlePath = value;
             else if (key == "#MUSIC")
-                mSongPath = value;
+                mSongInfo.mSongPath = value;
             else if (key == "#OFFSET")
-                mOffset = std::stof(value);
+                mSongInfo.mOffset = std::stof(value);
             else if (key == "#SAMPLESTART")
-                mSampleStart = std::stof(value);
+                mSongInfo.mSampleStart = std::stof(value);
             else if (key == "#SAMPLELENGTH")
-                mSampleLength = std::stof(value);
+                mSongInfo.mSampleLength = std::stof(value);
             else if (key == "#SELECTABLE")
-                mSelectable = value == "YES";
+                mSongInfo.mSelectable = value == "YES";
             else if (key == "#BPMS")
             {
                 while (!isEndOfCommand)
@@ -822,7 +806,7 @@ void Song::ProcessSMD(std::istringstream& file)
                         const float measurePos = std::stof(part.substr(0, equalPos));
                         const float bpm = std::stof(part.substr(equalPos + 1));
 
-                        mBPMs[measurePos] = bpm;
+                        mSongInfo.mBPMs[measurePos] = bpm;
                     }
                 }
             }
@@ -851,7 +835,7 @@ void Song::ProcessSMD(std::istringstream& file)
                         const float measurePos = std::stof(part.substr(0, equalPos));
                         const float stopTime = std::stof(part.substr(equalPos + 1));
 
-                        mStops[measurePos] = stopTime;
+                        mSongInfo.mStops[measurePos] = stopTime;
                     }
                 }
             }
@@ -895,7 +879,7 @@ void Song::ProcessSMD(std::istringstream& file)
                             }
                         }
 
-                        mSpeeds[measurePos] = { speedVal, speedTime, isBeatsOrSeconds };
+                        mSongInfo.mSpeeds[measurePos] = { speedVal, speedTime, isBeatsOrSeconds };
                     }
                 }
             }
@@ -923,7 +907,7 @@ void Song::ProcessSMD(std::istringstream& file)
                         const float measurePos = std::stof(part.substr(0, equalPos));
                         const float scrollSpeed = std::stof(part.substr(equalPos + 1));
 
-                        mScrolls[measurePos] = scrollSpeed;
+                        mSongInfo.mScrolls[measurePos] = scrollSpeed;
                     }
                 }
             }
@@ -951,7 +935,7 @@ void Song::ProcessSMD(std::istringstream& file)
                         const float measurePos = std::stof(part.substr(0, equalPos));
                         const int tickCount = std::stoi(part.substr(equalPos + 1));
 
-                        mTickCounts[measurePos] = tickCount;
+                        mSongInfo.mTickCounts[measurePos] = tickCount;
                     }
                 }
             }
@@ -982,7 +966,7 @@ void Song::ProcessSMD(std::istringstream& file)
                         equalPos = part.find('=');
                         if (equalPos != std::string::npos)
                         {
-                            mTimeSignatures[measurePos] = { std::stoi(part.substr(0, equalPos)),
+                            mSongInfo.mTimeSignatures[measurePos] = { std::stoi(part.substr(0, equalPos)),
                                                             std::stoi(part.substr(equalPos + 1)) };
                         }
                     }
@@ -1012,7 +996,7 @@ void Song::ProcessSMD(std::istringstream& file)
                         const float measurePos = std::stof(part.substr(0, equalPos));
                         const std::string label = part.substr(equalPos + 1);
 
-                        mLabels[measurePos] = label;
+                        mSongInfo.mLabels[measurePos] = label;
                     }
                 }
             }
@@ -1023,7 +1007,7 @@ void Song::ProcessSMD(std::istringstream& file)
             else if (key == "#DISPLAYBPM")
             {
                 if (value != "*")
-                    mDisplayBPM = std::stof(value);
+                    mSongInfo.mDisplayBPM = std::stof(value);
             }
             else if (key == "#ORIGIN")
             {
@@ -1069,7 +1053,7 @@ void Song::ProcessSMD(std::istringstream& file)
                         const float measurePos = std::stof(part.substr(0, equalPos));
                         const std::string label = part.substr(equalPos + 1);
 
-                        mBGChanges[measurePos] = label;
+                        mSongInfo.mBGChanges[measurePos] = label;
                     }
                 }
             }
@@ -1164,122 +1148,122 @@ Chart* Song::ProcessSCDChart(std::istringstream& file)
 
 void Song::SaveAsSSCSong(const std::string& outPath)
 {
-    const std::string path = outPath.empty() ? mPath + mTitle + ".ssc" : ResourceMgr->GetPathWithoutExtension(outPath) + ".ssc";
+    const std::string path = outPath.empty() ? mPath + mSongInfo.mTitle + ".ssc" : ResourceMgr->GetPathWithoutExtension(outPath) + ".ssc";
     std::ofstream file(path);
     Requires(file.is_open() && file.good(), path);
 
     file << "#VERSION:0.83;" << std::endl;
-    file << "#TITLE:" << mTitle << ";" << std::endl;
-    file << "#SUBTITLE:" << mSubtitle << ";" << std::endl;
-    file << "#ARTIST:" << mArtist << ";" << std::endl;
-    file << "#TITLETRANSLIT:" << mTitleTranslit << ";" << std::endl;
-    file << "#SUBTITLETRANSLIT:" << mSubtitleTranslit << ";" << std::endl;
-    file << "#ARTISTTRANSLIT:" << mArtistTranslit << ";" << std::endl;
-    file << "#GENRE:" << mGenre << ";" << std::endl;
-    file << "#CREDIT:" << mCredit << ";" << std::endl;
-    file << "#MUSIC:" << mSongPath << ";" << std::endl;
-    file << "#BANNER:" << mBannerPath << ";" << std::endl;
-    file << "#BACKGROUND:" << mBackgroundPath << ";" << std::endl;
-    file << "#CDTITLE:" << mCDTitlePath << ";" << std::endl;
-    file << "#SAMPLESTART:" << mSampleStart << ";" << std::endl;
-    file << "#SAMPLELENGTH:" << mSampleLength << ";" << std::endl;
-    const std::string selectableStr = mSelectable ? "YES" : "NO";
+    file << "#TITLE:" << mSongInfo.mTitle << ";" << std::endl;
+    file << "#SUBTITLE:" << mSongInfo.mSubtitle << ";" << std::endl;
+    file << "#ARTIST:" << mSongInfo.mArtist << ";" << std::endl;
+    file << "#TITLETRANSLIT:" << mSongInfo.mTitleTranslit << ";" << std::endl;
+    file << "#SUBTITLETRANSLIT:" << mSongInfo.mSubtitleTranslit << ";" << std::endl;
+    file << "#ARTISTTRANSLIT:" << mSongInfo.mArtistTranslit << ";" << std::endl;
+    file << "#GENRE:" << mSongInfo.mGenre << ";" << std::endl;
+    file << "#CREDIT:" << mSongInfo.mCredit << ";" << std::endl;
+    file << "#MUSIC:" << mSongInfo.mSongPath << ";" << std::endl;
+    file << "#BANNER:" << mSongInfo.mBannerPath << ";" << std::endl;
+    file << "#BACKGROUND:" << mSongInfo.mBackgroundPath << ";" << std::endl;
+    file << "#CDTITLE:" << mSongInfo.mCDTitlePath << ";" << std::endl;
+    file << "#SAMPLESTART:" << mSongInfo.mSampleStart << ";" << std::endl;
+    file << "#SAMPLELENGTH:" << mSongInfo.mSampleLength << ";" << std::endl;
+    const std::string selectableStr = mSongInfo.mSelectable ? "YES" : "NO";
     file << "#SELECTABLE:" << selectableStr << ";" << std::endl;
-    file << "#OFFSET:" << mOffset << ";" << std::endl;
+    file << "#OFFSET:" << mSongInfo.mOffset << ";" << std::endl;
 
     // BPMs
     file << std::fixed << std::setprecision(3);
     file << "#BPMS:";
-    for (auto it = mBPMs.begin(); it != mBPMs.end(); ++it)
+    for (auto it = mSongInfo.mBPMs.begin(); it != mSongInfo.mBPMs.end(); ++it)
     {
         file << it->first << "=" << it->second << std::endl;
-        if (std::next(it) != mBPMs.end())
+        if (std::next(it) != mSongInfo.mBPMs.end())
             file << ",";
     }
     file << ";" << std::endl;
 
     // Stops
     file << "#STOPS:";
-    for (auto it = mStops.begin(); it != mStops.end(); ++it)
+    for (auto it = mSongInfo.mStops.begin(); it != mSongInfo.mStops.end(); ++it)
     {
         file << it->first << "=" << it->second << std::endl;
-        if (std::next(it) != mStops.end())
+        if (std::next(it) != mSongInfo.mStops.end())
             file << ",";
     }
     file << ";" << std::endl;
 
     // Speeds
     file << "#SPEEDS:";
-    for (auto it = mSpeeds.begin(); it != mSpeeds.end(); ++it)
+    for (auto it = mSongInfo.mSpeeds.begin(); it != mSongInfo.mSpeeds.end(); ++it)
     {
         file << it->first << "=" << std::get<0>(it->second) << "=" << std::get<1>(it->second) << "=" << std::get<2>(it->second) << std::endl;
-        if (std::next(it) != mSpeeds.end())
+        if (std::next(it) != mSongInfo.mSpeeds.end())
             file << ",";
     }
     file << ";" << std::endl;
 
     file << "#SCROLLS:";
-    for (auto it = mScrolls.begin(); it != mScrolls.end(); ++it)
+    for (auto it = mSongInfo.mScrolls.begin(); it != mSongInfo.mScrolls.end(); ++it)
     {
         file << it->first << "=" << it->second << std::endl;
-        if (std::next(it) != mScrolls.end())
+        if (std::next(it) != mSongInfo.mScrolls.end())
             file << ",";
     }
     file << ";" << std::endl;
 
     file << "#TICKCOUNTS:";
-    for (auto it = mTickCounts.begin(); it != mTickCounts.end(); ++it)
+    for (auto it = mSongInfo.mTickCounts.begin(); it != mSongInfo.mTickCounts.end(); ++it)
     {
         file << it->first << "=" << it->second << std::endl;
-        if (std::next(it) != mTickCounts.end())
+        if (std::next(it) != mSongInfo.mTickCounts.end())
             file << ",";
     }
     file << ";" << std::endl;
 
     file << "#TIMESIGNATURES:";
-    for (auto it = mTimeSignatures.begin(); it != mTimeSignatures.end(); ++it)
+    for (auto it = mSongInfo.mTimeSignatures.begin(); it != mSongInfo.mTimeSignatures.end(); ++it)
     {
         file << it->first << "=" << it->second.first << "=" << it->second.second << std::endl;
-        if (std::next(it) != mTimeSignatures.end())
+        if (std::next(it) != mSongInfo.mTimeSignatures.end())
             file << ",";
     }
     file << ";" << std::endl;
 
     file << "#LABELS:";
-    for (auto it = mLabels.begin(); it != mLabels.end(); ++it)
+    for (auto it = mSongInfo.mLabels.begin(); it != mSongInfo.mLabels.end(); ++it)
     {
         file << it->first << "=" << it->second << std::endl;
-        if (std::next(it) != mLabels.end())
+        if (std::next(it) != mSongInfo.mLabels.end())
             file << ",";
     }
     file << ";" << std::endl;
 
     file << "#COMBOS:";
-    for (auto it = mCombos.begin(); it != mCombos.end(); ++it)
+    for (auto it = mSongInfo.mCombos.begin(); it != mSongInfo.mCombos.end(); ++it)
     {
         file << it->first << "=" << it->second << std::endl;
-        if (std::next(it) != mCombos.end())
+        if (std::next(it) != mSongInfo.mCombos.end())
             file << ",";
     }
     file << ";" << std::endl;
 
-    file << "#DISPLAYBPM:" << mDisplayBPM << ";" << std::endl;
-    file << "#ORIGIN:" << mOrigin << ";" << std::endl;
-    file << "#PREVIEWVID:" << mPreviewVID << ";" << std::endl;
-    file << "#JACKET:" << mJacket << ";" << std::endl;
-    file << "#CDIMAGE:" << mCDImage << ";" << std::endl;
-    file << "#DISCIMAGE:" << mDiscImage << ";" << std::endl;
+    file << "#DISPLAYBPM:" << mSongInfo.mDisplayBPM << ";" << std::endl;
+    file << "#ORIGIN:" << mSongInfo.mOrigin << ";" << std::endl;
+    file << "#PREVIEWVID:" << mSongInfo.mPreviewVID << ";" << std::endl;
+    file << "#JACKET:" << mSongInfo.mJacket << ";" << std::endl;
+    file << "#CDIMAGE:" << mSongInfo.mCDImage << ";" << std::endl;
+    file << "#DISCIMAGE:" << mSongInfo.mDiscImage << ";" << std::endl;
 
     file << "#BGCHANGES:";
-    for (auto it = mBGChanges.begin(); it != mBGChanges.end(); ++it)
+    for (auto it = mSongInfo.mBGChanges.begin(); it != mSongInfo.mBGChanges.end(); ++it)
     {
         file << it->first << "=" << it->second << std::endl;
-        if (std::next(it) != mBGChanges.end())
+        if (std::next(it) != mSongInfo.mBGChanges.end())
             file << ",";
     }
     file << ";" << std::endl;
 
-    file << "#FGCHANGES:" << mFGChanges << ";" << std::endl;
+    file << "#FGCHANGES:" << mSongInfo.mFGChanges << ";" << std::endl;
 
     for (auto chart : mCharts)
     {
@@ -1306,124 +1290,124 @@ void Song::SaveAsSSCSong(const std::string& outPath)
 
 void Song::SaveToSMD(const std::string& outPath)
 {
-    const std::string path = outPath.empty() ? mPath + mTitle + ".smd" : ResourceMgr->GetPathWithoutExtension(outPath) + ".smd";
+    const std::string path = outPath.empty() ? mPath + mSongInfo.mTitle + ".smd" : ResourceMgr->GetPathWithoutExtension(outPath) + ".smd";
     std::ofstream file(path);
     Requires(file.is_open() && file.good(), " " + path);
 
     file << "#VERSION:" << gGlobalVariables.mMajorVersion << "." << gGlobalVariables.mMinorVersion << "."
          << gGlobalVariables.mPatchVersion << ";" << std::endl;
-    file << "#TITLE:" << mTitle << ";" << std::endl;
-    file << "#SUBTITLE:" << mSubtitle << ";" << std::endl;
-    file << "#ARTIST:" << mArtist << ";" << std::endl;
-    file << "#TITLETRANSLIT:" << mTitleTranslit << ";" << std::endl;
-    file << "#SUBTITLETRANSLIT:" << mSubtitleTranslit << ";" << std::endl;
-    file << "#ARTISTTRANSLIT:" << mArtistTranslit << ";" << std::endl;
-    file << "#GENRE:" << mGenre << ";" << std::endl;
-    file << "#CREDIT:" << mCredit << ";" << std::endl;
-    file << "#MUSIC:" << mSongPath << ";" << std::endl;
-    file << "#BANNER:" << mBannerPath << ";" << std::endl;
-    file << "#BACKGROUND:" << mBackgroundPath << ";" << std::endl;
-    file << "#CDTITLE:" << mCDTitlePath << ";" << std::endl;
-    file << "#SAMPLESTART:" << mSampleStart << ";" << std::endl;
-    file << "#SAMPLELENGTH:" << mSampleLength << ";" << std::endl;
-    const std::string selectableStr = mSelectable ? "YES" : "NO";
+    file << "#TITLE:" << mSongInfo.mTitle << ";" << std::endl;
+    file << "#SUBTITLE:" << mSongInfo.mSubtitle << ";" << std::endl;
+    file << "#ARTIST:" << mSongInfo.mArtist << ";" << std::endl;
+    file << "#TITLETRANSLIT:" << mSongInfo.mTitleTranslit << ";" << std::endl;
+    file << "#SUBTITLETRANSLIT:" << mSongInfo.mSubtitleTranslit << ";" << std::endl;
+    file << "#ARTISTTRANSLIT:" << mSongInfo.mArtistTranslit << ";" << std::endl;
+    file << "#GENRE:" << mSongInfo.mGenre << ";" << std::endl;
+    file << "#CREDIT:" << mSongInfo.mCredit << ";" << std::endl;
+    file << "#MUSIC:" << mSongInfo.mSongPath << ";" << std::endl;
+    file << "#BANNER:" << mSongInfo.mBannerPath << ";" << std::endl;
+    file << "#BACKGROUND:" << mSongInfo.mBackgroundPath << ";" << std::endl;
+    file << "#CDTITLE:" << mSongInfo.mCDTitlePath << ";" << std::endl;
+    file << "#SAMPLESTART:" << mSongInfo.mSampleStart << ";" << std::endl;
+    file << "#SAMPLELENGTH:" << mSongInfo.mSampleLength << ";" << std::endl;
+    const std::string selectableStr = mSongInfo.mSelectable ? "YES" : "NO";
     file << "#SELECTABLE:" << selectableStr << ";" << std::endl;
-    file << "#OFFSET:" << mOffset << ";" << std::endl;
+    file << "#OFFSET:" << mSongInfo.mOffset << ";" << std::endl;
 
     // BPMs
     file << std::fixed << std::setprecision(3);
     file << "#BPMS:";
-    for (auto it = mBPMs.begin(); it != mBPMs.end(); ++it)
+    for (auto it = mSongInfo.mBPMs.begin(); it != mSongInfo.mBPMs.end(); ++it)
     {
         file << it->first << "=" << it->second << std::endl;
-        if (std::next(it) != mBPMs.end())
+        if (std::next(it) != mSongInfo.mBPMs.end())
             file << ",";
     }
     file << ";" << std::endl;
 
     // Stops
     file << "#STOPS:";
-    for (auto it = mStops.begin(); it != mStops.end(); ++it)
+    for (auto it = mSongInfo.mStops.begin(); it != mSongInfo.mStops.end(); ++it)
     {
         file << it->first << "=" << it->second << std::endl;
-        if (std::next(it) != mStops.end())
+        if (std::next(it) != mSongInfo.mStops.end())
             file << ",";
     }
     file << ";" << std::endl;
 
     // Speeds
     file << "#SPEEDS:";
-    for (auto it = mSpeeds.begin(); it != mSpeeds.end(); ++it)
+    for (auto it = mSongInfo.mSpeeds.begin(); it != mSongInfo.mSpeeds.end(); ++it)
     {
         file << it->first << "=" << std::get<0>(it->second) << "=" << std::get<1>(it->second) << "=" << std::get<2>(it->second) << std::endl;
-        if (std::next(it) != mSpeeds.end())
+        if (std::next(it) != mSongInfo.mSpeeds.end())
             file << ",";
     }
     file << ";" << std::endl;
 
     file << "#SCROLLS:";
-    for (auto it = mScrolls.begin(); it != mScrolls.end(); ++it)
+    for (auto it = mSongInfo.mScrolls.begin(); it != mSongInfo.mScrolls.end(); ++it)
     {
         file << it->first << "=" << it->second << std::endl;
-        if (std::next(it) != mScrolls.end())
+        if (std::next(it) != mSongInfo.mScrolls.end())
             file << ",";
     }
     file << ";" << std::endl;
 
     file << "#TICKCOUNTS:";
-    for (auto it = mTickCounts.begin(); it != mTickCounts.end(); ++it)
+    for (auto it = mSongInfo.mTickCounts.begin(); it != mSongInfo.mTickCounts.end(); ++it)
     {
         file << it->first << "=" << it->second << std::endl;
-        if (std::next(it) != mTickCounts.end())
+        if (std::next(it) != mSongInfo.mTickCounts.end())
             file << ",";
     }
     file << ";" << std::endl;
 
     file << "#TIMESIGNATURES:";
-    for (auto it = mTimeSignatures.begin(); it != mTimeSignatures.end(); ++it)
+    for (auto it = mSongInfo.mTimeSignatures.begin(); it != mSongInfo.mTimeSignatures.end(); ++it)
     {
         file << it->first << "=" << it->second.first << "=" << it->second.second << std::endl;
-        if (std::next(it) != mTimeSignatures.end())
+        if (std::next(it) != mSongInfo.mTimeSignatures.end())
             file << ",";
     }
     file << ";" << std::endl;
 
     file << "#LABELS:";
-    for (auto it = mLabels.begin(); it != mLabels.end(); ++it)
+    for (auto it = mSongInfo.mLabels.begin(); it != mSongInfo.mLabels.end(); ++it)
     {
         file << it->first << "=" << it->second << std::endl;
-        if (std::next(it) != mLabels.end())
+        if (std::next(it) != mSongInfo.mLabels.end())
             file << ",";
     }
     file << ";" << std::endl;
 
     file << "#COMBOS:";
-    for (auto it = mCombos.begin(); it != mCombos.end(); ++it)
+    for (auto it = mSongInfo.mCombos.begin(); it != mSongInfo.mCombos.end(); ++it)
     {
         file << it->first << "=" << it->second << std::endl;
-        if (std::next(it) != mCombos.end())
+        if (std::next(it) != mSongInfo.mCombos.end())
             file << ",";
     }
     file << ";" << std::endl;
 
-    file << "#DISPLAYBPM:" << mDisplayBPM << ";" << std::endl;
-    file << "#ORIGIN:" << mOrigin << ";" << std::endl;
-    file << "#PREVIEWVID:" << mPreviewVID << ";" << std::endl;
-    file << "#JACKET:" << mJacket << ";" << std::endl;
-    file << "#CDIMAGE:" << mCDImage << ";" << std::endl;
-    file << "#DISCIMAGE:" << mDiscImage << ";" << std::endl;
+    file << "#DISPLAYBPM:" << mSongInfo.mDisplayBPM << ";" << std::endl;
+    file << "#ORIGIN:" << mSongInfo.mOrigin << ";" << std::endl;
+    file << "#PREVIEWVID:" << mSongInfo.mPreviewVID << ";" << std::endl;
+    file << "#JACKET:" << mSongInfo.mJacket << ";" << std::endl;
+    file << "#CDIMAGE:" << mSongInfo.mCDImage << ";" << std::endl;
+    file << "#DISCIMAGE:" << mSongInfo.mDiscImage << ";" << std::endl;
 
     file << "#BGCHANGES:";
-    for (auto it = mBGChanges.begin(); it != mBGChanges.end(); ++it)
+    for (auto it = mSongInfo.mBGChanges.begin(); it != mSongInfo.mBGChanges.end(); ++it)
     {
         file << it->first << "=" << it->second << std::endl;
-        if (std::next(it) != mBGChanges.end())
+        if (std::next(it) != mSongInfo.mBGChanges.end())
             file << ",";
     }
     file << ";" << std::endl;
 
     // In front of the UI
-    file << "#FGCHANGES:" << mFGChanges << ";" << std::endl;
+    file << "#FGCHANGES:" << mSongInfo.mFGChanges << ";" << std::endl;
 
     file << "#CHARTS:" << std::endl;
     for (auto chart : mCharts)
@@ -1438,7 +1422,7 @@ void Song::SaveToSMD(const std::string& outPath)
 
 void Song::SaveToSCD(const std::string& outPath)
 {
-    const std::string path = outPath.empty() ? mPath + mTitle + ".scd" : ResourceMgr->GetPathWithoutExtension(outPath) + ".scd";
+    const std::string path = outPath.empty() ? mPath + mSongInfo.mTitle + ".scd" : ResourceMgr->GetPathWithoutExtension(outPath) + ".scd";
     std::ofstream file(path);
     Requires(file.is_open() && file.good(), " " + path);
 
@@ -1470,7 +1454,7 @@ void Song::LoadChartsSCD()
         PrintError("Trying to load charts for an unsupported file extension: {}", mPath);
     }
 
-    const std::string pathSCD = FileUtils::JoinPath(mPath, mTitle + ".scd");
+    const std::string pathSCD = FileUtils::JoinPath(mPath, mSongInfo.mTitle + ".scd");
 	std::ifstream file(pathSCD);
 	if (!file.is_open() || !file.good())
     {

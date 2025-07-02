@@ -341,8 +341,6 @@ void ImGuiEditor::StartSong()
 	mCurrMeasure = 0.0f;
 
 	mSong->get()->Play(mCurrMeasure);
-
-	GlobalEvents::gOnSongPlay.Broadcast();
 }
 
 void ImGuiEditor::ChangeDifficulty(const ChartDifficulty Difficulty)

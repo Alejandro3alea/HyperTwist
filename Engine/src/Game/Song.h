@@ -3,11 +3,9 @@
 #include "Audio/Audio.h"
 #include "Graphics/Texture.h"
 #include "Resources/ResourceMgr.h"
+#include "Game/SongInfo.h"
 
 #include <map>
-
-using SpeedValues = std::tuple<float, float, bool>;
-using TimeSignatureValues = std::pair<int, int>;
 
 struct Song
 {
@@ -23,16 +21,16 @@ struct Song
 
 	std::string GetPath() const { return mPath; }
 
-	void Play(const float measure);
+	void Play(const f32 measure);
 
-	float GetBPMAt(const float time);
+	f32 GetBPMAt(const f32 time);
 
 	bool IsPlaying() { return mIsPlaying; }
 
-	Audio* GetSong();
-	Texture* GetBanner();
-	Texture* GetBackground();
-	Texture* GetCDTitle();
+	Resource<Audio>* GetSong();
+	Resource<Texture>* GetBanner();
+	Resource<Texture>* GetBackground();
+	Resource<Texture>* GetCDTitle();
 
 	void SaveAsSSCSong(const std::string& outSong = "");
 
@@ -42,8 +40,6 @@ struct Song
 	void LoadChartsSCD();
 
 private:
-	void GetResources();
-
 	void ProcessSMSong(std::istringstream& file);
 	void ProcessSSCSong(std::istringstream& file);
 
@@ -57,44 +53,8 @@ private:
 
 public:
 	FileType mFileType = FileType::Unknown;
-	std::string mTitle = "unknown";
-	std::string mSubtitle;
-	std::string mArtist;
-	std::string mTitleTranslit;
-	std::string mSubtitleTranslit;
-	std::string mArtistTranslit;
-	std::string mGenre;
-	std::string mPlatform;
-	std::string mPlatformVersion;
-	std::string mCredit;
-	std::string mSongPath;
-	std::string mBannerPath;
-	std::string mBackgroundPath;
-	std::string mCDTitlePath;
-	f32 mSampleStart = 0.0f;
-	f32 mSampleLength = 0.0f;
-	bool mSelectable = true;
-	f32 mOffset = 0.0f;
 
-	std::map<f32, f32> mBPMs;
-	std::map<f32, f32> mStops;
-	std::map<f32, SpeedValues> mSpeeds;
-	std::map<f32, f32> mScrolls;
-
-	std::map<f32, i32> mTickCounts;
-	std::map<f32, TimeSignatureValues> mTimeSignatures;
-	std::map<f32, std::string> mLabels;
-	std::map<f32, i32> mCombos; // @TODO: Figure out how this works
-
-	f32 mDisplayBPM; 
-	
-	std::string mOrigin; // @TODO: Figure out how this works   #ORIGIN:;
-	std::string mPreviewVID; // @TODO: Figure out how this works   #PREVIEWVID:;
-	std::string mJacket; // @TODO: Figure out how this works   #JACKET:;
-	std::string mCDImage; // @TODO: Figure out how this works   #CDIMAGE:;
-	std::string mDiscImage; // @TODO: Figure out how this works   #DISCIMAGE:;
-	std::map<f32, std::string> mBGChanges; // @TODO: Figure out how this works   #BGCHANGES:;
-	std::string mFGChanges; // @TODO: Figure out how this works   #FGCHANGES:;
+	SongInfo mSongInfo;
 
 	std::map<ChartDifficulty, u8> mChartDifficulties;
 	std::map<ChartDifficulty, Chart*> mCharts;

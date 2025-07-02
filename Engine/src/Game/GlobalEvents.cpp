@@ -2,8 +2,11 @@
 
 namespace GlobalEvents
 {
-	OnSongPlay gOnSongPlay;
 	OnBeatTick gOnBeatTick;
+
+	OnSongPlay gOnSongPlay;
+	OnSongPause gOnSongPause;
+	OnSongStop gOnSongStop;
 
 	OnSongCreate gOnSongCreate;
 	OnSongUpdate gOnSongUpdate;

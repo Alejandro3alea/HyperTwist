@@ -38,7 +38,7 @@ protected:
 
 struct SongSelectSongNode : public SongSelectNode
 {
-	SongSelectSongNode(Song* song) : SongSelectNode(song->mTitle), mSong(song) { ConstructRenderable(); }
+	SongSelectSongNode(Song* song) : SongSelectNode(song->mSongInfo.mTitle), mSong(song) { ConstructRenderable(); }
 
 	void Select() override;
 	bool IsLeaf() const override { return true; }

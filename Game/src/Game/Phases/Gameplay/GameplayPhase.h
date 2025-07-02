@@ -1,8 +1,13 @@
 #pragma once
 #include "Game/Phases/Phase.h"
 #include "Graphics/Renderable.h"
+#include "Misc/DataTypes.h"
+#include "Game/Account.h"
+#include "Game/Song.h"
 
 #include <memory>
+
+struct Audio;
 
 enum class GameplayState
 {
@@ -27,8 +32,23 @@ protected:
 	void GameplayUpdate(const float dt);
 	void EndTransitionUpdate(const float dt);
 
-	std::array<std::shared_ptr<NoteRenderer>, 2> mNoteRenderers;
-	std::array<std::shared_ptr<HoldNoteBodyRenderer>, 2> mHoldRenderers;
-	std::array<std::shared_ptr<MineRenderer>, 2> mMineRenderers;
+	void SetupMeasureController();
 
+private:
+	void HandleStartingBeats();
+	
+private:
+	GameplayState mState;
+	
+	std::array<std::shared_ptr<NoteRenderer>, MAX_PLAYER_COUNT> mNoteRenderers;
+	std::array<std::shared_ptr<HoldNoteBodyRenderer>, MAX_PLAYER_COUNT> mHoldRenderers;
+	std::array<std::shared_ptr<MineRenderer>, MAX_PLAYER_COUNT> mMineRenderers;
+
+	SongInfo* mSongInfo = nullptr;
+	f32 mCurrMeasure = 0.0f;
+	f32 mNextMeasure = 0.0f;
+	f32 mBPMIncrement = 0.0f;
+
+	f32 mStartTransitionTimer = 0.0f;
+	i32 mBeatStartCount = 4;
 };

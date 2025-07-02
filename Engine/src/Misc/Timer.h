@@ -7,24 +7,6 @@
 using Clock = std::chrono::steady_clock;
 using TimePoint = Clock::time_point;
 
-struct Timestamp
-{
-	explicit Timestamp() : mTime(Clock::now()) {}
-
-	inline void Touch()
-	{
-		mTime = Clock::now();
-	}
-	inline f64 Ago()
-	{
-		std::chrono::duration<f64>(Clock::now() - mTime).count();
-	}
-
-private:
-	TimePoint mTime;
-};
-
-
 class TimeManager
 {
 	Singleton(TimeManager);
@@ -34,8 +16,8 @@ public:
 	void EndFrame();
 
 public:
-	double deltaTime = 0.016667f;
-	double fixedDeltaTime = 0.016667f;
+	f64 deltaTime = 0.016667;
+	f64 fixedDeltaTime = 0.016667;
 
 private:
 	TimePoint mFrameStartTime;

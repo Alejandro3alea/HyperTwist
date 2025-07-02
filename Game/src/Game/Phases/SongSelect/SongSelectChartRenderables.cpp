@@ -95,14 +95,16 @@ std::shared_ptr<SongSelectChartRenderables> SongSelectRenderables::CreateNewChar
 
 void SongSelectRenderables::UpdateSelectedSongData(Song* song)
 {
-	Show();
-	mSongInfoTitle.SetText(song->mTitle);
-	mSongInfoArtist.SetText(song->mArtist);
+	const SongInfo& info = song->mSongInfo;
 
-	if (!song->mCDTitlePath.empty())
-		mSongThumb.SetTexture(song->GetPath() + song->mCDTitlePath);
-	else if (!song->mBannerPath.empty())
-		mSongThumb.SetTexture(song->GetPath() + song->mBannerPath);
+	Show();
+	mSongInfoTitle.SetText(info.mTitle);
+	mSongInfoArtist.SetText(info.mArtist);
+
+	if (!info.mCDTitlePath.empty())
+		mSongThumb.SetTexture(song->GetPath() + info.mCDTitlePath);
+	else if (!info.mBannerPath.empty())
+		mSongThumb.SetTexture(song->GetPath() + info.mBannerPath);
 }
 
 void SongSelectRenderables::Show()

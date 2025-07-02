@@ -255,7 +255,7 @@ std::map<u8, std::vector<Song*>> SongSelectPhase::GetSongsByName()
     for (Resource<Song>* songRes : mSongs)
     {
         Song* song = songRes->get();
-        result[song->mTitle.at(0)].push_back(song);
+        result[song->mSongInfo.mTitle.at(0)].push_back(song);
     }
     return result;
 }
@@ -266,7 +266,7 @@ std::map<u8, std::vector<Song*>> SongSelectPhase::GetSongsByArtist()
     for (Resource<Song>* songRes : mSongs)
     {
         Song* song = songRes->get();
-        result[song->mArtist.at(0)].push_back(song);
+        result[song->mSongInfo.mArtist.at(0)].push_back(song);
     }
     return result;
 }
@@ -289,7 +289,7 @@ std::map<std::string, std::vector<Song*>> SongSelectPhase::GetSongsByPlatform()
     for (Resource<Song>* songRes : mSongs)
     {
         Song* song = songRes->get();
-        result[song->mPlatform].push_back(song);
+        result[song->mSongInfo.mPlatform].push_back(song);
     }
     return result;
 }
@@ -299,7 +299,7 @@ std::vector<Song*> SongSelectPhase::GetSongsByVersion(const std::vector<Song*>& 
     std::vector<Song*> result;
     for (Song* song : platformSongs)
     {
-        if (song->mPlatformVersion == platformVersion)
+        if (song->mSongInfo.mPlatformVersion == platformVersion)
             result.push_back(song);
     }
     return result;
@@ -311,7 +311,7 @@ std::vector<Song*> SongSelectPhase::GetSongsFromBPMRange(const uint32_t minBPM, 
     for (Resource<Song>* songRes : mSongs)
     {
         Song* song = songRes->get();
-        if (song->mDisplayBPM >= static_cast<float>(minBPM) && song->mDisplayBPM < static_cast<float>(maxBPM))
+        if (song->mSongInfo.mDisplayBPM >= static_cast<float>(minBPM) && song->mSongInfo.mDisplayBPM < static_cast<float>(maxBPM))
             result.push_back(song);
     }
     return result;
@@ -399,7 +399,7 @@ std::pair<u32, u32> SongSelectPhase::GetDisplayData(
 void SongSelectPhase::FocusSong(Song* song)
 {
     mCurrSong = song;
-    song->GetSong()->Play(song->mSampleStart);
+    song->GetSong()->get()->Play(song->mSongInfo.mSampleStart);
 
     // Setup chart renderables
     mSongSelectRenderables->OnSongChange(song);
@@ -408,7 +408,7 @@ void SongSelectPhase::FocusSong(Song* song)
 void SongSelectPhase::UnfocusSong(Song* song)
 {
     mCurrSong = nullptr;
-    song->GetSong()->Stop();
+    song->GetSong()->get()->Stop();
 
     // No song, empty chart
     mSongSelectRenderables->OnSongChange(nullptr);

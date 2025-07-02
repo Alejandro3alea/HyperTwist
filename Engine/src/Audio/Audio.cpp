@@ -31,7 +31,7 @@ void Audio::Play()
         PlayBGM();
         break;
     case AudioType::SFX:        
-        PlayBGM();
+        PlaySFX();
         break;
     }
     mIsPlaying = true;
@@ -45,7 +45,7 @@ void Audio::Stop()
         StopBGM();
         break;
     case AudioType::SFX:        
-        StopBGM();
+        StopSFX();
         break;
     }
     mIsPlaying = false;

@@ -1,6 +1,6 @@
-[submodule "external/SDL_mixer"]
-	path = external/SDL_mixer
+[submodule "extern/SDL_mixer"]
+	path = extern/SDL_mixer
 	url = https://github.com/libsdl-org/SDL_mixer
-[submodule "external/SDL"]
-	path = external/SDL
+[submodule "extern/SDL"]
+	path = extern/SDL
 	url = https://github.com/libsdl-org/SDL
