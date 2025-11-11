@@ -1,147 +1,145 @@
 {
-    "version": 2,
-    "configurePresets": [
-      {
-        "name": "base-windows",
-        "generator": "Visual Studio 17 2022",
-        "binaryDir": "${sourceDir}/build/",
-        "cacheVariables": {
-          "BUILD_GAME": "OFF",
-          "BUILD_EDITOR": "OFF",
-          "EXPORT_BUILD": "OFF"
-        }
-      },
-      {
-        "name": "base-linux",
-        "generator": "Ninja",
-        "binaryDir": "${sourceDir}/build/",
-        "cacheVariables": {
-          "BUILD_GAME": "OFF",
-          "BUILD_EDITOR": "OFF",
-          "EXPORT_BUILD": "OFF"
-        }
-      },
-
-      {
-        "name": "Editor-Debug-Windows",
-        "displayName": "[WINDOWS]  Editor - Debug",
-        "inherits": "base-windows",
-        "binaryDir": "${sourceDir}/build/Editor-Debug",
-        "cacheVariables": {
-          "BUILD_EDITOR": "ON",
-          "CMAKE_BUILD_TYPE": "Debug"
-        }
-      },
-      {
-        "name": "Editor-Release-Windows",
-        "displayName": "[WINDOWS]  Editor - Release",
-        "inherits": "base-windows",
-        "binaryDir": "${sourceDir}/build/Editor-Release",
-        "cacheVariables": {
-          "BUILD_EDITOR": "ON",
-          "CMAKE_BUILD_TYPE": "Release"
-        }
-      },
-      {
-        "name": "Game-Debug-Windows",
-        "displayName": "[WINDOWS]  Game - Debug",
-        "inherits": "base-windows",
-        "binaryDir": "${sourceDir}/build/Game-Debug",
-        "cacheVariables": {
-          "BUILD_GAME": "ON",
-          "CMAKE_BUILD_TYPE": "Debug"
-        }
-      },
-      {
-        "name": "Game-Release-Windows",
-        "displayName": "[WINDOWS]  Game - Release",
-        "inherits": "base-windows",
-        "binaryDir": "${sourceDir}/build/Game-Release",
-        "cacheVariables": {
-          "BUILD_GAME": "ON",
-          "CMAKE_BUILD_TYPE": "Release"
-        }
-      },
-
-      
-      {
-        "name": "Editor-Debug-Linux",
-        "displayName": "[LINUX]  Editor - Debug",
-        "inherits": "base-linux",
-        "binaryDir": "${sourceDir}/build/Editor-Debug",
-        "cacheVariables": {
-          "BUILD_EDITOR": "ON",
-          "CMAKE_BUILD_TYPE": "Debug"
-        }
-      },
-      {
-        "name": "Editor-Release-Linux",
-        "displayName": "[LINUX]  Editor - Release",
-        "inherits": "base-linux",
-        "binaryDir": "${sourceDir}/build/Editor-Release",
-        "cacheVariables": {
-          "BUILD_EDITOR": "ON",
-          "CMAKE_BUILD_TYPE": "Release"
-        }
-      },
-      {
-        "name": "Game-Debug-Linux",
-        "displayName": "[LINUX]  Game - Debug",
-        "inherits": "base-linux",
-        "binaryDir": "${sourceDir}/build/Game-Debug",
-        "cacheVariables": {
-          "BUILD_GAME": "ON",
-          "CMAKE_BUILD_TYPE": "Debug"
-        }
-      },
-      {
-        "name": "Game-Release-Linux",
-        "displayName": "[LINUX]  Game - Release",
-        "inherits": "base-linux",
-        "binaryDir": "${sourceDir}/build/Game-Release",
-        "cacheVariables": {
-          "BUILD_GAME": "ON",
-          "CMAKE_BUILD_TYPE": "Release"
-        }
-      },
-
-
-      {
-        "name": "Editor-Export-Windows",
-        "displayName": "[WINDOWS]  Editor - Export",
-        "inherits": "Editor-Release-Windows",
-        "binaryDir": "${sourceDir}/build/Editor-Export",
-        "cacheVariables": {
-          "EXPORT_BUILD": "ON"
-        }
-      },
-      {
-        "name": "Game-Export-Windows",
-        "displayName": "[WINDOWS]  Game - Export",
-        "inherits": "Game-Release-Windows",
-        "binaryDir": "${sourceDir}/build/Game-Export",
-        "cacheVariables": {
-          "EXPORT_BUILD": "ON"
-        }
-      },
-      {
-        "name": "Editor-Export-Linux",
-        "displayName": "[LINUX]  Editor - Export",
-        "inherits": "Editor-Release-Linux",
-        "binaryDir": "${sourceDir}/build/Editor-Export",
-        "cacheVariables": {
-          "EXPORT_BUILD": "ON"
-        }
-      },
-      {
-        "name": "Game-Export-Linux",
-        "displayName": "[LINUX]  Game - Export",
-        "inherits": "Game-Release-Linux",
-        "binaryDir": "${sourceDir}/build/Game-Export",
-        "cacheVariables": {
-          "EXPORT_BUILD": "ON"
-        }
+  "version": 2,
+  "configurePresets": [
+    {
+      "name": "base-windows",
+      "generator": "Visual Studio 17 2022",
+      "binaryDir": "${sourceDir}/build/",
+      "cacheVariables": {
+        "BUILD_GAME": "OFF",
+        "BUILD_EDITOR": "OFF",
+        "EXPORT_BUILD": "OFF"
       }
-    ]
-  }
-  
+    },
+    {
+      "name": "base-linux",
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/build/",
+      "cacheVariables": {
+        "BUILD_GAME": "OFF",
+        "BUILD_EDITOR": "OFF",
+        "EXPORT_BUILD": "OFF"
+      }
+    },
+    {
+      "name": "Editor-Debug-Windows",
+      "displayName": "[WINDOWS]  Editor - Debug",
+      "inherits": "base-windows",
+      "binaryDir": "${sourceDir}/build/Editor-Debug",
+      "cacheVariables": {
+        "BUILD_EDITOR": "ON",
+        "CMAKE_BUILD_TYPE": "Debug"
+      }
+    },
+    {
+      "name": "Editor-Release-Windows",
+      "displayName": "[WINDOWS]  Editor - Release",
+      "inherits": "base-windows",
+      "binaryDir": "${sourceDir}/build/Editor-Release",
+      "cacheVariables": {
+        "BUILD_EDITOR": "ON",
+        "CMAKE_BUILD_TYPE": "Release"
+      }
+    },
+    {
+      "name": "Game-Debug-Windows",
+      "displayName": "[WINDOWS]  Game - Debug",
+      "inherits": "base-windows",
+      "binaryDir": "${sourceDir}/build/Game-Debug",
+      "cacheVariables": {
+        "BUILD_GAME": "ON",
+        "CMAKE_BUILD_TYPE": "Debug"
+      }
+    },
+    {
+      "name": "Game-Release-Windows",
+      "displayName": "[WINDOWS]  Game - Release",
+      "inherits": "base-windows",
+      "binaryDir": "${sourceDir}/build/Game-Release",
+      "cacheVariables": {
+        "BUILD_GAME": "ON",
+        "CMAKE_BUILD_TYPE": "Release"
+      }
+    },
+    {
+      "name": "Editor-Debug-Linux",
+      "displayName": "[LINUX]  Editor - Debug",
+      "inherits": "base-linux",
+      "binaryDir": "${sourceDir}/build/Editor-Debug",
+      "cacheVariables": {
+        "BUILD_EDITOR": "ON",
+        "CMAKE_BUILD_TYPE": "Debug",
+        "CMAKE_CXX_FLAGS_DEBUG": "-O0 -g",
+        "CMAKE_C_FLAGS_DEBUG": "-O0 -g"
+      }
+    },
+    {
+      "name": "Editor-Release-Linux",
+      "displayName": "[LINUX]  Editor - Release",
+      "inherits": "base-linux",
+      "binaryDir": "${sourceDir}/build/Editor-Release",
+      "cacheVariables": {
+        "BUILD_EDITOR": "ON",
+        "CMAKE_BUILD_TYPE": "Release"
+      }
+    },
+    {
+      "name": "Game-Debug-Linux",
+      "displayName": "[LINUX]  Game - Debug",
+      "inherits": "base-linux",
+      "binaryDir": "${sourceDir}/build/Game-Debug",
+      "cacheVariables": {
+        "BUILD_GAME": "ON",
+        "CMAKE_BUILD_TYPE": "Debug",
+        "CMAKE_CXX_FLAGS_DEBUG": "-O0 -g",
+        "CMAKE_C_FLAGS_DEBUG": "-O0 -g"
+      }
+    },
+    {
+      "name": "Game-Release-Linux",
+      "displayName": "[LINUX]  Game - Release",
+      "inherits": "base-linux",
+      "binaryDir": "${sourceDir}/build/Game-Release",
+      "cacheVariables": {
+        "BUILD_GAME": "ON",
+        "CMAKE_BUILD_TYPE": "Release"
+      }
+    },
+    {
+      "name": "Editor-Export-Windows",
+      "displayName": "[WINDOWS]  Editor - Export",
+      "inherits": "Editor-Release-Windows",
+      "binaryDir": "${sourceDir}/build/Editor-Export",
+      "cacheVariables": {
+        "EXPORT_BUILD": "ON"
+      }
+    },
+    {
+      "name": "Game-Export-Windows",
+      "displayName": "[WINDOWS]  Game - Export",
+      "inherits": "Game-Release-Windows",
+      "binaryDir": "${sourceDir}/build/Game-Export",
+      "cacheVariables": {
+        "EXPORT_BUILD": "ON"
+      }
+    },
+    {
+      "name": "Editor-Export-Linux",
+      "displayName": "[LINUX]  Editor - Export",
+      "inherits": "Editor-Release-Linux",
+      "binaryDir": "${sourceDir}/build/Editor-Export",
+      "cacheVariables": {
+        "EXPORT_BUILD": "ON"
+      }
+    },
+    {
+      "name": "Game-Export-Linux",
+      "displayName": "[LINUX]  Game - Export",
+      "inherits": "Game-Release-Linux",
+      "binaryDir": "${sourceDir}/build/Game-Export",
+      "cacheVariables": {
+        "EXPORT_BUILD": "ON"
+      }
+    }
+  ]
+}
