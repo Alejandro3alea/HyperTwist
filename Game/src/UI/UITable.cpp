@@ -1,17 +1,14 @@
 #include "UITable.h"
+#include "Misc/Serialization.h"
 #include "UITableException.h"
 #include "Utils/FileUtils.h"
-#include "Misc/Serialization.h"
 
-#include <json.hpp>
+#include <Json/json.hpp>
 #include <utility>
 
 using json = nlohmann::json;
 
-UITable::UITable(std::string path) : mDataPath(FileUtils::JoinPath(DATA_PATH, path))
-{
-    ReloadData();
-}
+UITable::UITable(std::string path) : mDataPath(FileUtils::JoinPath(DATA_PATH, path)) { ReloadData(); }
 
 void UITable::Update()
 {

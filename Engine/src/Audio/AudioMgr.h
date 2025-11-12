@@ -3,18 +3,20 @@
 #include "Misc/Singleton.h"
 #include "Resources/Resource.h"
 
-#include <string>
-#include <queue>
+#include <atomic>
+#include <condition_variable>
 #include <mutex>
+#include <queue>
+#include <string>
+#include <thread>
 
 struct Audio;
 
-
-class AudioManager 
+class AudioManager
 {
     Singleton(AudioManager);
 
-public:
+  public:
     void Initialize(int sampleRate = 48000, int channels = 2);
     void Shutdown();
 
@@ -27,12 +29,12 @@ public:
     f32 GetMusicTime();
     void QueueSound(Audio* sfx, const f32 time);
 
-private:
+  private:
     void AudioCueLoop();
 
-private:
-	Resource<Audio>* mBeatTick;
-	Resource<Audio>* mNoteTick;
+  private:
+    Resource<Audio>* mBeatTick;
+    Resource<Audio>* mNoteTick;
 
     u64 mMusicStartTick = 0.0f;
     std::priority_queue<AudioCue, std::vector<AudioCue>, AudioCueCompare> mCues;

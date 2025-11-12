@@ -37,6 +37,7 @@ build/*
 */Debug/*
 */Release/*
 .vs/*
+.vscode/*
 */data/songs/*
 *data/ignore/*
 *data/local/*

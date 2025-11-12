@@ -4,14 +4,11 @@
 
 TimeManager* TimeManager::mpInstance;
 
-void TimeManager::StartFrame()
-{
-    mFrameStartTime = std::chrono::high_resolution_clock::now();
-}
+void TimeManager::StartFrame() { mFrameStartTime = Clock::now(); }
 
 void TimeManager::EndFrame()
 {
-    auto endTime = std::chrono::high_resolution_clock::now();
+    auto endTime = Clock::now();
     std::chrono::duration<f64> elapsed = endTime - mFrameStartTime;
 
     // @TODO: FixedDeltaTime
