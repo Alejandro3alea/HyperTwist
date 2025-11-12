@@ -1,10 +1,10 @@
 #include "SongSelectPhase.h"
+#include "Game/Account.h"
+#include "Game/GameVariables.h"
+#include "Game/Phases/PhaseManager.h"
 #include "Graphics/GfxMgr.h"
 #include "Input/InputMgr.h"
 #include "Math/Easing.h"
-#include "Game/Phases/PhaseManager.h"
-#include "Game/Account.h"
-#include "Game/GameVariables.h"
 
 #include <filesystem>
 
@@ -12,11 +12,11 @@ std::vector<Resource<Song>*> SongSelectPhase::mSongs;
 
 void SongSelectPhase::OnEnter()
 {
-	//GfxMgr->SetBackgroundShader(ResourceMgr->Load<Shader>("shaders/SongSelectBG.shader")); 
+    // GfxMgr->SetBackgroundShader(ResourceMgr->Load<Shader>("shaders/SongSelectBG.shader"));
 
-	GfxMgr->SetBackgroundTexture(ResourceMgr->Load<Texture>("engine/texture/SongSelect/MainBG.png"));
+    GfxMgr->SetBackgroundTexture(ResourceMgr->Load<Texture>("engine/texture/SongSelect/MainBG.png"));
 
-	mSongSelectRenderables = std::make_shared<SongSelectRenderables>();
+    mSongSelectRenderables = std::make_shared<SongSelectRenderables>();
     mCommonRenderables = std::make_shared<SongSelectCommonRenderables>();
 
     ChangeToState(SongSelectState::FilterSelect);
@@ -47,9 +47,7 @@ void SongSelectPhase::OnTick(const float dt)
     }
 }
 
-void SongSelectPhase::OnExit()
-{
-}
+void SongSelectPhase::OnExit() {}
 
 void SongSelectPhase::ChangeToState(const SongSelectState& newState)
 {
@@ -77,7 +75,7 @@ void SongSelectPhase::TransitionToFilterSelect()
     mSongSelectRenderables->mArrowDown.mbIsVisible = false;
     mSongSelectRenderables->mArrowUp.mbIsVisible = false;
     mSongSelectRenderables->Hide();
-    
+
     for (auto& filter : mFilters)
         filter->mRenderable.mbIsVisible = true;
 
@@ -109,7 +107,8 @@ void SongSelectPhase::TransitionToDifficultySelect()
 
 void SongSelectPhase::TransitionToEndTransition()
 {
-    auto getChart = [](i8 idx, const std::map<ChartDifficulty, Chart*>& charts) -> Chart* {
+    auto getChart = [](i8 idx, const std::map<ChartDifficulty, Chart*>& charts) -> Chart*
+    {
         for (const auto& [_diff, chart] : charts)
         {
             if (idx == 0)
@@ -123,9 +122,10 @@ void SongSelectPhase::TransitionToEndTransition()
     gGameVariables.mSelectedSong = std::shared_ptr<Song>(mCurrSong);
     for (u8 i = 0; i < mSelectorIndices.size(); i++)
         if (mSelectorIndices[i] < 0)
-            gGameVariables.mSelectedCharts[i] = std::shared_ptr<Chart>(getChart(mSelectorIndices[i], mCurrSong->mCharts));
+            gGameVariables.mSelectedCharts[i] =
+                std::shared_ptr<Chart>(getChart(mSelectorIndices[i], mCurrSong->mCharts));
 
-	PhaseMgr->ChangeToScene("Gameplay");
+    PhaseMgr->ChangeToScene("Gameplay");
 }
 
 void SongSelectPhase::UpdateFilterSelect(const float dt)
@@ -176,14 +176,13 @@ void SongSelectPhase::UpdateSongSelect(const float dt)
     {
         mSongDisplay.MoveRight();
     }
-    
+
     if (InputMgr->isKeyPressed(SDL_SCANCODE_Z) && mCurrSong != nullptr)
         mSelectorIndices[ACCOUNTS_PLAYER_1]--;
 
     if (InputMgr->isKeyPressed(SDL_SCANCODE_X) && mCurrSong != nullptr)
         mSelectorIndices[ACCOUNTS_PLAYER_1]++;
 
-    
     if (InputMgr->isKeyPressed(SDL_SCANCODE_N) && mCurrSong != nullptr)
         mSelectorIndices[ACCOUNTS_PLAYER_2]--;
 
@@ -198,12 +197,13 @@ void SongSelectPhase::UpdateSongSelect(const float dt)
     {
         ChangeToState(SongSelectState::FilterSelect);
     }
-    
 
     if (mCurrSong != nullptr)
     {
-        mSelectorIndices[ACCOUNTS_PLAYER_1] = std::clamp(mSelectorIndices[ACCOUNTS_PLAYER_1], static_cast<int8_t>(0), static_cast<int8_t>(mCurrSong->mChartDifficulties.size() - 1));
-        mSelectorIndices[ACCOUNTS_PLAYER_2] = std::clamp(mSelectorIndices[ACCOUNTS_PLAYER_2], static_cast<int8_t>(0), static_cast<int8_t>(mCurrSong->mChartDifficulties.size() - 1));
+        mSelectorIndices[ACCOUNTS_PLAYER_1] = std::clamp(mSelectorIndices[ACCOUNTS_PLAYER_1], static_cast<int8_t>(0),
+                                                         static_cast<int8_t>(mCurrSong->mChartDifficulties.size() - 1));
+        mSelectorIndices[ACCOUNTS_PLAYER_2] = std::clamp(mSelectorIndices[ACCOUNTS_PLAYER_2], static_cast<int8_t>(0),
+                                                         static_cast<int8_t>(mCurrSong->mChartDifficulties.size() - 1));
     }
     mSongSelectRenderables->UpdateSelectorPositions(mSelectorIndices);
 }
@@ -294,7 +294,8 @@ std::map<std::string, std::vector<Song*>> SongSelectPhase::GetSongsByPlatform()
     return result;
 }
 
-std::vector<Song*> SongSelectPhase::GetSongsByVersion(const std::vector<Song*>& platformSongs, const std::string& platformVersion)
+std::vector<Song*> SongSelectPhase::GetSongsByVersion(const std::vector<Song*>& platformSongs,
+                                                      const std::string& platformVersion)
 {
     std::vector<Song*> result;
     for (Song* song : platformSongs)
@@ -311,7 +312,8 @@ std::vector<Song*> SongSelectPhase::GetSongsFromBPMRange(const uint32_t minBPM, 
     for (Resource<Song>* songRes : mSongs)
     {
         Song* song = songRes->get();
-        if (song->mSongInfo.mDisplayBPM >= static_cast<float>(minBPM) && song->mSongInfo.mDisplayBPM < static_cast<float>(maxBPM))
+        if (song->mSongInfo.mDisplayBPM >= static_cast<float>(minBPM) &&
+            song->mSongInfo.mDisplayBPM < static_cast<float>(maxBPM))
             result.push_back(song);
     }
     return result;
@@ -324,7 +326,7 @@ void SongSelectPhase::LoadSongs()
 
     for (const auto& entry : std::filesystem::recursive_directory_iterator(rootDirectory))
     {
-        if (entry.is_regular_file() && entry.path().extension() == ".smd") 
+        if (entry.is_regular_file() && entry.path().extension() == ".smd")
         {
             std::cout << entry.path() << std::endl;
             mSongs.push_back(ResourceMgr->Load<Song>(entry.path().string()));
@@ -370,9 +372,8 @@ u32 SongSelectPhase::GetDisplayedNodesInGroup(SongSelectGroup* group)
     return result;
 }
 
-std::pair<u32, u32> SongSelectPhase::GetDisplayData(
-    const std::vector<std::shared_ptr<SongSelectNode>>& groups,
-    u32 nodeIdx)
+std::pair<u32, u32> SongSelectPhase::GetDisplayData(const std::vector<std::shared_ptr<SongSelectNode>>& groups,
+                                                    u32 nodeIdx)
 {
     u32 groupsTillIdx = 0;
     u32 nodesTillIdx = 0;
@@ -414,7 +415,4 @@ void SongSelectPhase::UnfocusSong(Song* song)
     mSongSelectRenderables->OnSongChange(nullptr);
 }
 
-void SongSelectPhase::SelectSong(Song* song)
-{
-    ChangeToState(SongSelectState::DifficultySelect);
-}
+void SongSelectPhase::SelectSong(Song* song) { ChangeToState(SongSelectState::DifficultySelect); }

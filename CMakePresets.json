@@ -70,7 +70,8 @@
         "BUILD_EDITOR": "ON",
         "CMAKE_BUILD_TYPE": "Debug",
         "CMAKE_CXX_FLAGS_DEBUG": "-O0 -g",
-        "CMAKE_C_FLAGS_DEBUG": "-O0 -g"
+        "CMAKE_C_FLAGS_DEBUG": "-O0 -g",
+        "SYSTEM": "linux-egl"
       }
     },
     {
@@ -92,7 +93,8 @@
         "BUILD_GAME": "ON",
         "CMAKE_BUILD_TYPE": "Debug",
         "CMAKE_CXX_FLAGS_DEBUG": "-O0 -g",
-        "CMAKE_C_FLAGS_DEBUG": "-O0 -g"
+        "CMAKE_C_FLAGS_DEBUG": "-O0 -g",
+        "SYSTEM": "linux-egl"
       }
     },
     {

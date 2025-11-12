@@ -2,7 +2,7 @@ set(TARGET_NAME Engine)
 
 file(GLOB_RECURSE ALL_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/*.cpp")
 
-add_library(${TARGET_NAME} STATIC ${ALL_SOURCES})
+add_library(${TARGET_NAME} STATIC ${ALL_SOURCES} ${CMAKE_SOURCE_DIR}/extern/glad/src/gl.c)
 
 
 # Linux config

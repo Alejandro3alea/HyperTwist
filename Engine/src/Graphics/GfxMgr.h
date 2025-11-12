@@ -1,14 +1,15 @@
 #pragma once
 #include "Camera.h"
+#include "Composition/Events/Event.h"
 #include "Misc/Singleton.h"
 #include "Resources/ResourceMgr.h"
-#include "Composition/Events/Event.h"
 
-#include <GL/glew.h>
+#define GLAD_GL_IMPLEMENTATION
+#include <glad/gl.h>
 
-#include <vector>
-#include <string>
 #include <map>
+#include <string>
+#include <vector>
 
 struct Renderable;
 struct Texture;
@@ -20,51 +21,51 @@ CREATE_EVENT(OnPostRender);
 
 class GraphicsManager
 {
-	Singleton(GraphicsManager);
+    Singleton(GraphicsManager);
 
-public:
-	void Initialize();
-	void LoadMainResources();
-	void Render();
-	void Shutdown();
+  public:
+    void Initialize();
+    void LoadMainResources();
+    void Render();
+    void Shutdown();
 
-	GLuint GetQuad() { return mQuad; }
+    GLuint GetQuad() { return mQuad; }
 
-	Shader* GetQuadShader() { return mQuadShader->get(); }
-	Shader* GetBGShader()	  { return mBGShader->get();   }
-	Shader* GetLineShader() { return mLineShader->get(); }
+    Shader* GetQuadShader() { return mQuadShader->get(); }
+    Shader* GetBGShader() { return mBGShader->get(); }
+    Shader* GetLineShader() { return mLineShader->get(); }
 
-	void SetBackgroundTexture(Resource<Texture>* tex);
-	void SetBackgroundShader(Resource<Shader>* shader);
-	Resource<Texture>* GetBackgroundTexture();
-	Resource<Shader>* GetBackgroundShader();
+    void SetBackgroundTexture(Resource<Texture>* tex);
+    void SetBackgroundShader(Resource<Shader>* shader);
+    Resource<Texture>* GetBackgroundTexture();
+    Resource<Shader>* GetBackgroundShader();
 
-	GLuint CreateQuadModel() const;
+    GLuint CreateQuadModel() const;
 
-	void CleanupRenderables();
+    void CleanupRenderables();
 
-private:
-	void RenderScene(Camera* cam, Shader* shader = nullptr);
+  private:
+    void RenderScene(Camera* cam, Shader* shader = nullptr);
 
-public:
-	Camera mCam;
-	std::vector<Renderable*> mRenderComps;
+  public:
+    Camera mCam;
+    std::vector<Renderable*> mRenderComps;
 
-	OnPreRender mOnPreRender;
-	OnPostRender mOnPostRender;
+    OnPreRender mOnPreRender;
+    OnPostRender mOnPostRender;
 
-	// @TODO: Enable/Disable MSAA
-	//bool mIsMSAAEnabled = true;
+    // @TODO: Enable/Disable MSAA
+    // bool mIsMSAAEnabled = true;
 
-private:
-	Resource<Shader>* mQuadShader;
-	Resource<Shader>* mBGShader;
-	Resource<Shader>* mLineShader;
-	GLuint mQuad;
+  private:
+    Resource<Shader>* mQuadShader;
+    Resource<Shader>* mBGShader;
+    Resource<Shader>* mLineShader;
+    GLuint mQuad;
 
-	float mTime = 0.0f;
+    float mTime = 0.0f;
 
-	Renderable* mBackground;
+    Renderable* mBackground;
 };
 
 #define GfxMgr GraphicsManager::Instance()
