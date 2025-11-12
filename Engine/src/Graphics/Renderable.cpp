@@ -1,15 +1,15 @@
 #include "Renderable.h"
-#include "GfxMgr.h"
-#include "Game/Note.h"
 #include "Game/Chart.h"
 #include "Game/GlobalVariables.h"
+#include "Game/Note.h"
+#include "GfxMgr.h"
 
-#include <glm/gtc/matrix_transform.hpp>
 #include <algorithm>
+#include <glm/gtc/matrix_transform.hpp>
 #include <set>
 
 //////////////////////////////////////////////////////////////////////////
-// 
+//
 //////////////////////////////////////////////////////////////////////////
 
 Renderable::Renderable()
@@ -21,7 +21,7 @@ Renderable::Renderable()
 }
 
 //////////////////////////////////////////////////////////////////////////
-// 
+//
 //////////////////////////////////////////////////////////////////////////
 
 Renderable::~Renderable()
@@ -38,7 +38,7 @@ Renderable::~Renderable()
 }
 
 //////////////////////////////////////////////////////////////////////////
-// 
+//
 //////////////////////////////////////////////////////////////////////////
 
 void Renderable::Render(Shader* shader)
@@ -61,7 +61,7 @@ void Renderable::Render(Shader* shader)
 }
 
 //////////////////////////////////////////////////////////////////////////
-// 
+//
 //////////////////////////////////////////////////////////////////////////
 
 Resource<Shader>* Renderable::SetShader(const std::string& path)
@@ -71,7 +71,7 @@ Resource<Shader>* Renderable::SetShader(const std::string& path)
 }
 
 //////////////////////////////////////////////////////////////////////////
-// 
+//
 //////////////////////////////////////////////////////////////////////////
 
 Resource<Shader>* Renderable::SetShader(Resource<Shader>* shader)
@@ -81,7 +81,7 @@ Resource<Shader>* Renderable::SetShader(Resource<Shader>* shader)
 }
 
 //////////////////////////////////////////////////////////////////////////
-// 
+//
 //////////////////////////////////////////////////////////////////////////
 
 Resource<Texture>* Renderable::SetTexture(const std::string& path)
@@ -91,7 +91,7 @@ Resource<Texture>* Renderable::SetTexture(const std::string& path)
 }
 
 //////////////////////////////////////////////////////////////////////////
-// 
+//
 //////////////////////////////////////////////////////////////////////////
 
 Resource<Texture>* Renderable::SetTexture(Resource<Texture>* texture)
@@ -101,16 +101,13 @@ Resource<Texture>* Renderable::SetTexture(Resource<Texture>* texture)
 }
 
 //////////////////////////////////////////////////////////////////////////
-// 
+//
 //////////////////////////////////////////////////////////////////////////
 
-TextureAtlas::TextureAtlas() : Renderable()
-{
-    SetShader("engine/shaders/TextureAtlas.shader");
-}
+TextureAtlas::TextureAtlas() : Renderable() { SetShader("engine/shaders/TextureAtlas.shader"); }
 
 //////////////////////////////////////////////////////////////////////////
-// 
+//
 //////////////////////////////////////////////////////////////////////////
 
 void TextureAtlas::Render(Shader* shader)
@@ -133,35 +130,37 @@ void TextureAtlas::Render(Shader* shader)
 }
 
 //////////////////////////////////////////////////////////////////////////
-// 
+//
 //////////////////////////////////////////////////////////////////////////
 
 glm::vec2 TextureAtlas::SetTextureScale(glm::uvec2 sizeInPixels)
 {
     if (mTexture != nullptr)
-        mTextureScale = { static_cast<float>(sizeInPixels.x) / mTexture->get()->GetSize().x, static_cast<float>(sizeInPixels.y) / mTexture->get()->GetSize().y };
+        mTextureScale = {static_cast<float>(sizeInPixels.x) / mTexture->get()->GetSize().x,
+                         static_cast<float>(sizeInPixels.y) / mTexture->get()->GetSize().y};
     else
-        mTextureScale = { 1.0f, 1.0f };
+        mTextureScale = {1.0f, 1.0f};
 
     return mTextureScale;
 }
 
 //////////////////////////////////////////////////////////////////////////
-// 
+//
 //////////////////////////////////////////////////////////////////////////
 
 glm::vec2 TextureAtlas::SetTextureOffset(glm::uvec2 offsetInPixels)
 {
     if (mTexture != nullptr)
-        mTextureOffset = { static_cast<float>(offsetInPixels.x) / mTexture->get()->GetSize().x, static_cast<float>(offsetInPixels.y) / mTexture->get()->GetSize().y };
+        mTextureOffset = {static_cast<float>(offsetInPixels.x) / mTexture->get()->GetSize().x,
+                          static_cast<float>(offsetInPixels.y) / mTexture->get()->GetSize().y};
     else
-        mTextureOffset = { 0.0f, 0.0f };
+        mTextureOffset = {0.0f, 0.0f};
 
     return mTextureOffset;
 }
 
 //////////////////////////////////////////////////////////////////////////
-// 
+//
 //////////////////////////////////////////////////////////////////////////
 
 LineList::LineList(const std::vector<glm::vec2>& positions) : mLineCount(positions.size() / 2)
@@ -182,7 +181,7 @@ LineList::LineList(const std::vector<glm::vec2>& positions) : mLineCount(positio
 }
 
 //////////////////////////////////////////////////////////////////////////
-// 
+//
 //////////////////////////////////////////////////////////////////////////
 
 LineList::~LineList()
@@ -192,7 +191,7 @@ LineList::~LineList()
 }
 
 //////////////////////////////////////////////////////////////////////////
-// 
+//
 //////////////////////////////////////////////////////////////////////////
 
 void LineList::Render(Shader* shader)
@@ -210,25 +209,24 @@ void LineList::Render(Shader* shader)
 }
 
 //////////////////////////////////////////////////////////////////////////
-// 
+//
 //////////////////////////////////////////////////////////////////////////
 
-
-int getActiveVBOCount(GLuint vao) 
+int getActiveVBOCount(GLuint vao)
 {
     GLint maxVertexAttribs;
     glGetIntegerv(GL_MAX_VERTEX_ATTRIBS, &maxVertexAttribs);
 
     int activeVBOs = 0;
 
-    for (int i = 0; i < maxVertexAttribs; ++i) 
+    for (int i = 0; i < maxVertexAttribs; ++i)
     {
         GLint bufferBinding;
         glBindVertexArray(vao);
         glGetVertexAttribiv(i, GL_VERTEX_ATTRIB_ARRAY_BUFFER_BINDING, &bufferBinding);
         glBindVertexArray(0); // Unbind the VAO
 
-        if (bufferBinding != 0) 
+        if (bufferBinding != 0)
             activeVBOs++;
     }
 
@@ -236,15 +234,15 @@ int getActiveVBOCount(GLuint vao)
 }
 
 // Function to check if a vertex attribute is enabled
-bool isAttributeEnabled(GLuint vao, GLuint attributeIndex) {
+bool isAttributeEnabled(GLuint vao, GLuint attributeIndex)
+{
     GLint isEnabled;
     glBindVertexArray(vao);
     glGetVertexAttribiv(attributeIndex, GL_VERTEX_ATTRIB_ARRAY_ENABLED, &isEnabled);
-    glBindVertexArray(0);  // Unbind the VAO
+    glBindVertexArray(0); // Unbind the VAO
 
     return (isEnabled == GL_TRUE);
 }
-
 
 NoteRenderer::NoteRenderer(Chart* inChart) : mChart(inChart)
 {
@@ -273,7 +271,7 @@ NoteRenderer::NoteRenderer(Chart* inChart) : mChart(inChart)
 
     glBindVertexArray(0);
 
-    mXPositions = { -3.0f, -1.0f, 1.0f, 3.0f };
+    mXPositions = {-3.0f, -1.0f, 1.0f, 3.0f};
 
     mRotations.push_back(glm::rotate(glm::mat4(1.0f), glm::radians(270.0f), glm::vec3(0.0f, 0.0f, 1.0f)));
     mRotations.push_back(glm::mat4(1.0f));
@@ -282,7 +280,7 @@ NoteRenderer::NoteRenderer(Chart* inChart) : mChart(inChart)
 }
 
 //////////////////////////////////////////////////////////////////////////
-// 
+//
 //////////////////////////////////////////////////////////////////////////
 
 void NoteRenderer::Render(Shader* shader)
@@ -311,31 +309,17 @@ void NoteRenderer::Render(Shader* shader)
 }
 
 //////////////////////////////////////////////////////////////////////////
-// 
+//
 //////////////////////////////////////////////////////////////////////////
 
 void NoteRenderer::UpdateParams()
 {
     // @TODO: Note styles
     const std::pair<float, unsigned> coords[] = {
-        { 0.0f,			 448 },
-        { 1.0f / 2.0f,	 384 },
-        { 1.0f / 3.0f,	 320 },
-        { 2.0f / 3.0f,	 320 },
-        { 1.0f / 4.0f,	 256 },
-        { 3.0f / 4.0f,	 256 },
-        { 1.0f / 6.0f,	 192 },
-        { 5.0f / 6.0f,	 192 },
-        { 1.0f / 8.0f,	 128 },
-        { 3.0f / 8.0f,	 128 },
-        { 5.0f / 8.0f,	 128 },
-        { 7.0f / 8.0f,	 128 },
-        { 1.0f / 12.0f,	 64 },
-        { 5.0f / 12.0f,	 64 },
-        { 7.0f / 12.0f,	 64 },
-        { 11.0f / 12.0f, 64 },
-        { 1.0f / 5.0f,	 0 }
-    };
+        {0.0f, 448},         {1.0f / 2.0f, 384}, {1.0f / 3.0f, 320}, {2.0f / 3.0f, 320}, {1.0f / 4.0f, 256},
+        {3.0f / 4.0f, 256},  {1.0f / 6.0f, 192}, {5.0f / 6.0f, 192}, {1.0f / 8.0f, 128}, {3.0f / 8.0f, 128},
+        {5.0f / 8.0f, 128},  {7.0f / 8.0f, 128}, {1.0f / 12.0f, 64}, {5.0f / 12.0f, 64}, {7.0f / 12.0f, 64},
+        {11.0f / 12.0f, 64}, {1.0f / 5.0f, 0}};
 
     const size_t noteCount = mChart->mNotes.size();
     auto it = mChart->mNotes.begin();
@@ -362,7 +346,6 @@ void NoteRenderer::UpdateParams()
             continue;
         }
 
-
         const float pos = note->mPos;
         const float decimalPart = pos - static_cast<int>(pos);
         unsigned currbeatUVOffset;
@@ -373,7 +356,7 @@ void NoteRenderer::UpdateParams()
                 break;
         }
 
-        mFloatParams[floatIdx]     = glm::vec2(note->mDir, pos);
+        mFloatParams[floatIdx] = glm::vec2(note->mDir, pos);
         mFloatParams[floatIdx + 1] = SetTextureScale(64, 64);
         mFloatParams[floatIdx + 2] = SetTextureOffset(0, currbeatUVOffset);
 
@@ -382,7 +365,7 @@ void NoteRenderer::UpdateParams()
 }
 
 //////////////////////////////////////////////////////////////////////////
-// 
+//
 //////////////////////////////////////////////////////////////////////////
 
 void NoteRenderer::UpdateVBOs()
@@ -394,7 +377,7 @@ void NoteRenderer::UpdateVBOs()
 }
 
 //////////////////////////////////////////////////////////////////////////
-// 
+//
 //////////////////////////////////////////////////////////////////////////
 
 HoldNoteBodyRenderer::HoldNoteBodyRenderer(Chart* inChart) : mChart(inChart)
@@ -434,7 +417,7 @@ HoldNoteBodyRenderer::HoldNoteBodyRenderer(Chart* inChart) : mChart(inChart)
 }
 
 //////////////////////////////////////////////////////////////////////////
-// 
+//
 //////////////////////////////////////////////////////////////////////////
 
 void HoldNoteBodyRenderer::Render(Shader* shader)
@@ -465,13 +448,13 @@ void HoldNoteBodyRenderer::Render(Shader* shader)
 }
 
 //////////////////////////////////////////////////////////////////////////
-// 
+//
 //////////////////////////////////////////////////////////////////////////
 
 void HoldNoteBodyRenderer::UpdateParams()
 {
     std::multiset<HoldNote*, NoteCompare> holdNotes = mChart->GetAllHoldNotes();
-    const float xPositions[4] = { -3.0f, -1.0f, 1.0f, 3.0f };
+    const float xPositions[4] = {-3.0f, -1.0f, 1.0f, 3.0f};
 
     const size_t noteCount = holdNotes.size();
     auto it = holdNotes.begin();
@@ -505,7 +488,7 @@ void HoldNoteBodyRenderer::UpdateParams()
 }
 
 //////////////////////////////////////////////////////////////////////////
-// 
+//
 //////////////////////////////////////////////////////////////////////////
 
 void HoldNoteBodyRenderer::UpdateVBOs()
@@ -517,7 +500,7 @@ void HoldNoteBodyRenderer::UpdateVBOs()
 }
 
 //////////////////////////////////////////////////////////////////////////
-// 
+//
 //////////////////////////////////////////////////////////////////////////
 
 MineRenderer::MineRenderer(Chart* inChart) : mChart(inChart)
@@ -547,11 +530,11 @@ MineRenderer::MineRenderer(Chart* inChart) : mChart(inChart)
 
     glBindVertexArray(0);
 
-    mXPositions = { -3.0f, -1.0f, 1.0f, 3.0f };
+    mXPositions = {-3.0f, -1.0f, 1.0f, 3.0f};
 }
 
 //////////////////////////////////////////////////////////////////////////
-// 
+//
 //////////////////////////////////////////////////////////////////////////
 
 void MineRenderer::Render(Shader* shader)
@@ -572,7 +555,7 @@ void MineRenderer::Render(Shader* shader)
 }
 
 //////////////////////////////////////////////////////////////////////////
-// 
+//
 //////////////////////////////////////////////////////////////////////////
 
 void MineRenderer::UpdateParams()
@@ -605,7 +588,7 @@ void MineRenderer::UpdateParams()
 }
 
 //////////////////////////////////////////////////////////////////////////
-// 
+//
 //////////////////////////////////////////////////////////////////////////
 
 void MineRenderer::UpdateVBOs()
@@ -617,7 +600,7 @@ void MineRenderer::UpdateVBOs()
 }
 
 //////////////////////////////////////////////////////////////////////////
-// 
+//
 //////////////////////////////////////////////////////////////////////////
 
 FontRenderer::FontRenderer(const std::string& text, Resource<Font>* font)
@@ -636,7 +619,7 @@ FontRenderer::FontRenderer(const std::string& text, Resource<Font>* font)
 }
 
 //////////////////////////////////////////////////////////////////////////
-// 
+//
 //////////////////////////////////////////////////////////////////////////
 
 void FontRenderer::Render(Shader* shader)
@@ -653,8 +636,8 @@ void FontRenderer::Render(Shader* shader)
     const Transform t = mParentTransform.has_value() ? transform + mParentTransform.value() : transform;
     currShader->SetUniform("uTextColor", glm::vec3(mColor.x, mColor.y, mColor.z));
     currShader->SetUniform("zLayer", t.pos.z);
-    
-    glActiveTexture(GL_TEXTURE0); 
+
+    glActiveTexture(GL_TEXTURE0);
     mFont->get()->BindFontTexture();
     glBindVertexArray(mVAO);
     glBindBuffer(GL_ARRAY_BUFFER, mVBO);
@@ -675,22 +658,28 @@ void FontRenderer::Render(Shader* shader)
             y -= ((ch.Size.y)) * 1.3 * t.scale.y * FONTRENDERER_TEXTDEFAULTSIZE;
             x = t.pos.x;
         }
-        else if (*c == ' ') {
+        else if (*c == ' ')
+        {
             x += (ch.Advance >> 6) * t.scale.x * FONTRENDERER_TEXTDEFAULTSIZE;
         }
-        else {
+        else
+        {
             float xpos = x + ch.Bearing.x * t.scale.x * FONTRENDERER_TEXTDEFAULTSIZE;
             float ypos = y - (256 - ch.Bearing.y) * t.scale.y * FONTRENDERER_TEXTDEFAULTSIZE;
 
-            mTransforms[workingIndex] = glm::translate(glm::mat4(1.0f), glm::vec3(xpos, ypos, t.pos.z + workingIndex * 0.0001f)) *
-                                        glm::scale(glm::mat4(1.0f), glm::vec3(256 * t.scale.x * FONTRENDERER_TEXTDEFAULTSIZE, 256 * t.scale.y * FONTRENDERER_TEXTDEFAULTSIZE, 0));
+            mTransforms[workingIndex] =
+                glm::translate(glm::mat4(1.0f), glm::vec3(xpos, ypos, t.pos.z + workingIndex * 0.02f)) *
+                glm::scale(glm::mat4(1.0f), glm::vec3(256 * t.scale.x * FONTRENDERER_TEXTDEFAULTSIZE,
+                                                      256 * t.scale.y * FONTRENDERER_TEXTDEFAULTSIZE, 0));
             mLetterMap[workingIndex] = ch.TextureID;
-            
+
             // render quad
             // now advance cursors for next glyph (note that advance is number of 1/64 pixels)
-            x += (ch.Advance >> 6) * t.scale.x * FONTRENDERER_TEXTDEFAULTSIZE; // bitshift by 6 to get value in pixels (2^6 = 64 (divide amount of 1/64th pixels by 64 to get amount of pixels))
+            x += (ch.Advance >> 6) * t.scale.x *
+                 FONTRENDERER_TEXTDEFAULTSIZE; // bitshift by 6 to get value in pixels (2^6 = 64 (divide amount of
+                                               // 1/64th pixels by 64 to get amount of pixels))
             workingIndex++;
-            if (workingIndex == FONTRENDERER_STRING_LIMIT) 
+            if (workingIndex == FONTRENDERER_STRING_LIMIT)
             {
                 TextRenderCall(workingIndex, currShader->mID);
                 workingIndex = 0;
@@ -706,7 +695,7 @@ void FontRenderer::Render(Shader* shader)
 }
 
 //////////////////////////////////////////////////////////////////////////
-// 
+//
 //////////////////////////////////////////////////////////////////////////
 
 Resource<Font>* FontRenderer::SetFont(const std::string& path)
@@ -716,23 +705,16 @@ Resource<Font>* FontRenderer::SetFont(const std::string& path)
 }
 
 //////////////////////////////////////////////////////////////////////////
-// 
+//
 //////////////////////////////////////////////////////////////////////////
 
-void FontRenderer::SetText(const std::string& text)
-{
-    mText = text;
-}
+void FontRenderer::SetText(const std::string& text) { mText = text; }
 
 void FontRenderer::InitializeVertexData()
 {
-   const GLfloat vertex_data[] = 
-   {
-        0.0f,1.0f,
-        0.0f,0.0f,
-        1.0f,1.0f,
-        1.0f,0.0f,
-   };
+    const GLfloat vertex_data[] = {
+        0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 0.0f,
+    };
 
     // configure VAO/VBO for texture quads
     // -----------------------------------
