@@ -1,0 +1,6 @@
+# .clang-format
+BasedOnStyle: LLVM
+PointerAlignment: Left
+IndentWidth: 4
+ColumnLimit: 120
+BreakBeforeBraces: Allman
