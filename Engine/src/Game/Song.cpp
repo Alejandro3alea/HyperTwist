@@ -1,21 +1,21 @@
 #include "Song.h"
-#include "Misc/Requires.h"
+#include "Audio/Audio.h"
 #include "GlobalEvents.h"
 #include "GlobalVariables.h"
 #include "Graphics/GfxMgr.h"
+#include "Misc/Requires.h"
 #include "Utils/GameUtils.h"
-#include "Audio/Audio.h"
 
-#include <sstream>
-#include <fstream>
 #include <algorithm>
-#include <limits>
+#include <fstream>
 #include <iomanip>
+#include <limits>
+#include <sstream>
 
 void RemoveSingleLineComments(std::string& text)
 {
     size_t pos = text.find("//");
-    while (pos != std::string::npos) 
+    while (pos != std::string::npos)
     {
         size_t endPos = text.find('\n', pos);
         if (endPos == std::string::npos)
@@ -45,10 +45,7 @@ void RemoveMultiLineComments(std::string& text)
     }
 }
 
-void RemoveCarriageReturns(std::string& text)
-{
-    text.erase(std::remove(text.begin(), text.end(), '\r'), text.end());
-}
+void RemoveCarriageReturns(std::string& text) { text.erase(std::remove(text.begin(), text.end(), '\r'), text.end()); }
 
 void RemoveBlankLines(std::string& text)
 {
@@ -56,9 +53,9 @@ void RemoveBlankLines(std::string& text)
     std::string line;
     std::string result;
 
-    while (std::getline(iss, line)) 
+    while (std::getline(iss, line))
     {
-        if (!line.empty()) 
+        if (!line.empty())
         {
             result += line + "\n";
         }
@@ -83,11 +80,10 @@ Song::Song(const std::string& path)
     if (lastSpacePos != std::string::npos)
         mPath = tPath.substr(0, lastSpacePos) + '/';
 
-	std::ifstream file(path);
-	Requires(file.is_open() && file.good(), "File not read in " + path);
+    std::ifstream file(path);
+    Requires(file.is_open() && file.good(), "File not read in " + path);
 
-    std::string fileContents((std::istreambuf_iterator<char>(file)),
-        std::istreambuf_iterator<char>());
+    std::string fileContents((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
 
     RemoveContents(fileContents);
     std::istringstream cleanContents(fileContents);
@@ -102,8 +98,8 @@ Song::Song(const std::string& path)
     else
         PrintError("Unknown extension for song: {}", mPath);
 
-	file.close();
-    
+    file.close();
+
     GlobalEvents::gOnSongCreate.Broadcast(this);
 }
 
@@ -146,10 +142,11 @@ float Song::GetBPMAt(const float time)
 
 Resource<Audio>* Song::GetSong()
 {
-    if (mSong) 
+    if (mSong)
         return mSong;
 
-    mSong = !mSongInfo.mSongPath.empty() ? ResourceMgr->Load<Audio>(mPath + mSongInfo.mSongPath) : ResourceMgr->GetDefaultAsset<Audio>();
+    mSong = !mSongInfo.mSongPath.empty() ? ResourceMgr->Load<Audio>(mPath + mSongInfo.mSongPath)
+                                         : ResourceMgr->GetDefaultAsset<Audio>();
 
     return mSong;
 }
@@ -159,7 +156,8 @@ Resource<Texture>* Song::GetBanner()
     if (mBanner)
         return mBanner;
 
-    mBanner = !mSongInfo.mBannerPath.empty() ? ResourceMgr->Load<Texture>(mPath + mSongInfo.mBannerPath) : ResourceMgr->GetDefaultAsset<Texture>();
+    mBanner = !mSongInfo.mBannerPath.empty() ? ResourceMgr->Load<Texture>(mPath + mSongInfo.mBannerPath)
+                                             : ResourceMgr->GetDefaultAsset<Texture>();
 
     return mBanner;
 }
@@ -169,7 +167,8 @@ Resource<Texture>* Song::GetBackground()
     if (mBackground)
         return mBackground;
 
-    mBackground = !mSongInfo.mBackgroundPath.empty() ? ResourceMgr->Load<Texture>(mPath + mSongInfo.mBackgroundPath) : ResourceMgr->GetDefaultAsset<Texture>();
+    mBackground = !mSongInfo.mBackgroundPath.empty() ? ResourceMgr->Load<Texture>(mPath + mSongInfo.mBackgroundPath)
+                                                     : ResourceMgr->GetDefaultAsset<Texture>();
 
     return mBackground;
 }
@@ -179,7 +178,8 @@ Resource<Texture>* Song::GetCDTitle()
     if (mCDTitle)
         return mCDTitle;
 
-    mCDTitle = !mSongInfo.mCDTitlePath.empty() ? ResourceMgr->Load<Texture>(mPath + mSongInfo.mCDTitlePath) : ResourceMgr->GetDefaultAsset<Texture>();
+    mCDTitle = !mSongInfo.mCDTitlePath.empty() ? ResourceMgr->Load<Texture>(mPath + mSongInfo.mCDTitlePath)
+                                               : ResourceMgr->GetDefaultAsset<Texture>();
 
     return mCDTitle;
 }
@@ -458,7 +458,7 @@ void Song::ProcessSSCSong(std::istringstream& file)
                             }
                         }
 
-                        mSongInfo.mSpeeds[measurePos] = { speedVal, speedTime, isBeatsOrSeconds };
+                        mSongInfo.mSpeeds[measurePos] = {speedVal, speedTime, isBeatsOrSeconds};
                     }
                 }
             }
@@ -545,8 +545,8 @@ void Song::ProcessSSCSong(std::istringstream& file)
                         equalPos = part.find('=');
                         if (equalPos != std::string::npos)
                         {
-                            mSongInfo.mTimeSignatures[measurePos] = { std::stoi(part.substr(0, equalPos)),
-                                                            std::stoi(part.substr(equalPos + 1)) };
+                            mSongInfo.mTimeSignatures[measurePos] = {std::stoi(part.substr(0, equalPos)),
+                                                                     std::stoi(part.substr(equalPos + 1))};
                         }
                     }
                 }
@@ -651,20 +651,25 @@ void Song::ProcessSSCSong(std::istringstream& file)
 Chart* Song::ProcessSMChart(std::istringstream& file)
 {
     auto charCheckLambda = [](unsigned char c) { return std::isspace(c) || c == ':'; };
-    auto charEraseLambda = [charCheckLambda](std::string& str) { str.erase(std::remove_if(str.begin(), str.end(), charCheckLambda), str.end()); };
+    auto charEraseLambda = [charCheckLambda](std::string& str)
+    { str.erase(std::remove_if(str.begin(), str.end(), charCheckLambda), str.end()); };
 
     std::string danceCategory;
-    std::getline(file, danceCategory); charEraseLambda(danceCategory);
+    std::getline(file, danceCategory);
+    charEraseLambda(danceCategory);
     // @TODO: Double charts.
     if (danceCategory == "dance-double")
         return nullptr;
 
     std::string stepArtist;
-    std::getline(file, stepArtist); charEraseLambda(stepArtist);
+    std::getline(file, stepArtist);
+    charEraseLambda(stepArtist);
     std::string difficulty;
-    std::getline(file, difficulty); charEraseLambda(difficulty);
+    std::getline(file, difficulty);
+    charEraseLambda(difficulty);
     std::string difficultyVal;
-    std::getline(file, difficultyVal); charEraseLambda(difficultyVal);
+    std::getline(file, difficultyVal);
+    charEraseLambda(difficultyVal);
     std::string somethingVal;
     std::getline(file, somethingVal);
 
@@ -715,7 +720,7 @@ Chart* Song::ProcessSSCChart(std::istringstream& file)
             {
                 if (stepType == "dance-double")
                     return nullptr;
-                    
+
                 mChartDifficulties[currChart->mDifficultyCategory] = currChart->mDifficultyVal;
                 currChart->ProcessNotes(file);
                 return currChart;
@@ -879,7 +884,7 @@ void Song::ProcessSMD(std::istringstream& file)
                             }
                         }
 
-                        mSongInfo.mSpeeds[measurePos] = { speedVal, speedTime, isBeatsOrSeconds };
+                        mSongInfo.mSpeeds[measurePos] = {speedVal, speedTime, isBeatsOrSeconds};
                     }
                 }
             }
@@ -966,8 +971,8 @@ void Song::ProcessSMD(std::istringstream& file)
                         equalPos = part.find('=');
                         if (equalPos != std::string::npos)
                         {
-                            mSongInfo.mTimeSignatures[measurePos] = { std::stoi(part.substr(0, equalPos)),
-                                                            std::stoi(part.substr(equalPos + 1)) };
+                            mSongInfo.mTimeSignatures[measurePos] = {std::stoi(part.substr(0, equalPos)),
+                                                                     std::stoi(part.substr(equalPos + 1))};
                         }
                     }
                 }
@@ -1148,7 +1153,8 @@ Chart* Song::ProcessSCDChart(std::istringstream& file)
 
 void Song::SaveAsSSCSong(const std::string& outPath)
 {
-    const std::string path = outPath.empty() ? mPath + mSongInfo.mTitle + ".ssc" : ResourceMgr->GetPathWithoutExtension(outPath) + ".ssc";
+    const std::string path =
+        outPath.empty() ? mPath + mSongInfo.mTitle + ".ssc" : ResourceMgr->GetPathWithoutExtension(outPath) + ".ssc";
     std::ofstream file(path);
     Requires(file.is_open() && file.good(), path);
 
@@ -1196,7 +1202,8 @@ void Song::SaveAsSSCSong(const std::string& outPath)
     file << "#SPEEDS:";
     for (auto it = mSongInfo.mSpeeds.begin(); it != mSongInfo.mSpeeds.end(); ++it)
     {
-        file << it->first << "=" << std::get<0>(it->second) << "=" << std::get<1>(it->second) << "=" << std::get<2>(it->second) << std::endl;
+        file << it->first << "=" << std::get<0>(it->second) << "=" << std::get<1>(it->second) << "="
+             << std::get<2>(it->second) << std::endl;
         if (std::next(it) != mSongInfo.mSpeeds.end())
             file << ",";
     }
@@ -1269,7 +1276,7 @@ void Song::SaveAsSSCSong(const std::string& outPath)
     {
         Chart* chartData = chart.second;
         file << "//--------------- dance-single - " << chartData->mStepArtist << " ----------------" << std::endl;
-        file << "#NOTEDATA:" << "" << ";" << std::endl; // TODO
+        file << "#NOTEDATA:" << "" << ";" << std::endl;              // TODO
         file << "#STEPSTYPE:" << "dance-single" << ";" << std::endl; // TODO
         file << "#DESCRIPTION:" << chartData->mStepArtist << ";" << std::endl;
 
@@ -1290,7 +1297,8 @@ void Song::SaveAsSSCSong(const std::string& outPath)
 
 void Song::SaveToSMD(const std::string& outPath)
 {
-    const std::string path = outPath.empty() ? mPath + mSongInfo.mTitle + ".smd" : ResourceMgr->GetPathWithoutExtension(outPath) + ".smd";
+    const std::string path =
+        outPath.empty() ? mPath + mSongInfo.mTitle + ".smd" : ResourceMgr->GetPathWithoutExtension(outPath) + ".smd";
     std::ofstream file(path);
     Requires(file.is_open() && file.good(), " " + path);
 
@@ -1339,7 +1347,8 @@ void Song::SaveToSMD(const std::string& outPath)
     file << "#SPEEDS:";
     for (auto it = mSongInfo.mSpeeds.begin(); it != mSongInfo.mSpeeds.end(); ++it)
     {
-        file << it->first << "=" << std::get<0>(it->second) << "=" << std::get<1>(it->second) << "=" << std::get<2>(it->second) << std::endl;
+        file << it->first << "=" << std::get<0>(it->second) << "=" << std::get<1>(it->second) << "="
+             << std::get<2>(it->second) << std::endl;
         if (std::next(it) != mSongInfo.mSpeeds.end())
             file << ",";
     }
@@ -1413,7 +1422,8 @@ void Song::SaveToSMD(const std::string& outPath)
     for (auto chart : mCharts)
     {
         Chart* chartData = chart.second;
-        file << GameUtils::ChartDifficultyToStr(chartData->mDifficultyCategory) << ":" << chartData->mDifficultyVal << std::endl;
+        file << GameUtils::ChartDifficultyToStr(chartData->mDifficultyCategory) << ":" << chartData->mDifficultyVal
+             << std::endl;
     }
     file << ";" << std::endl;
 
@@ -1422,7 +1432,8 @@ void Song::SaveToSMD(const std::string& outPath)
 
 void Song::SaveToSCD(const std::string& outPath)
 {
-    const std::string path = outPath.empty() ? mPath + mSongInfo.mTitle + ".scd" : ResourceMgr->GetPathWithoutExtension(outPath) + ".scd";
+    const std::string path =
+        outPath.empty() ? mPath + mSongInfo.mTitle + ".scd" : ResourceMgr->GetPathWithoutExtension(outPath) + ".scd";
     std::ofstream file(path);
     Requires(file.is_open() && file.good(), " " + path);
 
@@ -1430,7 +1441,7 @@ void Song::SaveToSCD(const std::string& outPath)
     {
         Chart* chartData = chart.second;
         file << "//--------------- dance-single - " << chartData->mStepArtist << " ----------------" << std::endl;
-        file << "#NEWCHART:" << "" << ";" << std::endl; // TODO
+        file << "#NEWCHART:" << "" << ";" << std::endl;              // TODO
         file << "#STEPSTYPE:" << "dance-single" << ";" << std::endl; // TODO
         file << "#AUTHOR:" << chartData->mStepArtist << ";" << std::endl;
 
@@ -1454,16 +1465,29 @@ void Song::LoadChartsSCD()
         PrintError("Trying to load charts for an unsupported file extension: {}", mPath);
     }
 
-    const std::string pathSCD = FileUtils::JoinPath(mPath, mSongInfo.mTitle + ".scd");
-	std::ifstream file(pathSCD);
-	if (!file.is_open() || !file.good())
+    std::string pathSCD = FileUtils::JoinPath(mPath, mSongInfo.mTitle + ".scd");
+    std::ifstream file(pathSCD);
+    if (!file.is_open() || !file.good())
     {
-        PrintError("File not read in {}", pathSCD);
-        return;
-    } 
 
-    std::string fileContents((std::istreambuf_iterator<char>(file)),
-        std::istreambuf_iterator<char>());
+        // try finding a scd in there
+        auto firstSCD = FileUtils::FindFirstFileOf(mPath, ".scd");
+        if (!firstSCD)
+        {
+            PrintError(".scd file not found in {}", mPath);
+            return;
+        }
+
+        pathSCD = firstSCD.value();
+        file = std::ifstream(pathSCD);
+        if (!file.is_open() || !file.good())
+        {
+            PrintError("File not read in {}", pathSCD);
+            return;
+        }
+    }
+
+    std::string fileContents((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
 
     RemoveContents(fileContents);
     std::istringstream cleanContents(fileContents);

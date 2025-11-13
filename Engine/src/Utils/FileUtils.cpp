@@ -20,6 +20,19 @@ std::string JoinPath(const std::string& lhs, const std::string& rhs)
     return fullPath.generic_string();
 }
 
+std::optional<std::string> FindFirstFileOf(const std::filesystem::path& root, const std::string& ext)
+{
+    namespace fs = std::filesystem;
+    for (const auto& entry : fs::recursive_directory_iterator(root))
+    {
+        if (entry.is_regular_file() && entry.path().extension() == ext)
+        {
+            return entry.path().string();
+        }
+    }
+    return std::nullopt; // No file found
+}
+
 void JsonToFile(const nlohmann::json& val, const std::string& path)
 {
     std::ofstream file(path);

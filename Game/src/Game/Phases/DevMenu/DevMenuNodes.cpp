@@ -43,10 +43,7 @@ void DevMenuNode::HideRenderables()
         it->mbIsVisible = false;
 }
 
-void DevMenuNode::AddItem(const std::shared_ptr<DevMenuItem>& item)
-{
-    mItems.push_back(item);
-}
+void DevMenuNode::AddItem(const std::shared_ptr<DevMenuItem>& item) { mItems.push_back(item); }
 
 void DevMenuNode::AddRenderable(const std::shared_ptr<Renderable>& renderable)
 {
@@ -67,10 +64,7 @@ void DevMenuNode::Select()
     }
 }
 
-void DevMenuNode::ResetSelectedIdx()
-{
-    mSelectedIdx = 0;
-}
+void DevMenuNode::ResetSelectedIdx() { mSelectedIdx = 0; }
 
 void DevMenuNode::IncrementSelectedIdx()
 {
@@ -117,7 +111,7 @@ DevMenuMainMenu::DevMenuMainMenu() : DevMenuNode("Main menu")
     AddItem(std::make_shared<DevMenuCoinSettings>(this));
     AddItem(std::make_shared<DevMenuStartGame>());
 
-	InitializeRenderables();
+    InitializeRenderables();
 }
 
 DevMenuInputOutputCheck::DevMenuInputOutputCheck(DevMenuNode* parentNode) : DevMenuNode("I/O check")
@@ -128,7 +122,6 @@ DevMenuInputOutputCheck::DevMenuInputOutputCheck(DevMenuNode* parentNode) : DevM
     AddItem(std::make_shared<DevMenuReturnToParent>(parentNode));
     InitializeRenderables();
 }
-
 
 DevMenuInputOutputCheck::InputCheck::InputCheck(DevMenuNode* parentNode) : DevMenuNode("Input check")
 {
@@ -148,10 +141,6 @@ DevMenuInputOutputCheck::ICCardCheck::ICCardCheck(DevMenuNode* parentNode) : Dev
     InitializeRenderables();
 }
 
-
-
-
-
 DevMenuScreenCheck::DevMenuScreenCheck(DevMenuNode* parentNode) : DevMenuNode("Screen check")
 {
     AddItem(std::make_shared<DevMenuReturnToParent>(parentNode));
@@ -170,8 +159,6 @@ DevMenuSoundSettings::DevMenuSoundSettings(DevMenuNode* parentNode) : DevMenuNod
     InitializeRenderables();
 }
 
-
-
 DevMenuGameSettings::DevMenuGameSettings(DevMenuNode* parentNode) : DevMenuNode("Game settings")
 {
     AddItem(std::make_shared<UpdateSongVersions>(this));
@@ -179,7 +166,8 @@ DevMenuGameSettings::DevMenuGameSettings(DevMenuNode* parentNode) : DevMenuNode(
     InitializeRenderables();
 }
 
-DevMenuGameSettings::UpdateSongVersions::UpdateSongVersions(DevMenuNode* parentNode) : DevMenuNode("Update SM/SSC songs to SMD")
+DevMenuGameSettings::UpdateSongVersions::UpdateSongVersions(DevMenuNode* parentNode)
+    : DevMenuNode("Update SM/SSC songs to SMD")
 {
     const auto& renderable = std::make_shared<FontRenderer>("Songs updated.");
     renderable->mColor = glm::vec4(0.25f, 1.0f, 0.3f, 1.0f);
@@ -196,15 +184,16 @@ void DevMenuGameSettings::UpdateSongVersions::OnSelected()
 
 void DevMenuGameSettings::UpdateSongVersions::UpdateSongs() const
 {
-    std::string rootDirectory = "songs/";
+    std::string rootDirectory = FileUtils::JoinPath(DATA_PATH, "songs/");
 
     for (const auto& entry : std::filesystem::recursive_directory_iterator(rootDirectory))
     {
         if (entry.is_regular_file() && (entry.path().extension() == ".sm" || entry.path().extension() == ".ssc"))
         {
             const std::string entryPath = entry.path().string();
-            //if (!IsSongUpToDate(entryPath))
-                UpdateSong(entryPath);
+            // @TODO: revert this  v v v
+            // if (!IsSongUpToDate(entryPath))
+            UpdateSong(entryPath);
         }
     }
 }
@@ -222,8 +211,6 @@ bool DevMenuGameSettings::UpdateSongVersions::IsSongUpToDate(const std::string& 
 
     return oldWriteTime < smdWriteTime;
 }
-
-
 
 DevMenuCoinSettings::DevMenuCoinSettings(DevMenuNode* parentNode) : DevMenuNode("Coin settings")
 {

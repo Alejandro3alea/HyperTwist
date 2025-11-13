@@ -2,13 +2,13 @@
 
 namespace GlobalEvents
 {
-	OnBeatTick gOnBeatTick;
+OnBeatTick gOnBeatTick;
 
-	OnSongPlay gOnSongPlay;
-	OnSongPause gOnSongPause;
-	OnSongStop gOnSongStop;
+OnSongPlay gOnSongPlay;
+OnSongPause gOnSongPause;
+OnSongStop gOnSongStop;
 
-	OnSongCreate gOnSongCreate;
-	OnSongUpdate gOnSongUpdate;
-	OnChartEdit gOnChartEdit;
-}
+OnSongCreate gOnSongCreate;
+OnSongUpdate gOnSongUpdate;
+OnChartEdit gOnChartEdit;
+} // namespace GlobalEvents

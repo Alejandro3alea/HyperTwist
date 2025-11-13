@@ -29,19 +29,22 @@ void AudioManager::Initialize(int sampleRate, int channels)
     mBeatTick = ResourceMgr->Load<Audio>("engine/audio/sfx/BeatTick.wav", AudioType::SFX);
     mNoteTick = ResourceMgr->Load<Audio>("engine/audio/sfx/NoteTick.wav", AudioType::SFX);
 
-    GlobalEvents::gOnSongPlay.Add([&](Song* song) { mMusicStartTick = SDL_GetTicks(); });
-    GlobalEvents::gOnSongStop.Add([&](Song* song) { mMusicStartTick = 0; });
+    GlobalEvents::gOnSongPlay.Add([&](Song* song) { SetupMusicStart(); });
+    GlobalEvents::gOnSongStop.Add([&](Song* song) { SetupMusicStop(); });
 
-    mIsCueThreadRunning = true;
-    mCueThread = std::thread(&AudioManager::AudioCueLoop, this);
+    mIsCueMusicThreadRunning = true;
+    mIsCueTimerThreadRunning = true;
+    mIsCueTimerThreadPaused = false;
+    mCueSongThread = std::thread(&AudioManager::AudioCueMusicLoop, this);
+    mCueTimerThread = std::thread(&AudioManager::AudioCueTimerLoop, this);
 }
 
 void AudioManager::Shutdown()
 {
     // SDL_CloseAudioDevice(mDeviceID);
 
-    mIsCueThreadRunning = false;
-    mCueCV.notify_all();
+    mIsCueMusicThreadRunning = false;
+    mCueMusicCV.notify_all();
 }
 
 Audio* AudioManager::LoadSound(const std::string& filePath)
@@ -58,44 +61,147 @@ Audio* AudioManager::LoadMusic(const std::string& filePath)
 
 f32 AudioManager::GetMusicTime() { return mMusicStartTick ? (SDL_GetTicks() - mMusicStartTick) / 1000.0f : 0.0f; }
 
-void AudioManager::QueueSound(Audio* sfx, const f32 time)
+void AudioManager::QueueAudioAfter(const Resource<Audio>& audio, const f32 seconds)
 {
-    if (time <= 0.0f)
-        sfx->Play();
+    if (seconds <= 0.0f)
+    {
+        audio->Play();
+        return;
+    }
 
-    std::lock_guard<std::mutex> lock(mCueMutex);
-    mCues.push({sfx, time});
-    mCueCV.notify_one();
+    std::lock_guard<std::mutex> lock(mCueTimerMutex);
+    mTimerCues.push({audio, mQueueTimer + seconds});
+
+    bool should_notify = mTimerCues.empty() || seconds + mQueueTimer < mTimerCues.top().mTime;
+    mCueTimerCV.notify_one();
 }
 
-void AudioManager::AudioCueLoop()
+void AudioManager::QueueSoundAtTimestamp(const Resource<Audio>& sfx, const f32 music_timestamp_seconds)
 {
-    // PrintDebug("AudioCueLoop started!");
-
-    std::unique_lock<std::mutex> lock(mCueMutex);
-    while (mIsCueThreadRunning)
+    if (music_timestamp_seconds <= 0.0f)
     {
-        if (mCues.empty())
+        sfx->Play();
+        return;
+    }
+
+    std::lock_guard<std::mutex> lock(mCueMusicMutex);
+    mSongSyncCues.push({sfx, music_timestamp_seconds});
+    mCueMusicCV.notify_one();
+}
+
+void AudioManager::StopTimerQueue()
+{
+    std::lock_guard<std::mutex> lock(mCueTimerMutex);
+    mIsCueTimerThreadPaused = true;
+}
+
+void AudioManager::ResumeTimerQueue()
+{
+    {
+        std::lock_guard<std::mutex> lock(mCueTimerMutex);
+        mIsCueTimerThreadPaused = false;
+    }
+
+    // Wake up thread
+    mCueTimerCV.notify_one();
+}
+
+void AudioManager::SetupMusicStart() { mMusicStartTick = SDL_GetTicks(); }
+
+void AudioManager::SetupMusicStop() { mMusicStartTick = 0; }
+
+void AudioManager::AudioCueMusicLoop()
+{
+    PrintDebug("AudioCueMusicLoop started!");
+
+    try
+    {
+        std::unique_lock<std::mutex> lock(mCueMusicMutex);
+        while (mIsCueMusicThreadRunning)
         {
-            mCueCV.wait(lock);
-            // PrintDebug("mCues size: {}", mCues.size());
-        }
-        else
-        {
-            const f32 currTime = GetMusicTime();
-            AudioCue cue = mCues.top();
-            if (cue.mTime <= currTime)
+            // Song sync cues
+            if (mSongSyncCues.empty())
             {
-                mCues.pop();
-                cue.mAudio->Play();
-                // PrintDebug("Cue played from {} at time {}", cue.mTime, currTime);
+                mCueMusicCV.wait(lock);
+                // PrintDebug("mCues size: {}", mCues.size());
             }
             else
             {
-                f32 delay = cue.mTime - currTime;
-                auto wakeTime = std::chrono::steady_clock::now() + std::chrono::duration<f32>(delay);
-                mCueCV.wait_until(lock, wakeTime);
+                const f32 currTime = GetMusicTime();
+                AudioCue cue = mSongSyncCues.top();
+                if (cue.mTime <= currTime)
+                {
+                    mSongSyncCues.pop();
+                    cue.mAudio->Play();
+                    // PrintDebug("Cue played from {} at time {}", cue.mTime, currTime);
+                }
+                else
+                {
+                    f32 delay = cue.mTime - currTime;
+                    auto wakeTime = std::chrono::steady_clock::now() + std::chrono::duration<f32>(delay);
+                    mCueMusicCV.wait_until(lock, wakeTime);
+                }
             }
         }
+    }
+    catch (const std::exception& e)
+    {
+        PrintError("AudioCueMusicLoop crashed with exception: " + std::string(e.what()));
+    }
+}
+
+void AudioManager::AudioCueTimerLoop()
+{
+    PrintDebug("AudioCueTimerLoop started!");
+    auto last = std::chrono::steady_clock::now();
+
+    try
+    {
+        std::unique_lock<std::mutex> lock(mCueTimerMutex);
+        while (mIsCueTimerThreadRunning)
+        {
+            if (mIsCueTimerThreadPaused)
+            {
+                mCueTimerCV.wait(lock, [this] { return !mIsCueTimerThreadPaused || !mIsCueTimerThreadRunning; });
+                last = std::chrono::steady_clock::now();
+                continue;
+            }
+
+            // Timer cues
+            if (mTimerCues.empty())
+            {
+                mQueueTimer = 0.0f;
+                mCueTimerCV.wait(lock); // waits until QueueAudioAfter notifies
+                last = std::chrono::steady_clock::now();
+            }
+            else
+            {
+                auto now = std::chrono::steady_clock::now();
+                const float deltaTime = std::chrono::duration<float>(now - last).count();
+                last = now;
+
+                mQueueTimer += deltaTime;
+                AudioCue cue = mTimerCues.top();
+                if (cue.mTime <= mQueueTimer)
+                {
+                    mTimerCues.pop();
+                    PrintDebug("Cue played from {} at time {}", cue.mTime, mQueueTimer);
+                    if (cue.mAudio)
+                        cue.mAudio->Play();
+                    else
+                        PrintError("Invalid audio cue sent to AudioCueTimerLoop thread");
+                }
+                else
+                {
+                    auto wakeTime =
+                        std::chrono::steady_clock::now() + std::chrono::duration<float>(cue.mTime - mQueueTimer);
+                    mCueTimerCV.wait_until(lock, wakeTime);
+                }
+            }
+        }
+    }
+    catch (const std::exception& e)
+    {
+        PrintError("AudioCueTimerLoop crashed with exception: " + std::string(e.what()));
     }
 }

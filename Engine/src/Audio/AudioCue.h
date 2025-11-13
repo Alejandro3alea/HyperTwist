@@ -3,14 +3,11 @@
 
 struct AudioCue
 {
-    Audio* mAudio;
+    Resource<Audio> mAudio;
     f32 mTime;
 };
 
 struct AudioCueCompare
 {
-    bool operator()(const AudioCue& lhs, const AudioCue& rhs)
-    {
-        return lhs.mTime > rhs.mTime;
-    }
+    bool operator()(const AudioCue& lhs, const AudioCue& rhs) { return lhs.mTime > rhs.mTime; }
 };

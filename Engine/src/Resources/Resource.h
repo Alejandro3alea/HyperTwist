@@ -1,19 +1,21 @@
 #pragma once
 #include <memory>
-	
+
 struct IResourceBase
 {
-	virtual ~IResourceBase() {}
+    virtual ~IResourceBase() {}
 };
 
-template <typename T>
-struct Resource : public IResourceBase
+template <typename T> struct Resource : public IResourceBase
 {
-	Resource(const std::shared_ptr<T>& obj) : mResource(obj) {}
+    Resource(const std::shared_ptr<T>& obj) : mResource(obj) {}
 
-	operator T() const { return *mResource.get(); }
-	T* get() const { return mResource.get(); }
+    inline operator bool() const noexcept { return static_cast<bool>(mResource); }
 
-private:
-	std::shared_ptr<T> mResource;
+    inline T* get() const noexcept { return mResource.get(); }
+    inline T* operator->() const noexcept { return get(); }
+    inline const T& operator*() const { return *mResource.get(); }
+
+  private:
+    std::shared_ptr<T> mResource;
 };

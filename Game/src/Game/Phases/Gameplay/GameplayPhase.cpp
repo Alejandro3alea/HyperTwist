@@ -1,8 +1,10 @@
 #include "GameplayPhase.h"
+#include "Audio/AudioMgr.h"
 #include "Game/Account.h"
 #include "Game/GameVariables.h"
 #include "Graphics/GfxMgr.h"
-#include "Audio/AudioMgr.h"
+
+#include <algorithm>
 
 void GameplayPhase::OnEnter()
 {
@@ -19,10 +21,10 @@ void GameplayPhase::OnEnter()
             mMineRenderers[i]->mbIsVisible = true;
         }
     }
-    
+
     mSongInfo = &gGameVariables.mSelectedSong->mSongInfo;
     gGameVariables.mSelectedSong->GetSong()->get()->Stop();
-	GfxMgr->SetBackgroundTexture(gGameVariables.mSelectedSong->GetBackground());
+    // GfxMgr->SetBackgroundTexture(gGameVariables.mSelectedSong->GetBackground());
     mStartTransitionTimer = 1.0f;
     mBeatStartCount = 4;
 }
@@ -43,9 +45,7 @@ void GameplayPhase::OnTick(const float dt)
     }
 }
 
-void GameplayPhase::OnExit()
-{
-}
+void GameplayPhase::OnExit() {}
 
 void GameplayPhase::ChangeToState(const GameplayState& newState)
 {
@@ -65,14 +65,9 @@ void GameplayPhase::ChangeToState(const GameplayState& newState)
     }
 }
 
-void GameplayPhase::TransitionToGameplay()
-{
-    SetupMeasureController();
-}
+void GameplayPhase::TransitionToGameplay() { SetupMeasureController(); }
 
-void GameplayPhase::TransitionToEndTransition()
-{
-}
+void GameplayPhase::TransitionToEndTransition() {}
 
 void GameplayPhase::StartTransitionUpdate(const float dt)
 {
@@ -82,41 +77,34 @@ void GameplayPhase::StartTransitionUpdate(const float dt)
         ChangeToState(GameplayState::Gameplay);
 }
 
-void GameplayPhase::GameplayUpdate(const float dt)
-{
-    mCurrMeasure += dt;
-    
-    HandleStartingBeats();
-}
+void GameplayPhase::GameplayUpdate(const float dt) { mCurrMeasure += dt; }
 
-void GameplayPhase::EndTransitionUpdate(const float dt)
-{
-}
+void GameplayPhase::EndTransitionUpdate(const float dt) {}
 
 void GameplayPhase::SetupMeasureController()
 {
+    AudioMgr->StopTimerQueue();
     mBPMIncrement = 60.0f / mSongInfo->mBPMs[0];
-    mCurrMeasure = 0.0f;
-    mNextMeasure = mBPMIncrement;
 
-    for (u32 i = 1; i <= 400; i++)
-        AudioMgr->QueueSound(AudioMgr->GetBeatTick()->get(), mBPMIncrement * i);
-}
+    f32 positiveOffset = mSongInfo->mOffset;
+    while (positiveOffset < 0)
+        positiveOffset += mBPMIncrement;
 
-void GameplayPhase::HandleStartingBeats()
-{
-    if (mCurrMeasure >= mNextMeasure)
-    {
-        mNextMeasure += mBPMIncrement;
+    PrintDebug("Song offset {}", mSongInfo->mOffset);
 
-        mBeatStartCount--;
-        if (mBeatStartCount == -1)
-        {
-            f32 positiveVal = mSongInfo->mOffset;
-            while (positiveVal < 0)
-                positiveVal += mBPMIncrement;
-            gGameVariables.mSelectedSong->Play(0.0f);
-            std::cout << mSongInfo->mOffset << std::endl;
-        }
-    }
+    constexpr u32 initialBeats = 4;
+    for (u32 i = 0; i < initialBeats; i++)
+        AudioMgr->QueueAudioAfter(*AudioMgr->GetNoteTick(), mBPMIncrement * i - mSongInfo->mOffset + positiveOffset);
+
+    AudioMgr->QueueAudioAfter(*gGameVariables.mSelectedSong->GetSong(), mBPMIncrement * initialBeats + positiveOffset);
+
+    // mBPMIncrement * i - mSongInfo->mOffset  >= 0
+    //               v  v  v
+    // i >= mSongInfo->mOffset / mBPMIncrement
+
+    // @TODO: CHANGE MAGIC NUMBER TO SOME LOGIC
+    for (u32 i = std::max(0.0f, std::ceil(mSongInfo->mOffset / mBPMIncrement)); i <= 400; i++)
+        AudioMgr->QueueSoundAtTimestamp(*AudioMgr->GetBeatTick(), mBPMIncrement * i - mSongInfo->mOffset);
+
+    AudioMgr->ResumeTimerQueue();
 }
