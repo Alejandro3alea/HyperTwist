@@ -15,6 +15,7 @@ void DevMenuNode::InitializeRenderables(int32_t yPos = 330)
     {
         std::shared_ptr<FontRenderer> currRenderable = std::make_shared<FontRenderer>(it->GetName());
         currRenderable->transform.pos.y = yPos;
+        currRenderable->transform.pos.z = 5.0f;
         currRenderable->transform.scale = glm::vec3(0.75f, 0.75f, 1.0f);
         mItemRenderables.push_back(currRenderable);
         yPos -= 75;
@@ -171,6 +172,7 @@ DevMenuGameSettings::UpdateSongVersions::UpdateSongVersions(DevMenuNode* parentN
 {
     const auto& renderable = std::make_shared<FontRenderer>("Songs updated.");
     renderable->mColor = glm::vec4(0.25f, 1.0f, 0.3f, 1.0f);
+    renderable->transform.pos.z = 5.0f;
     AddRenderable(renderable);
     AddItem(std::make_shared<DevMenuReturnToParent>(parentNode));
     InitializeRenderables(-450);

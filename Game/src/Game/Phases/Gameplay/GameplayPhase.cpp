@@ -3,18 +3,27 @@
 #include "Game/Account.h"
 #include "Game/GameVariables.h"
 #include "Graphics/GfxMgr.h"
+#include "Utils/GameUtils.h"
 
 #include <algorithm>
+#include <vector>
 
 void GameplayPhase::OnEnter()
 {
+    PrintDebug("Player 1: Playing [{}]: {}",
+               GameUtils::ChartDifficultyToStr(gGameVariables.mSelectedCharts[PLAYER_1_IDX]->mDifficultyCategory),
+               gGameVariables.mSelectedCharts[PLAYER_1_IDX]->mDifficultyVal);
+    PrintDebug("Player 2: Playing [{}]: {}",
+               GameUtils::ChartDifficultyToStr(gGameVariables.mSelectedCharts[PLAYER_2_IDX]->mDifficultyCategory),
+               gGameVariables.mSelectedCharts[PLAYER_2_IDX]->mDifficultyVal);
+
     for (u8 i = 0; i < mNoteRenderers.size(); i++)
     {
         if (AccountMgr->IsPlayerSlotOccupied(i))
         {
-            mNoteRenderers[i] = std::make_shared<NoteRenderer>(gGameVariables.mSelectedCharts[i].get());
-            mHoldRenderers[i] = std::make_shared<HoldNoteBodyRenderer>(gGameVariables.mSelectedCharts[i].get());
-            mMineRenderers[i] = std::make_shared<MineRenderer>(gGameVariables.mSelectedCharts[i].get());
+            mNoteRenderers[i] = std::make_shared<NoteRenderer>(gGameVariables.mSelectedCharts[i]);
+            mHoldRenderers[i] = std::make_shared<HoldNoteBodyRenderer>(gGameVariables.mSelectedCharts[i]);
+            mMineRenderers[i] = std::make_shared<MineRenderer>(gGameVariables.mSelectedCharts[i]);
 
             mNoteRenderers[i]->mbIsVisible = true;
             mHoldRenderers[i]->mbIsVisible = true;
@@ -24,7 +33,8 @@ void GameplayPhase::OnEnter()
 
     mSongInfo = &gGameVariables.mSelectedSong->mSongInfo;
     gGameVariables.mSelectedSong->GetSong()->get()->Stop();
-    // GfxMgr->SetBackgroundTexture(gGameVariables.mSelectedSong->GetBackground());
+    GfxMgr->SetBackgroundTexture(gGameVariables.mSelectedSong->GetBackground());
+    GfxMgr->ShowBackground();
     mStartTransitionTimer = 1.0f;
     mBeatStartCount = 4;
 }
@@ -92,6 +102,8 @@ void GameplayPhase::SetupMeasureController()
 
     PrintDebug("Song offset {}", mSongInfo->mOffset);
 
+    // @TODO: ADD MINIMUM NEGATIVE OFFSET (Test: Antagonism)
+    // @TODO: ADD TESTS?
     constexpr u32 initialBeats = 4;
     for (u32 i = 0; i < initialBeats; i++)
         AudioMgr->QueueAudioAfter(*AudioMgr->GetNoteTick(), mBPMIncrement * i - mSongInfo->mOffset + positiveOffset);
@@ -105,6 +117,12 @@ void GameplayPhase::SetupMeasureController()
     // @TODO: CHANGE MAGIC NUMBER TO SOME LOGIC
     for (u32 i = std::max(0.0f, std::ceil(mSongInfo->mOffset / mBPMIncrement)); i <= 400; i++)
         AudioMgr->QueueSoundAtTimestamp(*AudioMgr->GetBeatTick(), mBPMIncrement * i - mSongInfo->mOffset);
+
+    const std::vector<float> noteTimestamps = gGameVariables.mSelectedSong->GetNoteTimestamps(
+        gGameVariables.mSelectedCharts[PLAYER_1_IDX]->mDifficultyCategory);
+
+    for (const float noteTimestamp : noteTimestamps)
+        AudioMgr->QueueSoundAtTimestamp(*AudioMgr->GetNoteTick(), noteTimestamp);
 
     AudioMgr->ResumeTimerQueue();
 }

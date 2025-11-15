@@ -1,13 +1,13 @@
 #pragma once
-#include "Misc/Singleton.h"
 #include "Misc/DataTypes.h"
+#include "Misc/Singleton.h"
 
-#include <string>
-#include <memory>
 #include <array>
+#include <memory>
+#include <string>
 
-#define ACCOUNTS_PLAYER_1 0
-#define ACCOUNTS_PLAYER_2 1
+#define PLAYER_1_IDX 0
+#define PLAYER_2_IDX 1
 #define MAX_PLAYER_COUNT 2
 
 #define ACCOUNTS_NFC_NULL "0000-0000-0000-0000"
@@ -19,32 +19,32 @@
 
 struct Account
 {
-	Account(const std::string& nfcID) : mNfcID(nfcID) {}
+    Account(const std::string& nfcID) : mNfcID(nfcID) {}
 
-	std::string mNfcID;
-	std::string mName;
-	u16 mIconID;
+    std::string mNfcID;
+    std::string mName;
+    u16 mIconID;
 };
 
 class AccountManager
 {
-	Singleton(AccountManager);
+    Singleton(AccountManager);
 
-	void LoadAccountIfFree(const u32 playerIdx, const std::string& nfcID);
+    void LoadAccountIfFree(const u32 playerIdx, const std::string& nfcID);
 
-	std::array<bool, MAX_PLAYER_COUNT> GetOccupiedSlots();
-	bool IsPlayerSlotFree(const u32 playerIdx);
-	bool IsPlayerSlotOccupied(const u32 playerIdx);
+    std::array<bool, MAX_PLAYER_COUNT> GetOccupiedSlots();
+    bool IsPlayerSlotFree(const u32 playerIdx);
+    bool IsPlayerSlotOccupied(const u32 playerIdx);
 
-	bool AreAllPlayerSlotsFree();
-	bool AreAllPlayerSlotsOccupied();
+    bool AreAllPlayerSlotsFree();
+    bool AreAllPlayerSlotsOccupied();
 
-	bool IsAnyPlayerSlotOccupied();
+    bool IsAnyPlayerSlotOccupied();
 
-	void UnloadAccount(const u32 playerIdx);
+    void UnloadAccount(const u32 playerIdx);
 
-public:
-	std::array<std::shared_ptr<Account>, MAX_PLAYER_COUNT> mPlayers;
+  public:
+    std::array<std::shared_ptr<Account>, MAX_PLAYER_COUNT> mPlayers;
 };
 
 #define AccountMgr AccountManager::Instance()

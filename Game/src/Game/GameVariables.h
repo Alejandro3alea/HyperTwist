@@ -1,12 +1,12 @@
 #pragma once
-#include "Misc/DataTypes.h"
-#include "Game/Song.h"
 #include "Account.h"
+#include "Game/Song.h"
+#include "Misc/DataTypes.h"
 
 struct GameVariables
 {
-    std::shared_ptr<Song> mSelectedSong;
-    std::array<std::shared_ptr<Chart>, MAX_PLAYER_COUNT> mSelectedCharts;
+    Song* mSelectedSong;
+    std::array<Chart*, MAX_PLAYER_COUNT> mSelectedCharts;
 };
 
 extern GameVariables gGameVariables;

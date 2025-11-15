@@ -35,6 +35,9 @@ class GraphicsManager
     Shader* GetBGShader() { return mBGShader->get(); }
     Shader* GetLineShader() { return mLineShader->get(); }
 
+    void ShowBackground();
+    void HideBackground();
+
     void SetBackgroundTexture(Resource<Texture>* tex);
     void SetBackgroundShader(Resource<Shader>* shader);
     Resource<Texture>* GetBackgroundTexture();

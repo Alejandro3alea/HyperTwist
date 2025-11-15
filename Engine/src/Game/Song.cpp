@@ -187,6 +187,7 @@ Resource<Texture>* Song::GetCDTitle()
 void Song::ProcessSMSong(std::istringstream& file)
 {
     mFileType = FileType::SM;
+    std::streampos lastPos = file.tellg();
 
     std::string line;
     while (std::getline(file, line))
@@ -299,10 +300,15 @@ void Song::ProcessSMSong(std::istringstream& file)
             }
             else if (key == "#NOTES")
             {
+                file.clear();
+                file.seekg(lastPos);
+
                 if (Chart* newChart = ProcessSMChart(file))
                     mCharts[newChart->mDifficultyCategory] = newChart;
             }
         }
+
+        lastPos = file.tellg();
     }
 }
 
@@ -654,27 +660,31 @@ Chart* Song::ProcessSMChart(std::istringstream& file)
     auto charEraseLambda = [charCheckLambda](std::string& str)
     { str.erase(std::remove_if(str.begin(), str.end(), charCheckLambda), str.end()); };
 
+    std::string notesLabel;
+    std::getline(file, notesLabel, ':');
+
     std::string danceCategory;
-    std::getline(file, danceCategory);
+    std::getline(file, danceCategory, ':');
     charEraseLambda(danceCategory);
     // @TODO: Double charts.
     if (danceCategory == "dance-double")
         return nullptr;
 
     std::string stepArtist;
-    std::getline(file, stepArtist);
+    std::getline(file, stepArtist, ':');
     charEraseLambda(stepArtist);
     std::string difficulty;
-    std::getline(file, difficulty);
+    std::getline(file, difficulty, ':');
     charEraseLambda(difficulty);
     std::string difficultyVal;
-    std::getline(file, difficultyVal);
+    std::getline(file, difficultyVal, ':');
     charEraseLambda(difficultyVal);
     std::string somethingVal;
-    std::getline(file, somethingVal);
+    std::getline(file, somethingVal, ':');
 
     Chart* currChart = new Chart(stepArtist, difficulty, std::atoi(difficultyVal.c_str()));
     currChart->ProcessNotes(file);
+    currChart->ProcessTimestamps(mSongInfo.mBPMs, mSongInfo.mStops, mSongInfo.mOffset);
     return currChart;
 }
 
@@ -723,6 +733,7 @@ Chart* Song::ProcessSSCChart(std::istringstream& file)
 
                 mChartDifficulties[currChart->mDifficultyCategory] = currChart->mDifficultyVal;
                 currChart->ProcessNotes(file);
+                currChart->ProcessTimestamps(mSongInfo.mBPMs, mSongInfo.mStops, mSongInfo.mOffset);
                 return currChart;
             }
         }
@@ -1143,6 +1154,7 @@ Chart* Song::ProcessSCDChart(std::istringstream& file)
             else if (key == "#NOTES")
             {
                 currChart->ProcessNotes(file);
+                currChart->ProcessTimestamps(mSongInfo.mBPMs, mSongInfo.mStops, mSongInfo.mOffset);
                 return currChart;
             }
         }
@@ -1441,15 +1453,15 @@ void Song::SaveToSCD(const std::string& outPath)
     {
         Chart* chartData = chart.second;
         file << "//--------------- dance-single - " << chartData->mStepArtist << " ----------------" << std::endl;
-        file << "#NEWCHART:" << "" << ";" << std::endl;              // TODO
-        file << "#STEPSTYPE:" << "dance-single" << ";" << std::endl; // TODO
+        file << "#NEWCHART:" << "" << ";" << std::endl;              // @TODO
+        file << "#STEPSTYPE:" << "dance-single" << ";" << std::endl; // @TODO
         file << "#AUTHOR:" << chartData->mStepArtist << ";" << std::endl;
 
         file << "#DIFFICULTY:";
         file << GameUtils::ChartDifficultyToStr(chartData->mDifficultyCategory) << ";" << std::endl;
 
         file << "#METER:" << chartData->mDifficultyVal << ";" << std::endl;
-        file << "#RADARVALUES:" << "0,0,0,0,0" << ";" << std::endl; // TODO
+        file << "#RADARVALUES:" << "0,0,0,0,0" << ";" << std::endl; // @TODO
 
         file << "#NOTES:" << std::endl;
         chartData->SaveNotes(file);
@@ -1492,4 +1504,37 @@ void Song::LoadChartsSCD()
     RemoveContents(fileContents);
     std::istringstream cleanContents(fileContents);
     ProcessSCD(cleanContents);
+}
+
+std::vector<float> Song::GetBeatTimestamps()
+{
+    std::vector<float> result;
+
+    return result;
+}
+
+std::vector<float> Song::GetNoteTimestamps(const ChartDifficulty& diff)
+{
+    if (!mCharts.contains(diff))
+        return std::vector<float>();
+
+    std::vector<float> result;
+
+    auto notes = mCharts[diff]->mNotes;
+    for (auto& note : notes)
+    {
+        result.push_back(note->mTimestampSeconds);
+    }
+
+    return result;
+}
+
+std::vector<NoteCue> Song::GetNoteCues(const ChartDifficulty& diff)
+{
+    if (!mCharts.contains(diff))
+        return std::vector<NoteCue>();
+
+    std::vector<NoteCue> result;
+
+    return result;
 }

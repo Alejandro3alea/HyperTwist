@@ -1,48 +1,47 @@
 #pragma once
 #include "Note.h"
+#include "SongInfo.h"
 
-#include <string>
 #include <set>
+#include <string>
 
-struct NoteCompare 
+struct NoteCompare
 {
-	bool operator()(const Note* a, const Note* b) const 
-	{
-		return *a < *b;
-	}
+    bool operator()(const Note* a, const Note* b) const { return *a < *b; }
 };
 
 enum ChartDifficulty
 {
-	Beginner,
-	Easy,
-	Medium,
-	Hard,
-	Challenge,
-	Special,
-	None
+    Beginner,
+    Easy,
+    Medium,
+    Hard,
+    Challenge,
+    Special,
+    None
 };
 
 struct Chart
 {
-	Chart();
-	Chart(const std::string& stepArtist, const std::string& difficulty, const unsigned difficultyVal);
+    Chart();
+    Chart(const std::string& stepArtist, const std::string& difficulty, const unsigned difficultyVal);
 
-	~Chart();
-	
-	void ProcessNotes(std::istringstream& file);
-	void SaveNotes(std::ofstream& file);
+    ~Chart();
 
-	std::multiset<Note*, NoteCompare> GetAllNormalNotes();
-	std::vector<std::vector<Note*>> GetAllJumps();
-	std::multiset<HoldNote*, NoteCompare> GetAllHoldNotes();
-	std::multiset<RollNote*, NoteCompare> GetAllRollNotes();
-	std::multiset<MineNote*, NoteCompare> GetAllMineNotes();
+    void ProcessNotes(std::istringstream& file);
+    void ProcessTimestamps(const MeasureMap<f32>& bpms, const MeasureMap<f32>& stops, const f32 offset);
+    void SaveNotes(std::ofstream& file);
 
-public:
-	ChartDifficulty mDifficultyCategory;
-	int mDifficultyVal = 1;
-	std::string mStepArtist;
+    std::multiset<Note*, NoteCompare> GetAllNormalNotes();
+    std::vector<std::vector<Note*>> GetAllJumps();
+    std::multiset<HoldNote*, NoteCompare> GetAllHoldNotes();
+    std::multiset<RollNote*, NoteCompare> GetAllRollNotes();
+    std::multiset<MineNote*, NoteCompare> GetAllMineNotes();
 
-	std::multiset<Note*, NoteCompare> mNotes;
+  public:
+    ChartDifficulty mDifficultyCategory;
+    int mDifficultyVal = 1;
+    std::string mStepArtist;
+
+    std::multiset<Note*, NoteCompare> mNotes;
 };

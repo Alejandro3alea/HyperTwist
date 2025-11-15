@@ -346,7 +346,7 @@ void NoteRenderer::UpdateParams()
             continue;
         }
 
-        const float pos = note->mPos;
+        const float pos = note->mMeasurePos;
         const float decimalPart = pos - static_cast<int>(pos);
         unsigned currbeatUVOffset;
         for (unsigned idx = 0; idx < 8; idx++)
@@ -474,8 +474,8 @@ void HoldNoteBodyRenderer::UpdateParams()
         HoldNote* currNote = *it;
         const bool isARollNote = dynamic_cast<RollNote*>(currNote) != nullptr;
 
-        const float middlePos = (currNote->mPos + currNote->mEnd) / 2.0f;
-        const float size = currNote->mEnd - currNote->mPos;
+        const float middlePos = (currNote->mMeasurePos + currNote->mEnd) / 2.0f;
+        const float size = currNote->mEnd - currNote->mMeasurePos;
 
         unsigned floatIdx = i * 4;
         mFloatParams[floatIdx] = static_cast<float>(isARollNote);
@@ -579,7 +579,7 @@ void MineRenderer::UpdateParams()
         unsigned floatIdx = i * 3;
         Note* note = *it;
 
-        mFloatParams[floatIdx] = glm::vec2(note->mDir, note->mPos);
+        mFloatParams[floatIdx] = glm::vec2(note->mDir, note->mMeasurePos);
         mFloatParams[floatIdx + 1] = SetTextureScale(64, 64);
         mFloatParams[floatIdx + 2] = SetTextureOffset(192, 0);
 

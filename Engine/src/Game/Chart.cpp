@@ -2,24 +2,21 @@
 #include "Math/MathUtils.h"
 #include "Utils/GameUtils.h"
 
-#include <sstream>
-#include <fstream>
-#include <array>
-#include <numeric>
 #include <algorithm>
+#include <array>
+#include <fstream>
+#include <numeric>
+#include <sstream>
 
-Chart::Chart() : mStepArtist(""), mDifficultyCategory(ChartDifficulty::Beginner), mDifficultyVal(0) 
+Chart::Chart() : mStepArtist(""), mDifficultyCategory(ChartDifficulty::Beginner), mDifficultyVal(0) {}
+
+Chart::Chart(const std::string& stepArtist, const std::string& difficulty, const unsigned difficultyVal)
+    : mStepArtist(stepArtist), mDifficultyCategory(GameUtils::StrToChartDifficulty(difficulty)),
+      mDifficultyVal(difficultyVal)
 {
 }
 
-Chart::Chart(const std::string& stepArtist, const std::string& difficulty, const unsigned difficultyVal) :
-    mStepArtist(stepArtist), mDifficultyCategory(GameUtils::StrToChartDifficulty(difficulty)), mDifficultyVal(difficultyVal)
-{
-}
-
-Chart::~Chart()
-{
-}
+Chart::~Chart() {}
 
 void Chart::ProcessNotes(std::istringstream& file)
 {
@@ -27,8 +24,8 @@ void Chart::ProcessNotes(std::istringstream& file)
     float lineCount = 0.0f;
     std::string line;
     std::vector<Note*> currNotes;
-    std::array<HoldNote*, 4> pressingHolds = { nullptr, nullptr, nullptr, nullptr };
-    std::array<float, 4> pressingHoldsMeasures = { 0.0f, 0.0f, 0.0f, 0.0f };
+    std::array<HoldNote*, 4> pressingHolds = {nullptr, nullptr, nullptr, nullptr};
+    std::array<float, 4> pressingHoldsMeasures = {0.0f, 0.0f, 0.0f, 0.0f};
 
     while (std::getline(file, line))
     {
@@ -42,13 +39,14 @@ void Chart::ProcessNotes(std::istringstream& file)
                 if (!it)
                     continue;
 
-                if (HoldNote* hold = dynamic_cast<HoldNote*>(it))
+                if (it->IsHoldNote())
                 {
-                    hold->SetPos(hold->mPos * 4.0f / lineCount + pressingHoldsMeasures[hold->mDir]);
+                    HoldNote* hold = dynamic_cast<HoldNote*>(it);
+                    hold->SetPos(hold->mMeasurePos * 4.0f / lineCount + pressingHoldsMeasures[hold->mDir]);
                     hold->SetEnd(hold->mEnd * 4.0f / lineCount + totalMeasures);
                 }
-                else 
-                    it->SetPos(it->mPos * 4.0f / lineCount + totalMeasures);
+                else
+                    it->SetPos(it->mMeasurePos * 4.0f / lineCount + totalMeasures);
 
                 mNotes.insert(it);
             }
@@ -108,14 +106,75 @@ void Chart::ProcessNotes(std::istringstream& file)
     }
 }
 
-int GetMultipleOfBiggetsPrimeNumbers(const std::vector<int>& nums) 
+void Chart::ProcessTimestamps(const MeasureMap<f32>& bpms, const MeasureMap<f32>& stops, const f32 offset)
+{
+    struct ChartEvent
+    {
+        enum class Type
+        {
+            BPM,
+            STOP,
+            NOTE
+        };
+
+        ChartEvent(Note* n) : note(n), type(Type::NOTE) {}
+        ChartEvent(Type t, f32 val) : value(val), type(t) {}
+
+        f32 value; // bpm for BPM, seconds for STOP
+        Note* note = nullptr;
+
+        Type type;
+    };
+
+    std::multimap<f32, ChartEvent> events;
+    for (auto& n : mNotes)
+    {
+        events.emplace(n->mMeasurePos, ChartEvent(n));
+    }
+    for (auto& [measure, bpm] : bpms)
+    {
+        events.emplace(measure, ChartEvent(ChartEvent::Type::BPM, bpm));
+    }
+    for (auto& [measure, time] : stops)
+    {
+        events.emplace(measure, ChartEvent(ChartEvent::Type::STOP, time));
+    }
+
+    float currTimestamp = -offset;
+    float lastMeasure = 0.0f;
+    float currentBPM = bpms.begin()->second;
+
+    for (const auto& [measure, e] : events)
+    {
+        float deltaM = measure - lastMeasure;
+        currTimestamp += deltaM * (60.0f / currentBPM);
+        lastMeasure = measure;
+
+        switch (e.type)
+        {
+        case ChartEvent::Type::BPM:
+            currentBPM = e.value;
+            break;
+
+        case ChartEvent::Type::STOP:
+            currTimestamp += e.value;
+            break;
+
+        case ChartEvent::Type::NOTE:
+            e.note->mTimestampSeconds = currTimestamp;
+            break;
+        }
+    }
+}
+
+int GetMultipleOfBiggetsPrimeNumbers(const std::vector<int>& nums)
 {
     std::map<int, int> maxFactors;
 
-    for (int num : nums) 
+    for (int num : nums)
     {
         auto factors = Math::GetPrimeFactors(num);
-        for (const auto& [factor, count] : factors) 
+        for (const auto& [factor, count] : factors)
         {
             maxFactors[factor] = std::max(maxFactors[factor], count);
         }
@@ -129,15 +188,15 @@ int GetMultipleOfBiggetsPrimeNumbers(const std::vector<int>& nums)
 
 char GetNoteTypeChar(Note* note)
 {
-    if (dynamic_cast<MineNote*>(note) != nullptr)
+    if (note->mType == Note::Type::MINE)
         return 'M';
-    else if (dynamic_cast<FakeNote*>(note) != nullptr)
+    else if (note->mType == Note::Type::FAKE)
         return 'F';
-    else if (dynamic_cast<LiftNote*>(note) != nullptr)
+    else if (note->mType == Note::Type::LIFT)
         return 'L';
-    else if (dynamic_cast<RollNote*>(note) != nullptr)
+    else if (note->mType == Note::Type::ROLL)
         return '4';
-    else if (dynamic_cast<HoldNote*>(note) != nullptr)
+    else if (note->mType == Note::Type::HOLD)
         return '2';
     else
         return '1';
@@ -201,15 +260,15 @@ void Chart::SaveNotes(std::ofstream& file)
             for (auto currHold : holdEndsToAdd)
             {
                 int rowIdx = static_cast<int>((currHold.first - currMinPos) * multipleNum);
-                
-                // TODO: Fix this issue/reformat how this is done
+
+                // @TODO: Fix this issue/reformat how this is done
                 if (rowIdx >= 0)
                     measureStr[rowIdx][currHold.second] = '3';
             }
 
             for (auto currNote : noteList)
             {
-                int rowIdx = static_cast<int>((currNote->mPos - currMinPos) * multipleNum);
+                int rowIdx = static_cast<int>((currNote->mMeasurePos - currMinPos) * multipleNum);
                 measureStr[rowIdx][currNote->mDir] = GetNoteTypeChar(currNote);
             }
             for (unsigned i = 0; i < rowCount; i++)
@@ -227,17 +286,17 @@ void Chart::SaveNotes(std::ofstream& file)
 
     for (auto it : mNotes)
     {
-        checkIfPrint(it->mPos);
+        checkIfPrint(it->mMeasurePos);
 
-        if (HoldNote* holdNote = dynamic_cast<HoldNote*>(it))
-            holdInfo.push_back({ holdNote->mEnd, holdNote->mDir });
+        if (it->IsHoldNote())
+            holdInfo.push_back({dynamic_cast<HoldNote*>(it)->mEnd, it->mDir});
 
-        timingsList.push_back(getTimingFromPos(it->mPos));
+        timingsList.push_back(getTimingFromPos(it->mMeasurePos));
         noteList.push_back(it);
     }
 
     while (!noteList.empty())
-        checkIfPrint(noteList[0]->mPos + 4.0f);
+        checkIfPrint(noteList[0]->mMeasurePos + 4.0f);
 
     while (!holdInfo.empty())
         checkIfPrint(holdInfo[0].first + 4.0f);
@@ -251,7 +310,7 @@ std::multiset<Note*, NoteCompare> Chart::GetAllNormalNotes()
     for (auto it = mNotes.begin(); it != mNotes.end(); ++it)
     {
         Note* currNote = *it;
-        if (dynamic_cast<MineNote*>(currNote) == nullptr)
+        if (currNote->mType != Note::Type::MINE)
             normalNotes.insert(currNote);
     }
 
@@ -266,9 +325,9 @@ std::vector<std::vector<Note*>> Chart::GetAllJumps()
     for (auto it = mNotes.begin(); it != mNotes.end(); ++it)
     {
         Note* currNote = *it;
-        if (prevNote && prevNote->mPos == currNote->mPos)
+        if (prevNote && prevNote->mMeasurePos == currNote->mMeasurePos)
         {
-            if (dynamic_cast<MineNote*>(prevNote) || dynamic_cast<MineNote*>(currNote))
+            if (prevNote->mType == Note::Type::MINE || currNote->mType == Note::Type::MINE)
                 continue;
 
             if (currJump.empty())
@@ -276,7 +335,7 @@ std::vector<std::vector<Note*>> Chart::GetAllJumps()
 
             currJump.push_back(currNote);
         }
-        else 
+        else
         {
             if (currJump.size() >= 2)
                 jumpsList.push_back(currJump);
@@ -299,8 +358,8 @@ std::multiset<HoldNote*, NoteCompare> Chart::GetAllHoldNotes()
     for (auto it = mNotes.begin(); it != mNotes.end(); ++it)
     {
         Note* currNote = *it;
-        if (HoldNote* holdNote = dynamic_cast<HoldNote*>(currNote))
-            holdNotes.insert(holdNote);
+        if (currNote->mType == Note::Type::HOLD)
+            holdNotes.insert(dynamic_cast<HoldNote*>(currNote));
     }
 
     return holdNotes;
@@ -312,8 +371,8 @@ std::multiset<RollNote*, NoteCompare> Chart::GetAllRollNotes()
     for (auto it = mNotes.begin(); it != mNotes.end(); ++it)
     {
         Note* currNote = *it;
-        if (RollNote* rollNote = dynamic_cast<RollNote*>(currNote))
-            rollNotes.insert(rollNote);
+        if (currNote->mType == Note::Type::ROLL)
+            rollNotes.insert(dynamic_cast<RollNote*>(currNote));
     }
 
     return rollNotes;
@@ -325,8 +384,8 @@ std::multiset<MineNote*, NoteCompare> Chart::GetAllMineNotes()
     for (auto it = mNotes.begin(); it != mNotes.end(); ++it)
     {
         Note* currNote = *it;
-        if (MineNote* mineNote = dynamic_cast<MineNote*>(currNote))
-            mineNotes.insert(mineNote);
+        if (currNote->mType == Note::Type::MINE)
+            mineNotes.insert(dynamic_cast<MineNote*>(currNote));
     }
 
     return mineNotes;

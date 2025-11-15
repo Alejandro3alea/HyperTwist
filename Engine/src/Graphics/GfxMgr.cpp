@@ -67,6 +67,10 @@ void GraphicsManager::Render()
 
 void GraphicsManager::Shutdown() { glDeleteVertexArrays(1, &mQuad); }
 
+void GraphicsManager::ShowBackground() { mBackground->mbIsVisible = true; }
+
+void GraphicsManager::HideBackground() { mBackground->mbIsVisible = false; }
+
 void GraphicsManager::SetBackgroundTexture(Resource<Texture>* tex) { mBackground->mTexture = tex; }
 
 void GraphicsManager::SetBackgroundShader(Resource<Shader>* shader) { mBackground->mShader = shader; }
@@ -114,7 +118,8 @@ GLuint GraphicsManager::CreateQuadModel() const
 
 void GraphicsManager::CleanupRenderables()
 {
-    Renderable* bgRenderable = mRenderComps[0];
+    constexpr size_t bgRenderableIdx = 0;
+    Renderable* bgRenderable = mRenderComps[bgRenderableIdx];
     Resource<Texture>* bgTexture = bgRenderable->mTexture;
     bool bgIsVisible = bgRenderable->mbIsVisible;
 

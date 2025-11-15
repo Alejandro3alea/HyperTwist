@@ -27,8 +27,8 @@ void SongSelectPhase::OnEnter()
     mSongDisplay.mOnSongUnfocus.Add([this](Song* song) { UnfocusSong(song); });
     mSongDisplay.mOnSongSelect.Add([this](Song* song) { SelectSong(song); });
 
-    mSelectorIndices[ACCOUNTS_PLAYER_1] = -1;
-    mSelectorIndices[ACCOUNTS_PLAYER_2] = -1;
+    mSelectorIndices[PLAYER_1_IDX] = -1;
+    mSelectorIndices[PLAYER_2_IDX] = -1;
 }
 
 void SongSelectPhase::OnTick(const float dt)
@@ -119,11 +119,10 @@ void SongSelectPhase::TransitionToEndTransition()
         return nullptr;
     };
 
-    gGameVariables.mSelectedSong = std::shared_ptr<Song>(mCurrSong);
+    gGameVariables.mSelectedSong = mCurrSong;
     for (u8 i = 0; i < mSelectorIndices.size(); i++)
-        if (mSelectorIndices[i] < 0)
-            gGameVariables.mSelectedCharts[i] =
-                std::shared_ptr<Chart>(getChart(mSelectorIndices[i], mCurrSong->mCharts));
+        if (mSelectorIndices[i] >= 0)
+            gGameVariables.mSelectedCharts[i] = getChart(mSelectorIndices[i], mCurrSong->mCharts);
 
     PhaseMgr->ChangeToScene("Gameplay");
 }
@@ -178,16 +177,16 @@ void SongSelectPhase::UpdateSongSelect(const float dt)
     }
 
     if (InputMgr->isKeyPressed(SDL_SCANCODE_Z) && mCurrSong != nullptr)
-        mSelectorIndices[ACCOUNTS_PLAYER_1]--;
+        mSelectorIndices[PLAYER_1_IDX]--;
 
     if (InputMgr->isKeyPressed(SDL_SCANCODE_X) && mCurrSong != nullptr)
-        mSelectorIndices[ACCOUNTS_PLAYER_1]++;
+        mSelectorIndices[PLAYER_1_IDX]++;
 
     if (InputMgr->isKeyPressed(SDL_SCANCODE_N) && mCurrSong != nullptr)
-        mSelectorIndices[ACCOUNTS_PLAYER_2]--;
+        mSelectorIndices[PLAYER_2_IDX]--;
 
     if (InputMgr->isKeyPressed(SDL_SCANCODE_M) && mCurrSong != nullptr)
-        mSelectorIndices[ACCOUNTS_PLAYER_2]++;
+        mSelectorIndices[PLAYER_2_IDX]++;
 
     if (InputMgr->isKeyPressed(SDL_SCANCODE_RETURN))
     {
@@ -200,10 +199,10 @@ void SongSelectPhase::UpdateSongSelect(const float dt)
 
     if (mCurrSong != nullptr)
     {
-        mSelectorIndices[ACCOUNTS_PLAYER_1] = std::clamp(mSelectorIndices[ACCOUNTS_PLAYER_1], static_cast<int8_t>(0),
-                                                         static_cast<int8_t>(mCurrSong->mChartDifficulties.size() - 1));
-        mSelectorIndices[ACCOUNTS_PLAYER_2] = std::clamp(mSelectorIndices[ACCOUNTS_PLAYER_2], static_cast<int8_t>(0),
-                                                         static_cast<int8_t>(mCurrSong->mChartDifficulties.size() - 1));
+        mSelectorIndices[PLAYER_1_IDX] = std::clamp(mSelectorIndices[PLAYER_1_IDX], static_cast<int8_t>(0),
+                                                    static_cast<int8_t>(mCurrSong->mChartDifficulties.size() - 1));
+        mSelectorIndices[PLAYER_2_IDX] = std::clamp(mSelectorIndices[PLAYER_2_IDX], static_cast<int8_t>(0),
+                                                    static_cast<int8_t>(mCurrSong->mChartDifficulties.size() - 1));
     }
     mSongSelectRenderables->UpdateSelectorPositions(mSelectorIndices);
 }
@@ -212,24 +211,24 @@ void SongSelectPhase::UpdateDifficultySelect(const float dt)
 {
     if (InputMgr->isKeyPressed(SDL_SCANCODE_Z))
     {
-        if (mSelectorIndices[ACCOUNTS_PLAYER_1] > 0)
-            mSelectorIndices[ACCOUNTS_PLAYER_1]--;
+        if (mSelectorIndices[PLAYER_1_IDX] > 0)
+            mSelectorIndices[PLAYER_1_IDX]--;
     }
     if (InputMgr->isKeyPressed(SDL_SCANCODE_X))
     {
-        if (mSelectorIndices[ACCOUNTS_PLAYER_1] < mCurrSong->mChartDifficulties.size() - 1)
-            mSelectorIndices[ACCOUNTS_PLAYER_1]++;
+        if (mSelectorIndices[PLAYER_1_IDX] < mCurrSong->mChartDifficulties.size() - 1)
+            mSelectorIndices[PLAYER_1_IDX]++;
     }
 
     if (InputMgr->isKeyPressed(SDL_SCANCODE_N))
     {
-        if (mSelectorIndices[ACCOUNTS_PLAYER_2] > 0)
-            mSelectorIndices[ACCOUNTS_PLAYER_2]--;
+        if (mSelectorIndices[PLAYER_2_IDX] > 0)
+            mSelectorIndices[PLAYER_2_IDX]--;
     }
     if (InputMgr->isKeyPressed(SDL_SCANCODE_M))
     {
-        if (mSelectorIndices[ACCOUNTS_PLAYER_2] < mCurrSong->mChartDifficulties.size() - 1)
-            mSelectorIndices[ACCOUNTS_PLAYER_2]++;
+        if (mSelectorIndices[PLAYER_2_IDX] < mCurrSong->mChartDifficulties.size() - 1)
+            mSelectorIndices[PLAYER_2_IDX]++;
     }
     mDifficultySelectRenderables->UpdateChartPositions(mSelectorIndices);
 
