@@ -15,6 +15,8 @@ class AudioManager
 {
     Singleton(AudioManager);
 
+    friend struct Audio;
+
   public:
     void Initialize(int sampleRate = 48000, int channels = 2);
     void Shutdown();
@@ -25,6 +27,8 @@ class AudioManager
     Resource<Audio>* GetBeatTick() { return mBeatTick; }
     Resource<Audio>* GetNoteTick() { return mNoteTick; }
 
+    bool IsMusicPlaying() { return mIsBgmPlaying; }
+
     f32 GetMusicTime();
     void QueueAudioAfter(const Resource<Audio>& audio, const f32 seconds);
     void QueueSoundAtTimestamp(const Resource<Audio>& sfx, const f32 bgm_timestamp_seconds);
@@ -32,16 +36,18 @@ class AudioManager
     void StopTimerQueue();
     void ResumeTimerQueue();
 
-    void SetupMusicStart();
-    void SetupMusicStop();
-
   private:
     void AudioCueMusicLoop();
     void AudioCueTimerLoop();
 
+    void SetupMusicStart();
+    void SetupMusicStop();
+
   private:
     Resource<Audio>* mBeatTick;
     Resource<Audio>* mNoteTick;
+
+    bool mIsBgmPlaying = false;
 
     // Sounds in sync with the music
     std::priority_queue<AudioCue, std::vector<AudioCue>, AudioCueCompare> mSongSyncCues;

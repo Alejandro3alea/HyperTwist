@@ -42,9 +42,6 @@ struct GameplayPhase : public Phase
     std::array<std::shared_ptr<MineRenderer>, MAX_PLAYER_COUNT> mMineRenderers;
 
     SongInfo* mSongInfo = nullptr;
-    f32 mCurrMeasure = 0.0f;
-    f32 mNextMeasure = 0.0f;
-    f32 mBPMIncrement = 0.0f;
 
     f32 mStartTransitionTimer = 0.0f;
     i32 mBeatStartCount = 4;

@@ -16,6 +16,9 @@ uniform float uZoom;
 uniform mat4 uRotations[4];
 uniform float uXPositions[4];
 
+uniform float uNoteScale;
+uniform float uSongOffset;
+
 // --------------------- OUT ---------------------
 out OUT_IN_VARIABLES {
 	vec2 TexUV;
@@ -28,10 +31,10 @@ void main()
     mat4 newModel = uRotations[direction];
     newModel[3][0] += uXPositions[direction];
     newModel[3][1] += vNoteOffset.y;
-    newModel[3][1] *= uZoom * 2.0;
+    newModel[3][1] *= uZoom * 2.0 * uNoteScale;
 
     vs_out.TexUV = vTexCoord * vTexScale + vTexOffset;
     vs_out.IsValid = direction;
 
-    gl_Position = proj * view * newModel * vec4(vPos, 1.75, 1.0);
+    gl_Position = proj * view * newModel * vec4(vPos.x * uNoteScale, vPos.y * uNoteScale + uSongOffset * uNoteScale, 1.75, 1.0);
 }

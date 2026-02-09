@@ -1,4 +1,5 @@
 #include "Renderable.h"
+#include "Audio/AudioMgr.h"
 #include "Game/Chart.h"
 #include "Game/GlobalVariables.h"
 #include "Game/Note.h"
@@ -297,6 +298,9 @@ void NoteRenderer::Render(Shader* shader)
     currShader->SetUniform("uXPositions", mXPositions);
     currShader->SetUniform("uRotations", mRotations);
 
+    currShader->SetUniform("uNoteScale", 100.0f);
+    currShader->SetUniform("uSongOffset", AudioMgr->GetMusicTime());
+
     glBindVertexArray(mVAO);
     glDrawElementsInstanced(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0, MAX_NOTES);
 
@@ -443,6 +447,8 @@ void HoldNoteBodyRenderer::Render(Shader* shader)
     mRollBottomCapTexture->get()->Bind();
     currShader->SetUniform("uRollBottomCap", 4);
 
+    currShader->SetUniform("uSongOffset", AudioMgr->GetMusicTime());
+
     glBindVertexArray(mVAO);
     glDrawElementsInstanced(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0, MAX_NOTES);
 }
@@ -549,6 +555,8 @@ void MineRenderer::Render(Shader* shader)
     currShader->SetUniform("uTexture", 1);
 
     currShader->SetUniform("uXPositions", mXPositions);
+
+    currShader->SetUniform("uSongOffset", AudioMgr->GetMusicTime());
 
     glBindVertexArray(mVAO);
     glDrawElementsInstanced(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0, MAX_NOTES);

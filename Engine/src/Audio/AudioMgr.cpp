@@ -106,9 +106,17 @@ void AudioManager::ResumeTimerQueue()
     mCueTimerCV.notify_one();
 }
 
-void AudioManager::SetupMusicStart() { mMusicStartTick = SDL_GetTicks(); }
+void AudioManager::SetupMusicStart()
+{
+    mMusicStartTick = SDL_GetTicks();
+    mIsBgmPlaying = true;
+}
 
-void AudioManager::SetupMusicStop() { mMusicStartTick = 0; }
+void AudioManager::SetupMusicStop()
+{
+    mMusicStartTick = 0;
+    mIsBgmPlaying = false;
+}
 
 void AudioManager::AudioCueMusicLoop()
 {

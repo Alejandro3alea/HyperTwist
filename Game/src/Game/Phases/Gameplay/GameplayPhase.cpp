@@ -2,6 +2,7 @@
 #include "Audio/AudioMgr.h"
 #include "Game/Account.h"
 #include "Game/GameVariables.h"
+#include "Game/GlobalVariables.h"
 #include "Graphics/GfxMgr.h"
 #include "Utils/GameUtils.h"
 
@@ -17,17 +18,25 @@ void GameplayPhase::OnEnter()
                GameUtils::ChartDifficultyToStr(gGameVariables.mSelectedCharts[PLAYER_2_IDX]->mDifficultyCategory),
                gGameVariables.mSelectedCharts[PLAYER_2_IDX]->mDifficultyVal);
 
-    for (u8 i = 0; i < mNoteRenderers.size(); i++)
+    for (u8 i = 0; i < MAX_PLAYER_COUNT; i++)
     {
-        if (AccountMgr->IsPlayerSlotOccupied(i))
+        // if (AccountMgr->IsPlayerSlotOccupied(i))
         {
             mNoteRenderers[i] = std::make_shared<NoteRenderer>(gGameVariables.mSelectedCharts[i]);
             mHoldRenderers[i] = std::make_shared<HoldNoteBodyRenderer>(gGameVariables.mSelectedCharts[i]);
-            mMineRenderers[i] = std::make_shared<MineRenderer>(gGameVariables.mSelectedCharts[i]);
+            // mMineRenderers[i] = std::make_shared<MineRenderer>(gGameVariables.mSelectedCharts[i]);
+
+            gGlobalVariables.mZoom = 2.0f;
+
+            mNoteRenderers[i]->mTextureScale = glm::vec2(0.05f);
+            mHoldRenderers[i]->mTextureScale = glm::vec2(3.0f);
+            mNoteRenderers[i]->mTextureOffset = glm::vec2(0.0f);
+            mHoldRenderers[i]->mTextureOffset = glm::vec2(0.0f);
+            // mMineRenderers[i]->mTextureScale = glm::vec3(300.0f);
 
             mNoteRenderers[i]->mbIsVisible = true;
             mHoldRenderers[i]->mbIsVisible = true;
-            mMineRenderers[i]->mbIsVisible = true;
+            // mMineRenderers[i]->mbIsVisible = true;
         }
     }
 
@@ -87,14 +96,25 @@ void GameplayPhase::StartTransitionUpdate(const float dt)
         ChangeToState(GameplayState::Gameplay);
 }
 
-void GameplayPhase::GameplayUpdate(const float dt) { mCurrMeasure += dt; }
+void GameplayPhase::GameplayUpdate(const float dt)
+{
+    if (!AudioMgr->IsMusicPlaying())
+        return;
+
+    for (u8 i = 0; i < MAX_PLAYER_COUNT; i++)
+    {
+
+        mNoteRenderers[i]->transform.pos.y += dt * 1000.0f;
+        mHoldRenderers[i]->transform.pos.y += dt * 1000.0f;
+    }
+}
 
 void GameplayPhase::EndTransitionUpdate(const float dt) {}
 
 void GameplayPhase::SetupMeasureController()
 {
     AudioMgr->StopTimerQueue();
-    mBPMIncrement = 60.0f / mSongInfo->mBPMs[0];
+    const f32 mBPMIncrement = 60.0f / mSongInfo->mBPMs[0];
 
     f32 positiveOffset = mSongInfo->mOffset;
     while (positiveOffset < 0)
@@ -106,7 +126,7 @@ void GameplayPhase::SetupMeasureController()
     // @TODO: ADD TESTS?
     constexpr u32 initialBeats = 4;
     for (u32 i = 0; i < initialBeats; i++)
-        AudioMgr->QueueAudioAfter(*AudioMgr->GetNoteTick(), mBPMIncrement * i - mSongInfo->mOffset + positiveOffset);
+        AudioMgr->QueueAudioAfter(*AudioMgr->GetNoteTick(), mBPMIncrement * i + positiveOffset - mSongInfo->mOffset);
 
     AudioMgr->QueueAudioAfter(*gGameVariables.mSelectedSong->GetSong(), mBPMIncrement * initialBeats + positiveOffset);
 
