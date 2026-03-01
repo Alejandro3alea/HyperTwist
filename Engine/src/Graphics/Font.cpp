@@ -32,6 +32,7 @@ Font::Font(const std::string& path)
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D_ARRAY, mTextureArrayIndex);
         glTexImage3D(GL_TEXTURE_2D_ARRAY, 0, GL_R8, 256, 256, 128, 0, GL_RED, GL_UNSIGNED_BYTE, 0);
+        glClearTexImage(mTextureArrayIndex, 0, GL_RED, GL_UNSIGNED_BYTE, nullptr); 
 
         // Load first 128 characters of ASCII set
         for (unsigned char c = 0; c < 128; c++)
