@@ -103,7 +103,6 @@ void GameplayPhase::GameplayUpdate(const float dt)
 
     for (u8 i = 0; i < MAX_PLAYER_COUNT; i++)
     {
-
         mNoteRenderers[i]->transform.pos.y += dt * 1000.0f;
         mHoldRenderers[i]->transform.pos.y += dt * 1000.0f;
     }

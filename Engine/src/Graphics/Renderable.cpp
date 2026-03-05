@@ -304,12 +304,13 @@ void NoteRenderer::Render(Shader* shader)
     glBindVertexArray(mVAO);
     glDrawElementsInstanced(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0, MAX_NOTES);
 
-    int vboCount = getActiveVBOCount(mVAO);
-    bool check0 = isAttributeEnabled(mVAO, 0);
-    bool check1 = isAttributeEnabled(mVAO, 1);
-    bool check2 = isAttributeEnabled(mVAO, 2);
-    bool check3 = isAttributeEnabled(mVAO, 3);
-    bool check4 = isAttributeEnabled(mVAO, 4);
+    // Debug
+    // int vboCount = getActiveVBOCount(mVAO);
+    // bool check0 = isAttributeEnabled(mVAO, 0);
+    // bool check1 = isAttributeEnabled(mVAO, 1);
+    // bool check2 = isAttributeEnabled(mVAO, 2);
+    // bool check3 = isAttributeEnabled(mVAO, 3);
+    // bool check4 = isAttributeEnabled(mVAO, 4);
 }
 
 //////////////////////////////////////////////////////////////////////////
