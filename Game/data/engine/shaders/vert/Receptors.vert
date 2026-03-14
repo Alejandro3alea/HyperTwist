@@ -22,5 +22,5 @@ out OUT_IN_VARIABLES {
 void main()
 {
     vs_out.TexUV = vTexCoord * uTextureScale + uTextureOffset;
-    gl_Position = proj * view * model * vec4(vPos, 1.0, 1.0);
+    gl_Position = proj * model * vec4(vPos, 0.5, 1.0);
 }

@@ -2,6 +2,8 @@
 #include "Game/Account.h"
 #include "Game/Phases/Phase.h"
 #include "Game/Song.h"
+#include "Game/UI/DDR/ChartRenderGroup.h"
+#include "Game/UI/DDR/Receptors.h"
 #include "Graphics/Renderable.h"
 #include "Misc/DataTypes.h"
 
@@ -37,9 +39,7 @@ struct GameplayPhase : public Phase
   private:
     GameplayState mState;
 
-    std::array<std::shared_ptr<NoteRenderer>, MAX_PLAYER_COUNT> mNoteRenderers;
-    std::array<std::shared_ptr<HoldNoteBodyRenderer>, MAX_PLAYER_COUNT> mHoldRenderers;
-    std::array<std::shared_ptr<MineRenderer>, MAX_PLAYER_COUNT> mMineRenderers;
+    std::array<std::shared_ptr<ChartRenderGroup>, MAX_PLAYER_COUNT> mChartRenderers;
 
     SongInfo* mSongInfo = nullptr;
 

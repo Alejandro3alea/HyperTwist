@@ -3,9 +3,9 @@
 
 struct Receptors
 {
-	void Initialize();
-	void Update(const glm::vec3& camPos);
+    void Initialize();
+    void Update(const glm::vec3& camPos);
 
-	TextureAtlas mReceptorOn[4];
-	TextureAtlas mReceptorOff[4];
+    TextureAtlas mReceptorOn[4];
+    TextureAtlas mReceptorOff[4];
 };

@@ -27,10 +27,11 @@ void main()
     vs_out.HoldNoteType = vHoldNoteType;
 
     mat4 newModel = mat4(1.0);
-    newModel[3][0] += vNoteOffsetX;
+    newModel[3][0] += vNoteOffsetX * 60.0;
     newModel[3][1] += vNoteOffsetY + 0.0;
-    newModel[3][1] *= uZoom * 2.0;
+    newModel[3][1] *= uZoom * 2.0 * 60.0;
+    //newModel[0][0] *= 60.0;
     newModel[1][1] *= HoldScale;
 
-    gl_Position = proj * view * newModel * vec4(vPos, 1.001, 1.0);
+    gl_Position = proj * view * newModel * vec4(vPos * 60.0, 1.001, 1.0);
 }

@@ -16,7 +16,6 @@ uniform float uZoom;
 uniform mat4 uRotations[4];
 uniform float uXPositions[4];
 
-uniform float uNoteScale;
 uniform float uSongOffset;
 
 // --------------------- OUT ---------------------
@@ -30,11 +29,11 @@ void main()
     int direction = int(vNoteOffset.x);
     mat4 newModel = uRotations[direction];
     newModel[3][0] += uXPositions[direction];
-    newModel[3][1] += vNoteOffset.y;
-    newModel[3][1] *= uZoom * 2.0 * uNoteScale;
+    newModel[3][1] += vNoteOffset.y + uSongOffset;
+    newModel[3][1] *= uZoom * 2.0 * 60.0;
 
     vs_out.TexUV = vTexCoord * vTexScale + vTexOffset;
     vs_out.IsValid = direction;
 
-    gl_Position = proj * view * newModel * vec4(vPos.x * uNoteScale, vPos.y * uNoteScale + uSongOffset * uNoteScale, 1.75, 1.0);
+    gl_Position = proj * view * newModel * vec4(vPos * 60.0, 1.75, 1.0);
 }

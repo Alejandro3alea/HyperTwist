@@ -272,7 +272,7 @@ NoteRenderer::NoteRenderer(Chart* inChart) : mChart(inChart)
 
     glBindVertexArray(0);
 
-    mXPositions = {-3.0f, -1.0f, 1.0f, 3.0f};
+    mXPositions = {-180.0f, -60.0f, 60.0f, 180.0f};
 
     mRotations.push_back(glm::rotate(glm::mat4(1.0f), glm::radians(270.0f), glm::vec3(0.0f, 0.0f, 1.0f)));
     mRotations.push_back(glm::mat4(1.0f));
@@ -298,8 +298,8 @@ void NoteRenderer::Render(Shader* shader)
     currShader->SetUniform("uXPositions", mXPositions);
     currShader->SetUniform("uRotations", mRotations);
 
-    currShader->SetUniform("uNoteScale", 100.0f);
-    currShader->SetUniform("uSongOffset", AudioMgr->GetMusicTime());
+    currShader->SetUniform("uNoteScale", 1.0f);
+    currShader->SetUniform("uSongOffset", mChart->mSong->GetPositionFromMusicTime(AudioMgr->GetMusicTime()));
 
     glBindVertexArray(mVAO);
     glDrawElementsInstanced(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0, MAX_NOTES);
@@ -328,25 +328,26 @@ void NoteRenderer::UpdateParams()
 
     const size_t noteCount = mChart->mNotes.size();
     auto it = mChart->mNotes.begin();
+    // @TODO: Do rendering in batches if note overflow
     for (unsigned i = 0; i < MAX_NOTES; i++)
     {
         if (i >= noteCount)
         {
             for (; i < MAX_NOTES; i++)
             {
-                unsigned floatIdx = i * 3;
-                mFloatParams[floatIdx].x = -1.0f;
+                const size_t float_params_idx = i * 3;
+                mFloatParams[float_params_idx].x = -1.0f;
             }
 
             return;
         }
 
-        unsigned floatIdx = i * 3;
+        const size_t float_params_idx = i * 3;
         Note* note = *it;
 
         if (dynamic_cast<MineNote*>(note) != nullptr)
         {
-            mFloatParams[floatIdx].x = -1.0f;
+            mFloatParams[float_params_idx].x = -1.0f;
             it++;
             continue;
         }
@@ -361,9 +362,9 @@ void NoteRenderer::UpdateParams()
                 break;
         }
 
-        mFloatParams[floatIdx] = glm::vec2(note->mDir, pos);
-        mFloatParams[floatIdx + 1] = SetTextureScale(64, 64);
-        mFloatParams[floatIdx + 2] = SetTextureOffset(0, currbeatUVOffset);
+        mFloatParams[float_params_idx] = glm::vec2(note->mDir, pos);
+        mFloatParams[float_params_idx + 1] = SetTextureScale(64, 64);
+        mFloatParams[float_params_idx + 2] = SetTextureOffset(0, currbeatUVOffset);
 
         it++;
     }
@@ -471,8 +472,8 @@ void HoldNoteBodyRenderer::UpdateParams()
         {
             for (; i < MAX_NOTES; i++)
             {
-                unsigned floatIdx = i * 4;
-                mFloatParams[floatIdx] = -1.0f;
+                const size_t float_params_idx = i * 4;
+                mFloatParams[float_params_idx] = -1.0f;
             }
 
             return;
@@ -484,11 +485,11 @@ void HoldNoteBodyRenderer::UpdateParams()
         const float middlePos = (currNote->mMeasurePos + currNote->mEnd) / 2.0f;
         const float size = currNote->mEnd - currNote->mMeasurePos;
 
-        unsigned floatIdx = i * 4;
-        mFloatParams[floatIdx] = static_cast<float>(isARollNote);
-        mFloatParams[floatIdx + 1] = xPositions[currNote->mDir];
-        mFloatParams[floatIdx + 2] = middlePos;
-        mFloatParams[floatIdx + 3] = size;
+        const size_t float_params_idx = i * 4;
+        mFloatParams[float_params_idx] = static_cast<float>(isARollNote);
+        mFloatParams[float_params_idx + 1] = xPositions[currNote->mDir];
+        mFloatParams[float_params_idx + 2] = middlePos;
+        mFloatParams[float_params_idx + 3] = size;
 
         it++;
     }
@@ -578,19 +579,19 @@ void MineRenderer::UpdateParams()
         {
             for (; i < MAX_NOTES; i++)
             {
-                unsigned floatIdx = i * 3;
-                mFloatParams[floatIdx].x = -1.0f;
+                const size_t float_params_idx = i * 3;
+                mFloatParams[float_params_idx].x = -1.0f;
             }
 
             return;
         }
 
-        unsigned floatIdx = i * 3;
+        const size_t float_params_idx = i * 3;
         Note* note = *it;
 
-        mFloatParams[floatIdx] = glm::vec2(note->mDir, note->mMeasurePos);
-        mFloatParams[floatIdx + 1] = SetTextureScale(64, 64);
-        mFloatParams[floatIdx + 2] = SetTextureOffset(192, 0);
+        mFloatParams[float_params_idx] = glm::vec2(note->mDir, note->mMeasurePos);
+        mFloatParams[float_params_idx + 1] = SetTextureScale(64, 64);
+        mFloatParams[float_params_idx + 2] = SetTextureOffset(192, 0);
 
         it++;
     }

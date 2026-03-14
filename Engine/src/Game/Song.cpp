@@ -682,7 +682,7 @@ Chart* Song::ProcessSMChart(std::istringstream& file)
     std::string somethingVal;
     std::getline(file, somethingVal, ':');
 
-    Chart* currChart = new Chart(stepArtist, difficulty, std::atoi(difficultyVal.c_str()));
+    Chart* currChart = new Chart(this, stepArtist, difficulty, std::atoi(difficultyVal.c_str()));
     currChart->ProcessNotes(file);
     currChart->ProcessTimestamps(mSongInfo.mBPMs, mSongInfo.mStops, mSongInfo.mOffset);
     return currChart;
@@ -691,7 +691,7 @@ Chart* Song::ProcessSMChart(std::istringstream& file)
 Chart* Song::ProcessSSCChart(std::istringstream& file)
 {
     std::string stepType, radarvalues;
-    Chart* currChart = new Chart();
+    Chart* currChart = new Chart(this);
 
     std::string line;
     while (std::getline(file, line))
@@ -1123,7 +1123,7 @@ void Song::ProcessSCD(std::istringstream& file)
 Chart* Song::ProcessSCDChart(std::istringstream& file)
 {
     std::string stepType, radarvalues;
-    Chart* currChart = new Chart();
+    Chart* currChart = new Chart(this);
 
     std::string line;
     while (std::getline(file, line))
@@ -1538,3 +1538,12 @@ std::vector<NoteCue> Song::GetNoteCues(const ChartDifficulty& diff)
 
     return result;
 }
+
+f32 Song::GetPositionFromMusicTime(const f32 musicTimeSeconds)
+{
+    f32 measurePos = 0.0f;
+
+    return measurePos;
+}
+
+// @TODO: Divide Song class into different subclasses/subsystems.

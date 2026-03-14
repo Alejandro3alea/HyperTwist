@@ -5,6 +5,8 @@
 #include <set>
 #include <string>
 
+struct Song;
+
 struct NoteCompare
 {
     bool operator()(const Note* a, const Note* b) const { return *a < *b; }
@@ -23,8 +25,8 @@ enum ChartDifficulty
 
 struct Chart
 {
-    Chart();
-    Chart(const std::string& stepArtist, const std::string& difficulty, const unsigned difficultyVal);
+    Chart(Song* song);
+    Chart(Song* song, const std::string& stepArtist, const std::string& difficulty, const unsigned difficultyVal);
 
     ~Chart();
 
@@ -39,6 +41,8 @@ struct Chart
     std::multiset<MineNote*, NoteCompare> GetAllMineNotes();
 
   public:
+    // @TODO: Check if should expose parent song.
+    Song* mSong = nullptr;
     ChartDifficulty mDifficultyCategory;
     int mDifficultyVal = 1;
     std::string mStepArtist;

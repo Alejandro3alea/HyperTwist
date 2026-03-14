@@ -9,6 +9,7 @@
 #include <map>
 #include <vector>
 
+// @TODO: Divide Song class into different subclasses/subsystems.
 struct Song
 {
     enum class FileType
@@ -41,9 +42,11 @@ struct Song
 
     void LoadChartsSCD();
 
-    std::vector<float> GetBeatTimestamps();
-    std::vector<float> GetNoteTimestamps(const ChartDifficulty& diff);
+    std::vector<f32> GetBeatTimestamps();
+    std::vector<f32> GetNoteTimestamps(const ChartDifficulty& diff);
     std::vector<NoteCue> GetNoteCues(const ChartDifficulty& diff);
+
+    f32 GetPositionFromMusicTime(const f32 musicTimeSeconds);
 
   private:
     void ProcessSMSong(std::istringstream& file);

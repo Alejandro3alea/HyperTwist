@@ -28,7 +28,7 @@ void main()
     vs_out.TexUV = vTexCoord * vTexScale + vTexOffset;
     vs_out.IsValid = direction;
 
-    float xPos = vPos.x + uXPositions[direction];
-    float yPos = vPos.y + vNoteOffset.y * uZoom * 2.0;
+    float xPos = vPos.x * 60.0 + uXPositions[direction] * 60.0;
+    float yPos = vPos.y * 60.0 + vNoteOffset.y * uZoom * 2.0 * 60.0;
     gl_Position = proj * view * vec4(xPos, yPos, 1.75, 1.0);
 }

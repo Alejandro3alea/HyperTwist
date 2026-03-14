@@ -9,6 +9,8 @@
 #include <algorithm>
 #include <vector>
 
+#include <Input/InputMgr.h>
+
 void GameplayPhase::OnEnter()
 {
     PrintDebug("Player 1: Playing [{}]: {}",
@@ -18,25 +20,13 @@ void GameplayPhase::OnEnter()
                GameUtils::ChartDifficultyToStr(gGameVariables.mSelectedCharts[PLAYER_2_IDX]->mDifficultyCategory),
                gGameVariables.mSelectedCharts[PLAYER_2_IDX]->mDifficultyVal);
 
+    gGlobalVariables.mZoom = 2.0f;
+
     for (u8 i = 0; i < MAX_PLAYER_COUNT; i++)
     {
         // if (AccountMgr->IsPlayerSlotOccupied(i))
         {
-            mNoteRenderers[i] = std::make_shared<NoteRenderer>(gGameVariables.mSelectedCharts[i]);
-            mHoldRenderers[i] = std::make_shared<HoldNoteBodyRenderer>(gGameVariables.mSelectedCharts[i]);
-            // mMineRenderers[i] = std::make_shared<MineRenderer>(gGameVariables.mSelectedCharts[i]);
-
-            gGlobalVariables.mZoom = 2.0f;
-
-            mNoteRenderers[i]->mTextureScale = glm::vec2(0.05f);
-            mHoldRenderers[i]->mTextureScale = glm::vec2(3.0f);
-            mNoteRenderers[i]->mTextureOffset = glm::vec2(0.0f);
-            mHoldRenderers[i]->mTextureOffset = glm::vec2(0.0f);
-            // mMineRenderers[i]->mTextureScale = glm::vec3(300.0f);
-
-            mNoteRenderers[i]->mbIsVisible = true;
-            mHoldRenderers[i]->mbIsVisible = true;
-            // mMineRenderers[i]->mbIsVisible = true;
+            mChartRenderers[i] = std::make_shared<ChartRenderGroup>(gGameVariables.mSelectedCharts[i]);
         }
     }
 
@@ -103,8 +93,10 @@ void GameplayPhase::GameplayUpdate(const float dt)
 
     for (u8 i = 0; i < MAX_PLAYER_COUNT; i++)
     {
-        mNoteRenderers[i]->transform.pos.y += dt * 1000.0f;
-        mHoldRenderers[i]->transform.pos.y += dt * 1000.0f;
+        if (InputMgr->isKeyDown(SDL_SCANCODE_I))
+            GfxMgr->mCam.Move({0.0f, dt * 1000.0f, 0.0f});
+        if (InputMgr->isKeyDown(SDL_SCANCODE_K))
+            GfxMgr->mCam.Move({0.0f, -dt * 1000.0f, 0.0f});
     }
 }
 

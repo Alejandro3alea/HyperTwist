@@ -1,5 +1,6 @@
 #include "Chart.h"
 #include "Math/MathUtils.h"
+#include "Song.h"
 #include "Utils/GameUtils.h"
 
 #include <algorithm>
@@ -8,10 +9,13 @@
 #include <numeric>
 #include <sstream>
 
-Chart::Chart() : mStepArtist(""), mDifficultyCategory(ChartDifficulty::Beginner), mDifficultyVal(0) {}
+Chart::Chart(Song* song)
+    : mSong(song), mStepArtist(""), mDifficultyCategory(ChartDifficulty::Beginner), mDifficultyVal(0)
+{
+}
 
-Chart::Chart(const std::string& stepArtist, const std::string& difficulty, const unsigned difficultyVal)
-    : mStepArtist(stepArtist), mDifficultyCategory(GameUtils::StrToChartDifficulty(difficulty)),
+Chart::Chart(Song* song, const std::string& stepArtist, const std::string& difficulty, const unsigned difficultyVal)
+    : mSong(song), mStepArtist(stepArtist), mDifficultyCategory(GameUtils::StrToChartDifficulty(difficulty)),
       mDifficultyVal(difficultyVal)
 {
 }
