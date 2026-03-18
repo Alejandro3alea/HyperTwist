@@ -3,11 +3,11 @@
 layout (location = 0) in vec2 vPos;
 
 // ------------------- UNIFORM -------------------
-uniform mat4 model;
 uniform mat4 view;
 uniform mat4 proj;
 
 uniform float uZoom;
+uniform float uSongOffset;
 
 // --------------------- OUT ---------------------
 out OUT_IN_VARIABLES {
@@ -16,6 +16,7 @@ out OUT_IN_VARIABLES {
 
 void main()
 {
+    const float noteDefaultScale = 60.0;
     vs_out.AlphaVal = mod(vPos.y / 2, 4) != 0 ? 0.25 : 1.0;
-    gl_Position = proj * view * vec4(vPos.x, vPos.y * uZoom, 0.25, 1.0);
+    gl_Position = proj * view * vec4(vPos.x * noteDefaultScale, (vPos.y - uSongOffset) * uZoom * 2.0 * noteDefaultScale, 0.25, 1.0);
 }

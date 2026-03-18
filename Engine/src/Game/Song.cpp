@@ -1542,7 +1542,35 @@ std::vector<NoteCue> Song::GetNoteCues(const ChartDifficulty& diff)
 f32 Song::GetPositionFromMusicTime(const f32 musicTimeSeconds)
 {
     f32 measurePos = 0.0f;
+    auto it = mSongInfo.mBPMs.begin();
+    f32 currMeasure = it->first;
+    f32 secondsForCurrMeasure = 0.0f;
+    f32 currBPM = it->second;
 
+    for (it++; it != mSongInfo.mBPMs.end(); it++)
+    {
+        const f32 nextMeasure = it->first;
+        const f32 nextBPM = it->second;
+
+        // @TODO: Check if use std::abs for negative measure diff
+        f32 secondsForNextMeasure = secondsForCurrMeasure + (60.0f / currBPM * (nextMeasure - currMeasure));
+
+        if (musicTimeSeconds > secondsForNextMeasure)
+        {
+            measurePos = nextMeasure;
+        }
+        else
+        {
+            measurePos += (musicTimeSeconds - secondsForCurrMeasure) * currBPM / 60.0f;
+            return measurePos;
+        }
+
+        secondsForCurrMeasure = secondsForNextMeasure;
+        currMeasure = nextMeasure;
+        currBPM = nextBPM;
+    }
+
+    measurePos += (musicTimeSeconds - currMeasure) * currBPM / 60.0f;
     return measurePos;
 }
 

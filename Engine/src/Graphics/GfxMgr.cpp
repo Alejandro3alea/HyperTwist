@@ -49,6 +49,7 @@ void GraphicsManager::LoadMainResources()
 
     mBackground = new Renderable();
     mBackground->mShader = mBGShader;
+    mBackground->mColor = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 }
 
 void GraphicsManager::Render()

@@ -29,7 +29,7 @@ void main()
     int direction = int(vNoteOffset.x);
     mat4 newModel = uRotations[direction];
     newModel[3][0] += uXPositions[direction];
-    newModel[3][1] += vNoteOffset.y + uSongOffset;
+    newModel[3][1] += vNoteOffset.y - uSongOffset;
     newModel[3][1] *= uZoom * 2.0 * 60.0;
 
     vs_out.TexUV = vTexCoord * vTexScale + vTexOffset;

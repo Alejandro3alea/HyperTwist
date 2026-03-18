@@ -394,3 +394,14 @@ std::multiset<MineNote*, NoteCompare> Chart::GetAllMineNotes()
 
     return mineNotes;
 }
+
+f32 Chart::GetMeasureFromLastNote()
+{
+    // @TODO: Check if any other notes are holds and we don't trigger end early (Example: Hold - - Note) (in this case
+    // only note would be taken into account)
+    Note* lastNote = *mNotes.rbegin();
+    if (lastNote->IsHoldNote())
+        return dynamic_cast<HoldNote*>(lastNote)->mEnd;
+    else
+        return lastNote->mMeasurePos;
+}

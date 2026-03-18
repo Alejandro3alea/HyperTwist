@@ -12,6 +12,7 @@ uniform mat4 view;
 uniform mat4 proj;
 
 uniform float uZoom;
+uniform float uSongOffset;
 
 // --------------------- OUT ---------------------
 out OUT_IN_VARIABLES 
@@ -22,16 +23,21 @@ out OUT_IN_VARIABLES
 
 void main()
 {
+    const float noteDefaultScale = 60.0;
     float HoldScale = (vNoteSize + 0.0) * uZoom;
     vs_out.TexUV =vec2(vTexCoord.x, (1.0 - vTexCoord.y) * HoldScale / 4.0);
     vs_out.HoldNoteType = vHoldNoteType;
 
+    // @TODO: Change from matrix
     mat4 newModel = mat4(1.0);
-    newModel[3][0] += vNoteOffsetX * 60.0;
-    newModel[3][1] += vNoteOffsetY + 0.0;
-    newModel[3][1] *= uZoom * 2.0 * 60.0;
-    //newModel[0][0] *= 60.0;
+    newModel[3][0] += vNoteOffsetX * noteDefaultScale;
+    newModel[3][1] += vNoteOffsetY - uSongOffset;
+    newModel[3][1] *= uZoom * 2.0 * noteDefaultScale;
     newModel[1][1] *= HoldScale;
 
-    gl_Position = proj * view * newModel * vec4(vPos * 60.0, 1.001, 1.0);
+    // @TODO: Change from matrix
+    float xPos = (vPos.x + vNoteOffsetX) * noteDefaultScale;
+    float yPos = (vPos.y  * HoldScale + (vNoteOffsetY - uSongOffset) * uZoom * 2.0 * noteDefaultScale) * noteDefaultScale;
+
+    gl_Position = proj * view * newModel * vec4(vPos * noteDefaultScale, 1.001, 1.0);
 }

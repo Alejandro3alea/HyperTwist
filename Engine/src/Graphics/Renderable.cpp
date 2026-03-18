@@ -164,8 +164,11 @@ glm::vec2 TextureAtlas::SetTextureOffset(glm::uvec2 offsetInPixels)
 //
 //////////////////////////////////////////////////////////////////////////
 
-LineList::LineList(const std::vector<glm::vec2>& positions) : mLineCount(positions.size() / 2)
+LineList::LineList(Chart* inChart) : mChart(inChart)
 {
+    std::vector<glm::vec2> positions = ComputeLinePositions(inChart);
+
+    mLineCount = positions.size() / 2;
     glGenVertexArrays(1, &mVAO);
     glGenBuffers(1, &mVBO);
     glBindVertexArray(mVAO);
@@ -202,11 +205,38 @@ void LineList::Render(Shader* shader)
 
     currShader->SetUniform("uColor", mColor);
     currShader->SetUniform("uZoom", gGlobalVariables.mZoom);
+    if (mChart)
+        currShader->SetUniform("uSongOffset", mChart->mSong->GetPositionFromMusicTime(AudioMgr->GetMusicTime()));
 
     glBindVertexArray(mVAO);
 
     // Draw the lines
     glDrawArrays(GL_LINES, 0, mLineCount);
+}
+
+//////////////////////////////////////////////////////////////////////////
+//
+//////////////////////////////////////////////////////////////////////////
+
+std::vector<glm::vec2> LineList::ComputeLinePositions(Chart* inChart)
+{
+    if (inChart == nullptr)
+        return std::vector<glm::vec2>();
+
+    const size_t lastMeasure = std::ceil(inChart->GetMeasureFromLastNote() * 2) + 4;
+    std::vector<glm::vec2> positions;
+    for (unsigned i = 0; i < lastMeasure; i++)
+    {
+        int repetitions = (i % 4 == 0) ? 4 : 1;
+
+        for (unsigned j = 0; j < repetitions; j++)
+        {
+            positions.push_back({-4.0f, i});
+            positions.push_back({4.0f, i});
+        }
+    }
+
+    return positions;
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -233,6 +263,10 @@ int getActiveVBOCount(GLuint vao)
 
     return activeVBOs;
 }
+
+//////////////////////////////////////////////////////////////////////////
+//
+//////////////////////////////////////////////////////////////////////////
 
 // Function to check if a vertex attribute is enabled
 bool isAttributeEnabled(GLuint vao, GLuint attributeIndex)
@@ -449,7 +483,7 @@ void HoldNoteBodyRenderer::Render(Shader* shader)
     mRollBottomCapTexture->get()->Bind();
     currShader->SetUniform("uRollBottomCap", 4);
 
-    currShader->SetUniform("uSongOffset", AudioMgr->GetMusicTime());
+    currShader->SetUniform("uSongOffset", mChart->mSong->GetPositionFromMusicTime(AudioMgr->GetMusicTime()));
 
     glBindVertexArray(mVAO);
     glDrawElementsInstanced(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0, MAX_NOTES);
@@ -558,7 +592,7 @@ void MineRenderer::Render(Shader* shader)
 
     currShader->SetUniform("uXPositions", mXPositions);
 
-    currShader->SetUniform("uSongOffset", AudioMgr->GetMusicTime());
+    currShader->SetUniform("uSongOffset", mChart->mSong->GetPositionFromMusicTime(AudioMgr->GetMusicTime()));
 
     glBindVertexArray(mVAO);
     glDrawElementsInstanced(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0, MAX_NOTES);

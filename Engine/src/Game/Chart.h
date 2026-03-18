@@ -40,6 +40,8 @@ struct Chart
     std::multiset<RollNote*, NoteCompare> GetAllRollNotes();
     std::multiset<MineNote*, NoteCompare> GetAllMineNotes();
 
+    f32 GetMeasureFromLastNote();
+
   public:
     // @TODO: Check if should expose parent song.
     Song* mSong = nullptr;

@@ -11,4 +11,6 @@ struct ChartRenderGroup
     std::shared_ptr<HoldNoteBodyRenderer> mHoldRenderer;
     std::shared_ptr<MineRenderer> mMineRenderer;
     std::shared_ptr<Receptors> mPlayerReceptor;
+    std::unique_ptr<Renderable> mDarkBackground;
+    std::unique_ptr<LineList> mMeasureLines;
 };
