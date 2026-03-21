@@ -2,7 +2,6 @@
 
 > _A love letter for Rhythm games_
 
-*(Currently it's only available in a Visual Studio solution, in the near future it will be implemented for CMake & multiple platforms)*
 
 [![Version]( https://img.shields.io/badge/version-0.1.0-blue)](https://github.com/alejandro3alea/HyperTwist/)  [![Build Status](https://github.com/alejandro3alea/HyperTwist/actions/workflows/c-cpp.yml/badge.svg)](https://github.com/alejandro3alea/HyperTwist/) 
 
@@ -77,29 +76,31 @@ HyperTwist works thanks to the following libraries:
 
 ## Installation
 
-For now, it can only be executed as a Visual Studio solution (.sln). Future plan is to work with CMake and Docker.
+Previously, the project worked just with a Visual Studio Solution (.sln). However, with the new updates to the project, now it works a CMake project.
+
+To configure CMake, select a build configuration, and after a successful CMake generation, compile the C++ code to execute the program.
+
+_Note: User might have to install some dependencies from the [libraries](#libraries) mentioned above._
 
 
 ## Development
 
-Want to contribute? Great! Everyone is welcome to create a pull request and improve the project!
-
-
-## Docker
-
-WIP
+Want to contribute? Great! Everyone is welcome to request, create a discussion/pull request, and improve the project!
 
 
 ## CMake
 
-WIP
+The project is build using CMake, with each configuration structured as the following:
+> [**PLATFORM**] **Project** - **Build_Config**
+
+For the future the project might support Mac, FreeBSD or other configurations.
 
 
 ## License
 
 The MIT License (MIT)
 
-Copyright (c) 2022-2025 Alejandro Balea
+Copyright (c) 2022-2026 Alejandro Balea
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
