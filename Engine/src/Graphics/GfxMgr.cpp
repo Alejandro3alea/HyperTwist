@@ -60,7 +60,12 @@ void GraphicsManager::Render()
     mOnPreRender.Broadcast();
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    RenderScene(&mCam);
+
+    if (mCurrRenderQueue)
+        mCurrRenderQueue->Execute();
+    else
+        RenderScene(&mCam);
+
     mOnPostRender.Broadcast();
 
     mTime += TimeMgr->deltaTime;
@@ -145,24 +150,49 @@ void GraphicsManager::RenderScene(Camera* cam, Shader* shader)
     std::sort(mRenderComps.begin(), mRenderComps.end(),
               [](Renderable* lhs, Renderable* rhs) { return lhs->transform.pos.z < rhs->transform.pos.z; });
 
-    std::for_each(mRenderComps.begin(), mRenderComps.end(),
-                  [this, &offset, &proj_cam, &view_cam](Renderable* comp)
-                  {
-                      if (comp->mShader && comp->mbIsVisible)
-                      {
-                          Shader* shader = comp->mShader->get();
-                          shader->Bind();
-                          shader->SetUniform("uViewPos", offset);
-                          shader->SetUniform("uTime", mTime);
+    if (shader)
+    {
+        shader->Bind();
+        shader->SetUniform("uViewPos", offset);
+        shader->SetUniform("uTime", mTime);
+        shader->SetUniform("view", view_cam);
+        shader->SetUniform("proj", proj_cam);
 
-                          const Transform t = comp->mParentTransform.has_value()
-                                                  ? comp->transform + comp->mParentTransform.value()
-                                                  : comp->transform;
-                          glm::mat4 model = t.GetModelMtx();
-                          shader->SetUniform("model", model);
-                          shader->SetUniform("view", view_cam);
-                          shader->SetUniform("proj", proj_cam);
-                          comp->Render();
-                      }
-                  });
+        std::for_each(mRenderComps.begin(), mRenderComps.end(),
+                      [&shader](Renderable* comp)
+                      {
+                          if (comp->mbIsVisible)
+                          {
+                              const Transform t = comp->mParentTransform.has_value()
+                                                      ? comp->transform + comp->mParentTransform.value()
+                                                      : comp->transform;
+                              glm::mat4 model = t.GetModelMtx();
+                              shader->SetUniform("model", model);
+                              comp->Render();
+                          }
+                      });
+    }
+    else
+    {
+        std::for_each(mRenderComps.begin(), mRenderComps.end(),
+                      [this, &shader, &offset, &proj_cam, &view_cam](Renderable* comp)
+                      {
+                          if (comp->mShader && comp->mbIsVisible)
+                          {
+                              Shader* currShader = comp->mShader->get();
+                              currShader->Bind();
+                              currShader->SetUniform("uViewPos", offset);
+                              currShader->SetUniform("uTime", mTime);
+
+                              const Transform t = comp->mParentTransform.has_value()
+                                                      ? comp->transform + comp->mParentTransform.value()
+                                                      : comp->transform;
+                              glm::mat4 model = t.GetModelMtx();
+                              currShader->SetUniform("model", model);
+                              currShader->SetUniform("view", view_cam);
+                              currShader->SetUniform("proj", proj_cam);
+                              comp->Render();
+                          }
+                      });
+    }
 }

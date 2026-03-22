@@ -11,9 +11,13 @@
 //
 //////////////////////////////////////////////////////////////////////////
 
+struct RenderPass;
+
 struct Renderable
 {
     Renderable();
+    Renderable(RenderPass* renderPass);
+
     ~Renderable();
 
     virtual void Render(Shader* shader = nullptr);

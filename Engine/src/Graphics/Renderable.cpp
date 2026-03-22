@@ -4,6 +4,7 @@
 #include "Game/GlobalVariables.h"
 #include "Game/Note.h"
 #include "GfxMgr.h"
+#include "RenderPass.h"
 
 #include <algorithm>
 #include <glm/gtc/matrix_transform.hpp>
@@ -25,14 +26,21 @@ Renderable::Renderable()
 //
 //////////////////////////////////////////////////////////////////////////
 
+Renderable::Renderable(RenderPass* renderPass)
+{
+    SetShader("engine/shaders/Quad.shader");
+    SetTexture("engine/texture/White.png");
+    renderPass->AddRenderable(this);
+}
+
+//////////////////////////////////////////////////////////////////////////
+//
+//////////////////////////////////////////////////////////////////////////
+
 Renderable::~Renderable()
 {
     auto& rendercomps = GfxMgr->mRenderComps;
     int renderCompsB = GfxMgr->mRenderComps.size();
-    // GfxMgr->mRenderComps.erase(
-    //     std::remove(GfxMgr->mRenderComps.begin(), GfxMgr->mRenderComps.end(), this),
-    //     GfxMgr->mRenderComps.end()
-    // );
     std::erase(GfxMgr->mRenderComps, this);
     int renderCompsA = GfxMgr->mRenderComps.size();
     bool isDiff = renderCompsA != renderCompsB;

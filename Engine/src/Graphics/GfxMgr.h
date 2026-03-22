@@ -1,6 +1,7 @@
 #pragma once
 #include "Camera.h"
 #include "Composition/Events/Event.h"
+#include "IRenderQueue.h"
 #include "Misc/Singleton.h"
 #include "Resources/ResourceMgr.h"
 
@@ -54,6 +55,7 @@ class GraphicsManager
     Camera mCam;
     std::vector<Renderable*> mRenderComps;
 
+    // Events
     OnPreRender mOnPreRender;
     OnPostRender mOnPostRender;
 
@@ -68,7 +70,8 @@ class GraphicsManager
 
     float mTime = 0.0f;
 
-    Renderable* mBackground;
+    Renderable* mBackground = nullptr;
+    std::shared_ptr<IRenderQueue> mCurrRenderQueue = nullptr;
 };
 
 #define GfxMgr GraphicsManager::Instance()
