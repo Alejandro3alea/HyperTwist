@@ -22,11 +22,16 @@ void GameplayPhase::OnEnter()
 
     gGlobalVariables.mZoom = 2.0f;
 
-    for (u8 i = 0; i < MAX_PLAYER_COUNT; i++)
+    mRenderQueue = std::make_shared<GameplayRenderQueue>();
+    GfxMgr->SetRenderQueue(mRenderQueue);
+
+    for (u8 i = 0, passIdx = 0; i < MAX_PLAYER_COUNT; i++)
     {
-        // if (AccountMgr->IsPlayerSlotOccupied(i))
+        if (AccountMgr->IsPlayerSlotOccupied(i))
         {
-            mChartRenderers[i] = std::make_shared<ChartRenderGroup>(gGameVariables.mSelectedCharts[i]);
+            mChartRenderers[i] = std::make_unique<ChartRenderGroup>(gGameVariables.mSelectedCharts[i],
+                                                                    mRenderQueue->GetPassFromIdx(passIdx));
+            passIdx++;
         }
     }
 

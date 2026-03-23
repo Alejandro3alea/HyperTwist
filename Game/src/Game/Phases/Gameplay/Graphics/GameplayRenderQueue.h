@@ -3,7 +3,9 @@
 
 struct GameplayRenderQueue : public IRenderQueue
 {
-    GameplayRenderQueue() = default;
+    GameplayRenderQueue() { Initialize(); };
 
     virtual void Initialize() override;
+
+    virtual void Execute() override;
 };

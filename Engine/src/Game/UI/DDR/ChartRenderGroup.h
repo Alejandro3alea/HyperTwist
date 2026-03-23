@@ -4,7 +4,7 @@
 
 struct ChartRenderGroup
 {
-    ChartRenderGroup(Chart* inChart);
+    ChartRenderGroup(Chart* inChart, RenderPass* renderPass = nullptr);
 
   public:
     std::shared_ptr<NoteRenderer> mNoteRenderer;

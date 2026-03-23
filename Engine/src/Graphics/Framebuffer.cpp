@@ -1,6 +1,6 @@
 #include "Framebuffer.h"
 
-Framebuffer::Framebuffer(std::vector<std::unique_ptr<Buffer>> buffers)
+Framebuffer::Framebuffer(const std::vector<std::shared_ptr<Buffer>>& buffers)
 {
     glGenFramebuffers(1, &mFbID);
 
@@ -11,7 +11,7 @@ Framebuffer::Framebuffer(std::vector<std::unique_ptr<Buffer>> buffers)
 
     BindFramebuffer();
 
-    for (unsigned i = 0; i < mBufferCount; i++)
+    for (u32 i = 0; i < mBufferCount; i++)
     {
         auto& buf = buffers[i];
         mBuffers[i] = buf->mBufferType;
@@ -26,7 +26,7 @@ void Framebuffer::Initialize(const bool useDepthRBO)
 {
     BindFramebuffer();
 
-    unsigned int rboVal;
+    u32 rboVal;
     if (useDepthRBO)
     {
         glGenRenderbuffers(1, &rboVal);
@@ -36,7 +36,7 @@ void Framebuffer::Initialize(const bool useDepthRBO)
     }
 
     std::vector<GLenum> drawBuffers;
-    for (unsigned i = 0; i < mBuffers.size(); i++)
+    for (size_t i = 0; i < mBuffers.size(); i++)
     {
         switch (mBuffers[i])
         {
@@ -55,7 +55,7 @@ void Framebuffer::Initialize(const bool useDepthRBO)
     UnbindFramebuffer();
 }
 
-void Framebuffer::BindTexture(const unsigned idx) { glBindTexture(GL_TEXTURE_2D, static_cast<GLuint>(mTexID[idx])); }
+void Framebuffer::BindTexture(const u32 idx) { glBindTexture(GL_TEXTURE_2D, static_cast<GLuint>(mTexID[idx])); }
 
 void Framebuffer::UnbindTexture() { glBindTexture(GL_TEXTURE_2D, 0); }
 

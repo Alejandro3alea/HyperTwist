@@ -1,29 +1,32 @@
 #include "ChartRenderGroup.h"
 
-ChartRenderGroup::ChartRenderGroup(Chart* inChart)
+ChartRenderGroup::ChartRenderGroup(Chart* inChart, RenderPass* renderPass)
 {
-    mDarkBackground = std::make_unique<Renderable>();
+    mDarkBackground = std::make_unique<Renderable>(renderPass);
     mDarkBackground->SetShader("engine/shaders/NotesUI.shader");
-    mDarkBackground.get()->mColor = {0.0f, 0.0f, 0.0f, 0.75f};
-    mDarkBackground.get()->transform.pos = {0.0f, 0.0f, 0.1f};
-    mDarkBackground.get()->transform.scale = {280.0f, 1000.0f, 0.05f};
+    mDarkBackground->mColor = {0.0f, 0.0f, 0.0f, 0.75f};
+    mDarkBackground->transform.pos = {0.0f, 0.0f, 0.1f};
+    mDarkBackground->transform.scale = {280.0f, 1000.0f, 0.05f};
 
-    mMeasureLines = std::make_unique<LineList>(inChart);
+    mMeasureLines = std::make_unique<LineList>(inChart, renderPass);
+    mMeasureLines->transform.pos.z = 0.25f;
 
-    mNoteRenderer = std::make_shared<NoteRenderer>(inChart);
-    mHoldRenderer = std::make_shared<HoldNoteBodyRenderer>(inChart);
-    // mMineRenderer[i] = std::make_shared<MineRenderer>(inChart);
-    mPlayerReceptor = std::make_shared<Receptors>();
+    mNoteRenderer = std::make_shared<NoteRenderer>(inChart, renderPass);
+
+    mHoldRenderer = std::make_shared<HoldNoteBodyRenderer>(inChart, renderPass);
+
+    mMineRenderer = std::make_shared<MineRenderer>(inChart, renderPass);
+    mPlayerReceptor = std::make_shared<Receptors>(renderPass);
 
     mNoteRenderer->mTextureScale = glm::vec2(0.05f);
     mHoldRenderer->mTextureScale = glm::vec2(3.0f);
     mNoteRenderer->mTextureOffset = glm::vec2(0.0f);
     mHoldRenderer->mTextureOffset = glm::vec2(0.0f);
-    // mMineRenderer->mTextureScale = glm::vec3(300.0f);
+    mMineRenderer->mTextureScale = glm::vec3(300.0f);
 
     mNoteRenderer->mbIsVisible = true;
     mHoldRenderer->mbIsVisible = true;
-    // mMineRenderer->mbIsVisible = true;
+    mMineRenderer->mbIsVisible = true;
 
     mPlayerReceptor->Initialize();
 }

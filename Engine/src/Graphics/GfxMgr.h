@@ -44,11 +44,12 @@ class GraphicsManager
     Resource<Texture>* GetBackgroundTexture();
     Resource<Shader>* GetBackgroundShader();
 
+    void SetRenderQueue(const std::shared_ptr<IRenderQueue>& newRenderQueue) { mCurrRenderQueue = newRenderQueue; }
+
     GLuint CreateQuadModel() const;
 
     void CleanupRenderables();
 
-  private:
     void RenderScene(Camera* cam, Shader* shader = nullptr);
 
   public:

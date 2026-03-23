@@ -15,7 +15,7 @@ void GraphicsManager::Initialize()
 {
     if (!gladLoadGL((GLADloadfunc)SDL_GL_GetProcAddress)) // Ensure causes errors
     {
-        PrintError("Failed to initialize GLAD2!");
+        PrintError("Failed to initialize GLAD!");
         abort();
     }
 

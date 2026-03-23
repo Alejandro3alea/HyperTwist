@@ -12,7 +12,7 @@
 int main(void)
 {
     ResourceMgr->Initialize();
-    WindowMgr->Initialize("Nextage");
+    WindowMgr->Initialize("HyperTwist");
     GfxMgr->Initialize();
     AudioMgr->Initialize();
     ResourceMgr->LoadDefaultAssets();
