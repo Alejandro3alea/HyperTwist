@@ -30,7 +30,14 @@ Renderable::Renderable(RenderPass* renderPass)
 {
     SetShader("engine/shaders/Quad.shader");
     SetTexture("engine/texture/White.png");
-    renderPass->AddRenderable(this);
+
+    if (renderPass)
+        renderPass->AddRenderable(this);
+    else
+    {
+        PrintDebug("Renderable created with null RenderPass.");
+        GfxMgr->mRenderComps.push_back(this);
+    }
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -119,6 +126,15 @@ TextureAtlas::TextureAtlas() : Renderable() { SetShader("engine/shaders/TextureA
 //
 //////////////////////////////////////////////////////////////////////////
 
+TextureAtlas::TextureAtlas(RenderPass* renderPass) : Renderable(renderPass)
+{
+    SetShader("engine/shaders/TextureAtlas.shader");
+}
+
+//////////////////////////////////////////////////////////////////////////
+//
+//////////////////////////////////////////////////////////////////////////
+
 void TextureAtlas::Render(Shader* shader)
 {
     Shader* currShader = (shader != nullptr) ? shader : mShader->get();
@@ -172,24 +188,15 @@ glm::vec2 TextureAtlas::SetTextureOffset(glm::uvec2 offsetInPixels)
 //
 //////////////////////////////////////////////////////////////////////////
 
-LineList::LineList(Chart* inChart) : mChart(inChart)
+LineList::LineList(Chart* inChart) : Renderable(), mChart(inChart) { Initialize(inChart); }
+
+//////////////////////////////////////////////////////////////////////////
+//
+//////////////////////////////////////////////////////////////////////////
+
+LineList::LineList(Chart* inChart, RenderPass* renderPass) : Renderable(renderPass), mChart(inChart)
 {
-    std::vector<glm::vec2> positions = ComputeLinePositions(inChart);
-
-    mLineCount = positions.size() / 2;
-    glGenVertexArrays(1, &mVAO);
-    glGenBuffers(1, &mVBO);
-    glBindVertexArray(mVAO);
-
-    glBindBuffer(GL_ARRAY_BUFFER, mVBO);
-    glBufferData(GL_ARRAY_BUFFER, positions.size() * sizeof(float), &positions[0], GL_STATIC_DRAW);
-
-    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void*)0);
-    glEnableVertexAttribArray(0);
-
-    glBindVertexArray(0);
-
-    SetShader("engine/shaders/Line.shader");
+    Initialize(inChart);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -226,6 +233,30 @@ void LineList::Render(Shader* shader)
 //
 //////////////////////////////////////////////////////////////////////////
 
+void LineList::Initialize(Chart* inChart)
+{
+    std::vector<glm::vec2> positions = ComputeLinePositions(inChart);
+
+    mLineCount = positions.size() / 2;
+    glGenVertexArrays(1, &mVAO);
+    glGenBuffers(1, &mVBO);
+    glBindVertexArray(mVAO);
+
+    glBindBuffer(GL_ARRAY_BUFFER, mVBO);
+    glBufferData(GL_ARRAY_BUFFER, positions.size() * sizeof(float), &positions[0], GL_STATIC_DRAW);
+
+    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void*)0);
+    glEnableVertexAttribArray(0);
+
+    glBindVertexArray(0);
+
+    SetShader("engine/shaders/Line.shader");
+}
+
+//////////////////////////////////////////////////////////////////////////
+//
+//////////////////////////////////////////////////////////////////////////
+
 std::vector<glm::vec2> LineList::ComputeLinePositions(Chart* inChart)
 {
     if (inChart == nullptr)
@@ -251,43 +282,47 @@ std::vector<glm::vec2> LineList::ComputeLinePositions(Chart* inChart)
 //
 //////////////////////////////////////////////////////////////////////////
 
-int getActiveVBOCount(GLuint vao)
+NoteRenderer::NoteRenderer(Chart* inChart) : TextureAtlas(), mChart(inChart) { Initialize(); }
+
+//////////////////////////////////////////////////////////////////////////
+//
+//////////////////////////////////////////////////////////////////////////
+
+NoteRenderer::NoteRenderer(Chart* inChart, RenderPass* renderPass) : TextureAtlas(renderPass), mChart(inChart)
 {
-    GLint maxVertexAttribs;
-    glGetIntegerv(GL_MAX_VERTEX_ATTRIBS, &maxVertexAttribs);
-
-    int activeVBOs = 0;
-
-    for (int i = 0; i < maxVertexAttribs; ++i)
-    {
-        GLint bufferBinding;
-        glBindVertexArray(vao);
-        glGetVertexAttribiv(i, GL_VERTEX_ATTRIB_ARRAY_BUFFER_BINDING, &bufferBinding);
-        glBindVertexArray(0); // Unbind the VAO
-
-        if (bufferBinding != 0)
-            activeVBOs++;
-    }
-
-    return activeVBOs;
+    Initialize();
 }
 
 //////////////////////////////////////////////////////////////////////////
 //
 //////////////////////////////////////////////////////////////////////////
 
-// Function to check if a vertex attribute is enabled
-bool isAttributeEnabled(GLuint vao, GLuint attributeIndex)
+void NoteRenderer::Render(Shader* shader)
 {
-    GLint isEnabled;
-    glBindVertexArray(vao);
-    glGetVertexAttribiv(attributeIndex, GL_VERTEX_ATTRIB_ARRAY_ENABLED, &isEnabled);
-    glBindVertexArray(0); // Unbind the VAO
+    Shader* currShader = (shader != nullptr) ? shader : mShader->get();
+    currShader->Bind();
 
-    return (isEnabled == GL_TRUE);
+    currShader->SetUniform("uZoom", gGlobalVariables.mZoom);
+
+    glActiveTexture(GL_TEXTURE1);
+    mTexture->get()->Bind();
+    currShader->SetUniform("uTexture", 1);
+
+    currShader->SetUniform("uXPositions", mXPositions);
+    currShader->SetUniform("uRotations", mRotations);
+
+    currShader->SetUniform("uNoteScale", 1.0f);
+    currShader->SetUniform("uSongOffset", mChart->mSong->GetPositionFromMusicTime(AudioMgr->GetMusicTime()));
+
+    glBindVertexArray(mVAO);
+    glDrawElementsInstanced(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0, MAX_NOTES);
 }
 
-NoteRenderer::NoteRenderer(Chart* inChart) : mChart(inChart)
+//////////////////////////////////////////////////////////////////////////
+//
+//////////////////////////////////////////////////////////////////////////
+
+void NoteRenderer::Initialize()
 {
     SetShader("engine/shaders/NoteRenderer.shader");
     mTexture = ResourceMgr->Load<Texture>("noteskins/USWCelSM5/_Down Tap Note 16x8.png");
@@ -320,39 +355,6 @@ NoteRenderer::NoteRenderer(Chart* inChart) : mChart(inChart)
     mRotations.push_back(glm::mat4(1.0f));
     mRotations.push_back(glm::rotate(glm::mat4(1.0f), glm::radians(180.0f), glm::vec3(0.0f, 0.0f, 1.0f)));
     mRotations.push_back(glm::rotate(glm::mat4(1.0f), glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f)));
-}
-
-//////////////////////////////////////////////////////////////////////////
-//
-//////////////////////////////////////////////////////////////////////////
-
-void NoteRenderer::Render(Shader* shader)
-{
-    Shader* currShader = (shader != nullptr) ? shader : mShader->get();
-    currShader->Bind();
-
-    currShader->SetUniform("uZoom", gGlobalVariables.mZoom);
-
-    glActiveTexture(GL_TEXTURE1);
-    mTexture->get()->Bind();
-    currShader->SetUniform("uTexture", 1);
-
-    currShader->SetUniform("uXPositions", mXPositions);
-    currShader->SetUniform("uRotations", mRotations);
-
-    currShader->SetUniform("uNoteScale", 1.0f);
-    currShader->SetUniform("uSongOffset", mChart->mSong->GetPositionFromMusicTime(AudioMgr->GetMusicTime()));
-
-    glBindVertexArray(mVAO);
-    glDrawElementsInstanced(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0, MAX_NOTES);
-
-    // Debug
-    // int vboCount = getActiveVBOCount(mVAO);
-    // bool check0 = isAttributeEnabled(mVAO, 0);
-    // bool check1 = isAttributeEnabled(mVAO, 1);
-    // bool check2 = isAttributeEnabled(mVAO, 2);
-    // bool check3 = isAttributeEnabled(mVAO, 3);
-    // bool check4 = isAttributeEnabled(mVAO, 4);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -428,40 +430,16 @@ void NoteRenderer::UpdateVBOs()
 //
 //////////////////////////////////////////////////////////////////////////
 
-HoldNoteBodyRenderer::HoldNoteBodyRenderer(Chart* inChart) : mChart(inChart)
+HoldNoteBodyRenderer::HoldNoteBodyRenderer(Chart* inChart) : TextureAtlas(), mChart(inChart) { Initialize(); }
+
+//////////////////////////////////////////////////////////////////////////
+//
+//////////////////////////////////////////////////////////////////////////
+
+HoldNoteBodyRenderer::HoldNoteBodyRenderer(Chart* inChart, RenderPass* renderPass)
+    : TextureAtlas(renderPass), mChart(inChart)
 {
-    SetShader("engine/shaders/HoldNoteBodyRenderer.shader");
-    mTexture = ResourceMgr->Load<Texture>("noteskins/USWCelSM5/Down Hold Body Inactive.png");
-    mRollNoteTexture = ResourceMgr->Load<Texture>("noteskins/USWCelSM5/Down Roll Body Inactive.png");
-    mHoldBottomCapTexture = ResourceMgr->Load<Texture>("noteskins/USWCelSM5/Down Hold BottomCap inactive.png");
-    mRollBottomCapTexture = ResourceMgr->Load<Texture>("noteskins/USWCelSM5/Down Roll BottomCap Inactive.png");
-
-    UpdateParams();
-
-    GLenum error = glGetError();
-
-    mVAO = GfxMgr->CreateQuadModel();
-    glBindVertexArray(mVAO);
-
-    glGenBuffers(1, &mFloatVBO);
-    glBindBuffer(GL_ARRAY_BUFFER, mFloatVBO);
-    glBufferData(GL_ARRAY_BUFFER, MAX_NOTES * 4 * sizeof(float), &mFloatParams[0], GL_DYNAMIC_DRAW);
-
-    glEnableVertexAttribArray(2);
-    glVertexAttribPointer(2, 1, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0);
-    glEnableVertexAttribArray(3);
-    glVertexAttribPointer(3, 1, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(sizeof(float)));
-    glEnableVertexAttribArray(4);
-    glVertexAttribPointer(4, 1, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));
-    glEnableVertexAttribArray(5);
-    glVertexAttribPointer(5, 1, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(3 * sizeof(float)));
-
-    glVertexAttribDivisor(2, 1);
-    glVertexAttribDivisor(3, 1);
-    glVertexAttribDivisor(4, 1);
-    glVertexAttribDivisor(5, 1);
-
-    glBindVertexArray(0);
+    Initialize();
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -553,34 +531,55 @@ void HoldNoteBodyRenderer::UpdateVBOs()
 //
 //////////////////////////////////////////////////////////////////////////
 
-MineRenderer::MineRenderer(Chart* inChart) : mChart(inChart)
+void HoldNoteBodyRenderer::Initialize()
 {
-    SetShader("engine/shaders/MineRenderer.shader");
-    mTexture = ResourceMgr->Load<Texture>("noteskins/USWCelSM5/_Down Tap Mine 8x1.png");
+    SetShader("engine/shaders/HoldNoteBodyRenderer.shader");
+    mTexture = ResourceMgr->Load<Texture>("noteskins/USWCelSM5/Down Hold Body Inactive.png");
+    mRollNoteTexture = ResourceMgr->Load<Texture>("noteskins/USWCelSM5/Down Roll Body Inactive.png");
+    mHoldBottomCapTexture = ResourceMgr->Load<Texture>("noteskins/USWCelSM5/Down Hold BottomCap inactive.png");
+    mRollBottomCapTexture = ResourceMgr->Load<Texture>("noteskins/USWCelSM5/Down Roll BottomCap Inactive.png");
 
     UpdateParams();
+
+    GLenum error = glGetError();
 
     mVAO = GfxMgr->CreateQuadModel();
     glBindVertexArray(mVAO);
 
     glGenBuffers(1, &mFloatVBO);
     glBindBuffer(GL_ARRAY_BUFFER, mFloatVBO);
-    glBufferData(GL_ARRAY_BUFFER, MAX_NOTES * 3 * sizeof(glm::vec2), &mFloatParams[0], GL_DYNAMIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, MAX_NOTES * 4 * sizeof(float), &mFloatParams[0], GL_DYNAMIC_DRAW);
 
     glEnableVertexAttribArray(2);
-    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 3 * sizeof(glm::vec2), (void*)0);
+    glVertexAttribPointer(2, 1, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(3);
-    glVertexAttribPointer(3, 2, GL_FLOAT, GL_FALSE, 3 * sizeof(glm::vec2), (void*)(sizeof(glm::vec2)));
+    glVertexAttribPointer(3, 1, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(sizeof(float)));
     glEnableVertexAttribArray(4);
-    glVertexAttribPointer(4, 2, GL_FLOAT, GL_FALSE, 3 * sizeof(glm::vec2), (void*)(2 * sizeof(glm::vec2)));
+    glVertexAttribPointer(4, 1, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));
+    glEnableVertexAttribArray(5);
+    glVertexAttribPointer(5, 1, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(3 * sizeof(float)));
 
     glVertexAttribDivisor(2, 1);
     glVertexAttribDivisor(3, 1);
     glVertexAttribDivisor(4, 1);
+    glVertexAttribDivisor(5, 1);
 
     glBindVertexArray(0);
+}
 
-    mXPositions = {-3.0f, -1.0f, 1.0f, 3.0f};
+//////////////////////////////////////////////////////////////////////////
+//
+//////////////////////////////////////////////////////////////////////////
+
+MineRenderer::MineRenderer(Chart* inChart) : TextureAtlas(), mChart(inChart) { Initialize(); }
+
+//////////////////////////////////////////////////////////////////////////
+//
+//////////////////////////////////////////////////////////////////////////
+
+MineRenderer::MineRenderer(Chart* inChart, RenderPass* renderPass) : TextureAtlas(renderPass), mChart(inChart)
+{
+    Initialize();
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -649,6 +648,40 @@ void MineRenderer::UpdateVBOs()
 
     glBindBuffer(GL_ARRAY_BUFFER, mFloatVBO);
     glBufferSubData(GL_ARRAY_BUFFER, 0, MAX_NOTES * 3 * sizeof(glm::vec2), &mFloatParams[0]);
+}
+
+//////////////////////////////////////////////////////////////////////////
+//
+//////////////////////////////////////////////////////////////////////////
+
+void MineRenderer::Initialize()
+{
+    SetShader("engine/shaders/MineRenderer.shader");
+    mTexture = ResourceMgr->Load<Texture>("noteskins/USWCelSM5/_Down Tap Mine 8x1.png");
+
+    UpdateParams();
+
+    mVAO = GfxMgr->CreateQuadModel();
+    glBindVertexArray(mVAO);
+
+    glGenBuffers(1, &mFloatVBO);
+    glBindBuffer(GL_ARRAY_BUFFER, mFloatVBO);
+    glBufferData(GL_ARRAY_BUFFER, MAX_NOTES * 3 * sizeof(glm::vec2), &mFloatParams[0], GL_DYNAMIC_DRAW);
+
+    glEnableVertexAttribArray(2);
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 3 * sizeof(glm::vec2), (void*)0);
+    glEnableVertexAttribArray(3);
+    glVertexAttribPointer(3, 2, GL_FLOAT, GL_FALSE, 3 * sizeof(glm::vec2), (void*)(sizeof(glm::vec2)));
+    glEnableVertexAttribArray(4);
+    glVertexAttribPointer(4, 2, GL_FLOAT, GL_FALSE, 3 * sizeof(glm::vec2), (void*)(2 * sizeof(glm::vec2)));
+
+    glVertexAttribDivisor(2, 1);
+    glVertexAttribDivisor(3, 1);
+    glVertexAttribDivisor(4, 1);
+
+    glBindVertexArray(0);
+
+    mXPositions = {-3.0f, -1.0f, 1.0f, 3.0f};
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -823,3 +856,37 @@ glm::uvec2 FontRenderer::GetTextSize()
     totalSize.x = std::max(totalSize.x, currX);
     return totalSize;
 }
+
+// @TODO: Debug OpenGL functions
+/*
+int getActiveVBOCount(GLuint vao)
+{
+    GLint maxVertexAttribs;
+    glGetIntegerv(GL_MAX_VERTEX_ATTRIBS, &maxVertexAttribs);
+
+    int activeVBOs = 0;
+
+    for (int i = 0; i < maxVertexAttribs; ++i)
+    {
+        GLint bufferBinding;
+        glBindVertexArray(vao);
+        glGetVertexAttribiv(i, GL_VERTEX_ATTRIB_ARRAY_BUFFER_BINDING, &bufferBinding);
+        glBindVertexArray(0);
+
+        if (bufferBinding != 0)
+            activeVBOs++;
+    }
+
+    return activeVBOs;
+}
+
+bool isVertexAttributeEnabled(GLuint vao, GLuint attributeIndex)
+{
+    GLint isEnabled;
+    glBindVertexArray(vao);
+    glGetVertexAttribiv(attributeIndex, GL_VERTEX_ATTRIB_ARRAY_ENABLED, &isEnabled);
+    glBindVertexArray(0);
+
+    return (isEnabled == GL_TRUE);
+}
+*/

@@ -3,6 +3,7 @@
 #include <glm/glm.hpp>
 
 #include <iostream>
+#include <memory>
 #include <vector>
 
 struct Buffer
@@ -64,7 +65,7 @@ struct Framebuffer
     friend class GraphicsManager;
     friend struct ShaderProgram;
 
-    Framebuffer(std::vector<Buffer*> buffers);
+    Framebuffer(std::vector<std::unique_ptr<Buffer>> buffers);
 
     template <class T, class... Ts> Framebuffer(const unsigned int count, T fb, Ts... rest);
 

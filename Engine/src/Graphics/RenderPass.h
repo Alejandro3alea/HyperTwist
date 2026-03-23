@@ -12,8 +12,10 @@ struct RenderPass
 
     void AddRenderable(Renderable* renderable) { mRenderables.push_back(renderable); }
 
-    virtual void PreRender();
     virtual void Execute();
+
+  protected:
+    virtual void PreRender();
 
   protected:
     Resource<Shader>* mShader = nullptr;

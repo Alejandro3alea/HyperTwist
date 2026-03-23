@@ -7,6 +7,7 @@
 #include "Graphics/Renderable.h"
 #include "Misc/DataTypes.h"
 
+#include "Graphics/GameplayRenderQueue.h"
 #include <memory>
 
 struct Audio;
@@ -39,7 +40,8 @@ struct GameplayPhase : public Phase
   private:
     GameplayState mState;
 
-    std::array<std::shared_ptr<ChartRenderGroup>, MAX_PLAYER_COUNT> mChartRenderers;
+    std::array<std::unique_ptr<ChartRenderGroup>, MAX_PLAYER_COUNT> mChartRenderers;
+    std::shared_ptr<GameplayRenderQueue> mRenderQueue;
 
     SongInfo* mSongInfo = nullptr;
 

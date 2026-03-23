@@ -43,6 +43,7 @@ struct Renderable
 struct TextureAtlas : public Renderable
 {
     TextureAtlas();
+    TextureAtlas(RenderPass* renderPass);
 
     virtual void Render(Shader* shader = nullptr) override;
 
@@ -71,9 +72,13 @@ struct Chart;
 struct LineList : public Renderable
 {
     LineList(Chart* inChart);
+    LineList(Chart* inChart, RenderPass* renderPass);
     ~LineList();
 
     virtual void Render(Shader* shader = nullptr) override;
+
+  private:
+    void Initialize(Chart* inChart);
 
   private:
     std::vector<glm::vec2> ComputeLinePositions(Chart* inChart);
@@ -95,11 +100,15 @@ struct Chart;
 struct NoteRenderer : public TextureAtlas
 {
     NoteRenderer(Chart* inChart);
+    NoteRenderer(Chart* inChart, RenderPass* renderPass);
 
     virtual void Render(Shader* shader = nullptr) override;
 
     void UpdateParams();
     void UpdateVBOs();
+
+  private:
+    void Initialize();
 
   protected:
     Chart* mChart = nullptr;
@@ -120,11 +129,15 @@ struct NoteRenderer : public TextureAtlas
 struct HoldNoteBodyRenderer : public TextureAtlas
 {
     HoldNoteBodyRenderer(Chart* inChart);
+    HoldNoteBodyRenderer(Chart* inChart, RenderPass* renderPass);
 
     virtual void Render(Shader* shader = nullptr) override final;
 
     void UpdateParams();
     void UpdateVBOs();
+
+  private:
+    void Initialize();
 
   private:
     Chart* mChart = nullptr;
@@ -146,11 +159,15 @@ struct HoldNoteBodyRenderer : public TextureAtlas
 struct MineRenderer : public TextureAtlas
 {
     MineRenderer(Chart* inChart);
+    MineRenderer(Chart* inChart, RenderPass* renderPass);
 
     virtual void Render(Shader* shader = nullptr) override final;
 
     void UpdateParams();
     void UpdateVBOs();
+
+  private:
+    void Initialize();
 
   private:
     Chart* mChart = nullptr;

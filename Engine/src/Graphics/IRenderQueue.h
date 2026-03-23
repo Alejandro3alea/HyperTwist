@@ -5,7 +5,11 @@ struct IRenderQueue
 {
     virtual ~IRenderQueue() = default;
 
-    virtual void Execute() = 0;
+    IRenderQueue() { Initialize(); }
+
+    virtual void Initialize() = 0;
+
+    virtual void Execute();
 
   protected:
     std::vector<RenderPass> mPasses;
