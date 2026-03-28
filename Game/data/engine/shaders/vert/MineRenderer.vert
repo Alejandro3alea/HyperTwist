@@ -18,7 +18,7 @@ uniform float uXPositions[4];
 // --------------------- OUT ---------------------
 out OUT_IN_VARIABLES {
 	vec2 TexUV;
-    int IsValid;
+    flat int IsValid;
 } vs_out;
 
 void main()

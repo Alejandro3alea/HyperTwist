@@ -4,7 +4,7 @@
 void RenderPass::PreRender()
 {
     std::sort(mRenderables.begin(), mRenderables.end(),
-              [](Renderable* lhs, Renderable* rhs) { return lhs->transform.pos.z < rhs->transform.pos.z; });
+              [](IRenderable* lhs, IRenderable* rhs) { return lhs->transform.pos.z < rhs->transform.pos.z; });
 }
 
 void RenderPass::Execute()
@@ -24,7 +24,7 @@ void RenderPass::Execute()
         shader->SetUniform("proj", proj_cam);
 
         std::for_each(mRenderables.begin(), mRenderables.end(),
-                      [&shader](Renderable* comp)
+                      [&shader](IRenderable* comp)
                       {
                           if (comp->mShader && comp->mbIsVisible)
                           {
@@ -40,7 +40,7 @@ void RenderPass::Execute()
     else
     {
         std::for_each(mRenderables.begin(), mRenderables.end(),
-                      [&proj_cam, &view_cam](Renderable* comp)
+                      [&proj_cam, &view_cam](IRenderable* comp)
                       {
                           if (comp->mShader && comp->mbIsVisible)
                           {

@@ -4,7 +4,7 @@
 #include "Game/Song.h"
 #include "Game/UI/DDR/ChartRenderGroup.h"
 #include "Game/UI/DDR/Receptors.h"
-#include "Graphics/Renderable.h"
+#include "Graphics/Renderables/Renderable.h"
 #include "Misc/DataTypes.h"
 
 #include "Graphics/GameplayRenderQueue.h"

@@ -1,6 +1,6 @@
 #pragma once
 #include "Framebuffer.h"
-#include "Renderable.h"
+#include "Renderables/IRenderable.h"
 #include "Resources/Resource.h"
 
 struct RenderPass
@@ -11,7 +11,7 @@ struct RenderPass
     {
     }
 
-    void AddRenderable(Renderable* renderable) { mRenderables.push_back(renderable); }
+    void AddRenderable(IRenderable* renderable) { mRenderables.push_back(renderable); }
 
     virtual void Execute();
 
@@ -24,5 +24,5 @@ struct RenderPass
   protected:
     Resource<Shader>* mShader = nullptr;
     std::shared_ptr<Framebuffer> mFramebuffer;
-    std::vector<Renderable*> mRenderables;
+    std::vector<IRenderable*> mRenderables;
 };

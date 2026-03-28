@@ -1,5 +1,6 @@
 #include "Receptors.h"
 #include "Game/GlobalVariables.h"
+#include "Resources/ResourceMgr.h"
 
 Receptors::Receptors(RenderPass* renderPass)
 {

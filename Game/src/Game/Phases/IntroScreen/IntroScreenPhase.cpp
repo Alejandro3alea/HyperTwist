@@ -3,7 +3,7 @@
 #include "Game/Phases/PhaseManager.h"
 #include "Graphics/Color.h"
 #include "Graphics/GfxMgr.h"
-#include "Graphics/Renderable.h"
+#include "Graphics/Renderables/Renderable.h"
 #include "Graphics/WindowMgr.h"
 #include "Input/InputMgr.h"
 #include "Math/MathUtils.h"

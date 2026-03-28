@@ -1,6 +1,16 @@
 #pragma once
-#include "Graphics/Renderable.h"
+#include "Graphics/Renderables/HoldNoteBodyRenderer.h"
+#include "Graphics/Renderables/LineList.h"
+#include "Graphics/Renderables/MineRenderer.h"
+#include "Graphics/Renderables/NoteRenderer.h"
+#include "Graphics/Renderables/Renderable.h"
+
 #include "Receptors.h"
+
+#include <memory>
+
+struct Chart;
+struct RenderPass;
 
 struct ChartRenderGroup
 {

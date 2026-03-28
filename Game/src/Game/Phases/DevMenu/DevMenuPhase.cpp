@@ -1,7 +1,7 @@
 #include "DevMenuPhase.h"
 #include "Game/Phases/PhaseManager.h"
 #include "Graphics/GfxMgr.h"
-#include "Graphics/Renderable.h"
+#include "Graphics/Renderables/FontRenderer.h"
 #include "Input/InputMgr.h"
 
 void DevMenuPhase::OnEnter()

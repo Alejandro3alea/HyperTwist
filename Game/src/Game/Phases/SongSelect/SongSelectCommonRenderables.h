@@ -1,15 +1,16 @@
 #pragma once
 #include "Game/Song.h"
+#include "Graphics/Renderables/FontRenderer.h"
 
 struct SongSelectCommonRenderables
 {
     SongSelectCommonRenderables();
 
-private:
+  private:
     void SetTextures();
     void SetPositions();
 
-public:
+  public:
     Renderable mStageBG;
     FontRenderer mStageText;
 

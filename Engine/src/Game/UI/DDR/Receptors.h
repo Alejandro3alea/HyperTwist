@@ -1,5 +1,5 @@
 #pragma once
-#include "Graphics/Renderable.h"
+#include "Graphics/Renderables/TextureAtlas.h"
 
 struct RenderPass;
 

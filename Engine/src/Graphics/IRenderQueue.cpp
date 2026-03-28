@@ -1,4 +1,7 @@
 #include "IRenderQueue.h"
+#include "Misc/ColorConsole.h"
+
+#include <algorithm>
 
 void IRenderQueue::Execute()
 {

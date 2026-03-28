@@ -1,10 +1,10 @@
 #pragma once
-#include "Misc/DataTypes.h"
 #include "DevMenuItem.h"
+#include "Misc/DataTypes.h"
 
 struct DevMenuNode : public DevMenuItem
 {
-public:
+  public:
     DevMenuNode(const std::string& name) : DevMenuItem(name) {}
 
     virtual void InitializeRenderables(i32 yStartPos);
@@ -12,7 +12,7 @@ public:
     void HideRenderables();
 
     void AddItem(const std::shared_ptr<DevMenuItem>& item);
-    void AddRenderable(const std::shared_ptr<Renderable>& renderable);
+    void AddRenderable(const std::shared_ptr<IRenderable>& renderable);
 
     void OnSelected() override;
     void Select();
@@ -21,20 +21,20 @@ public:
     void IncrementSelectedIdx();
     void DecrementSelectedIdx();
 
-private:
+  private:
     void UpdateSelectedIdx();
     void UpdateRenderables();
 
-private:
+  private:
     std::vector<std::shared_ptr<DevMenuItem>> mItems;
-    std::vector<std::shared_ptr<Renderable>> mItemRenderables;
-    std::vector<std::shared_ptr<Renderable>> mCustomRenderables;
+    std::vector<std::shared_ptr<IRenderable>> mItemRenderables;
+    std::vector<std::shared_ptr<IRenderable>> mCustomRenderables;
     i32 mSelectedIdx = 0;
 };
 
 struct DevMenuMainMenu : public DevMenuNode
 {
-	DevMenuMainMenu();
+    DevMenuMainMenu();
 };
 
 struct DevMenuInputOutputCheck : public DevMenuNode
@@ -59,7 +59,7 @@ struct DevMenuInputOutputCheck : public DevMenuNode
 
 struct DevMenuScreenCheck : public DevMenuNode
 {
-	DevMenuScreenCheck(DevMenuNode* parentNode);
+    DevMenuScreenCheck(DevMenuNode* parentNode);
 };
 
 struct DevMenuColorCheck : public DevMenuNode
@@ -82,7 +82,7 @@ struct DevMenuGameSettings : public DevMenuNode
         virtual void OnSelected() override;
         void UpdateSongs() const;
 
-    private:
+      private:
         void UpdateSong(const std::string& path) const;
 
         bool IsSongUpToDate(const std::string& path) const;

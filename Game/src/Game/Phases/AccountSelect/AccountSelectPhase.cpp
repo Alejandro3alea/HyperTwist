@@ -3,7 +3,7 @@
 #include "Game/Account.h"
 #include "Graphics/Color.h"
 #include "Graphics/GfxMgr.h"
-#include "Graphics/Renderable.h"
+#include "Graphics/Renderables/Renderable.h"
 #include "Input/InputMgr.h"
 #include "Math/MathUtils.h"
 

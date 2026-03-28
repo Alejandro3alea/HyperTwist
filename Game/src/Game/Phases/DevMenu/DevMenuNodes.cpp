@@ -3,6 +3,8 @@
 #include "Graphics/GfxMgr.h"
 #include "Utils/GameUtils.h"
 
+#include "Graphics/Renderables/FontRenderer.h"
+
 #include "DevMenuPhase.h"
 #include "Game/Phases/PhaseManager.h"
 
@@ -46,7 +48,7 @@ void DevMenuNode::HideRenderables()
 
 void DevMenuNode::AddItem(const std::shared_ptr<DevMenuItem>& item) { mItems.push_back(item); }
 
-void DevMenuNode::AddRenderable(const std::shared_ptr<Renderable>& renderable)
+void DevMenuNode::AddRenderable(const std::shared_ptr<IRenderable>& renderable)
 {
     mCustomRenderables.push_back(renderable);
 }

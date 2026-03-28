@@ -1,5 +1,5 @@
 #pragma once
-#include "Graphics/Renderable.h"
+#include "Graphics/Renderables/Renderable.h"
 #include "Misc/DataTypes.h"
 
 typedef unsigned NoteID;

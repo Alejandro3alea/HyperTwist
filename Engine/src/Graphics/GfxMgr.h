@@ -12,6 +12,7 @@
 #include <string>
 #include <vector>
 
+struct IRenderable;
 struct Renderable;
 struct Texture;
 struct Camera;
@@ -54,7 +55,7 @@ class GraphicsManager
 
   public:
     Camera mCam;
-    std::vector<Renderable*> mRenderComps;
+    std::vector<IRenderable*> mRenderComps;
 
     // Events
     OnPreRender mOnPreRender;

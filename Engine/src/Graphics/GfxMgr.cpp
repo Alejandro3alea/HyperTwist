@@ -2,7 +2,7 @@
 #include "Shader.h"
 
 #include "Camera.h"
-#include "Graphics/Renderable.h"
+#include "Graphics/Renderables/Renderable.h"
 #include "Input/InputMgr.h"
 #include "Misc/Timer.h"
 #include "Resources/ResourceMgr.h"
@@ -124,13 +124,11 @@ GLuint GraphicsManager::CreateQuadModel() const
 
 void GraphicsManager::CleanupRenderables()
 {
-    constexpr size_t bgRenderableIdx = 0;
-    Renderable* bgRenderable = mRenderComps[bgRenderableIdx];
-    Resource<Texture>* bgTexture = bgRenderable->mTexture;
-    bool bgIsVisible = bgRenderable->mbIsVisible;
+    Resource<Texture>* bgTexture = mBackground->mTexture;
+    bool bgIsVisible = mBackground->mbIsVisible;
 
-    Transform bgTransform = bgRenderable->transform;
-    glm::vec4 bgColor = bgRenderable->mColor;
+    Transform bgTransform = mBackground->transform;
+    glm::vec4 bgColor = mBackground->mColor;
     mRenderComps.clear();
 
     mBackground = new Renderable();
@@ -148,7 +146,7 @@ void GraphicsManager::RenderScene(Camera* cam, Shader* shader)
     glm::vec3 offset = cam->mPos;
 
     std::sort(mRenderComps.begin(), mRenderComps.end(),
-              [](Renderable* lhs, Renderable* rhs) { return lhs->transform.pos.z < rhs->transform.pos.z; });
+              [](IRenderable* lhs, IRenderable* rhs) { return lhs->transform.pos.z < rhs->transform.pos.z; });
 
     if (shader)
     {
@@ -159,7 +157,7 @@ void GraphicsManager::RenderScene(Camera* cam, Shader* shader)
         shader->SetUniform("proj", proj_cam);
 
         std::for_each(mRenderComps.begin(), mRenderComps.end(),
-                      [&shader](Renderable* comp)
+                      [&shader](IRenderable* comp)
                       {
                           if (comp->mbIsVisible)
                           {
@@ -175,7 +173,7 @@ void GraphicsManager::RenderScene(Camera* cam, Shader* shader)
     else
     {
         std::for_each(mRenderComps.begin(), mRenderComps.end(),
-                      [this, &shader, &offset, &proj_cam, &view_cam](Renderable* comp)
+                      [this, &shader, &offset, &proj_cam, &view_cam](IRenderable* comp)
                       {
                           if (comp->mShader && comp->mbIsVisible)
                           {

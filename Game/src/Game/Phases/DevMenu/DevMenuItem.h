@@ -1,14 +1,14 @@
 #pragma once
-#include "Graphics/Renderable.h"
+#include "Graphics/Renderables/Renderable.h"
 
+#include <functional>
+#include <iostream>
 #include <string>
 #include <vector>
-#include <iostream>
-#include <functional>
 
 struct DevMenuItem
 {
-public:
+  public:
     DevMenuItem(const std::string& name) : mName(name) {}
     virtual ~DevMenuItem() {}
 
@@ -16,6 +16,6 @@ public:
 
     std::string GetName() const { return mName; }
 
-protected:
+  protected:
     std::string mName;
 };
