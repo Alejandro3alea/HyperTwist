@@ -7,7 +7,7 @@
 //
 //////////////////////////////////////////////////////////////////////////
 
-Renderable::Renderable()
+Renderable::Renderable() : IRenderable()
 {
     SetShader("engine/shaders/Quad.shader");
     SetTexture("engine/texture/White.png");
@@ -17,7 +17,7 @@ Renderable::Renderable()
 //
 //////////////////////////////////////////////////////////////////////////
 
-Renderable::Renderable(RenderPass* renderPass)
+Renderable::Renderable(RenderPass* renderPass) : IRenderable(renderPass)
 {
     SetShader("engine/shaders/Quad.shader");
     SetTexture("engine/texture/White.png");

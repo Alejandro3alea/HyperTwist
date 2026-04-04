@@ -6,6 +6,7 @@
 #include "Input/InputMgr.h"
 #include "Misc/Timer.h"
 #include "Resources/ResourceMgr.h"
+#include "WindowMgr.h"
 
 #include <algorithm>
 
@@ -24,8 +25,6 @@ void GraphicsManager::Initialize()
         PrintWarning("GLEW Error: Failed to init");
     else
         PrintDebug("OpenGL Version: " + version + "\n");
-
-    glClearColor(1.0f, 0.2f, 1.0f, 1.0f);
 
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_CULL_FACE);
@@ -59,6 +58,7 @@ void GraphicsManager::Render()
 
     mOnPreRender.Broadcast();
 
+    glClearColor(1.0f, 0.2f, 1.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     if (mCurrRenderQueue)
@@ -141,12 +141,15 @@ void GraphicsManager::CleanupRenderables()
 
 void GraphicsManager::RenderScene(Camera* cam, Shader* shader)
 {
-    glm::mat4x4 view_cam = cam->GetViewMtx();
-    glm::mat4x4 proj_cam = cam->GetProjMtx();
-    glm::vec3 offset = cam->mPos;
+    Camera* using_cam = cam ? cam : &mCam;
+    glm::mat4x4 view_cam = using_cam->GetViewMtx();
+    glm::mat4x4 proj_cam = using_cam->GetProjMtx();
+    glm::vec3 offset = using_cam->mPos;
 
     std::sort(mRenderComps.begin(), mRenderComps.end(),
               [](IRenderable* lhs, IRenderable* rhs) { return lhs->transform.pos.z < rhs->transform.pos.z; });
+
+    WindowMgr->SetWindowViewport();
 
     if (shader)
     {

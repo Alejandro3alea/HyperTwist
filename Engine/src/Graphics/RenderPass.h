@@ -7,9 +7,23 @@ struct RenderPass
 {
     virtual ~RenderPass() = default;
 
-    RenderPass(std::shared_ptr<Framebuffer>& fb, Resource<Shader>* shader = nullptr) : mShader(shader), mFramebuffer(fb)
+    RenderPass(std::unique_ptr<Framebuffer>& fb, Resource<Shader>* shader = nullptr)
+        : mShader(shader), mFramebuffer(std::move(fb))
     {
     }
+
+    RenderPass(RenderPass&& other) : mFramebuffer(std::move(other.mFramebuffer)) {}
+    RenderPass& operator=(RenderPass&& other) noexcept
+    {
+        if (this != &other)
+            mFramebuffer = std::move(other.mFramebuffer);
+
+        return *this;
+    }
+    RenderPass(const RenderPass&) = delete;
+    RenderPass& operator=(const RenderPass&) = delete;
+
+    // -----------------------------------------------------------------------------------
 
     void AddRenderable(IRenderable* renderable) { mRenderables.push_back(renderable); }
 
@@ -23,6 +37,6 @@ struct RenderPass
 
   protected:
     Resource<Shader>* mShader = nullptr;
-    std::shared_ptr<Framebuffer> mFramebuffer;
+    std::unique_ptr<Framebuffer> mFramebuffer;
     std::vector<IRenderable*> mRenderables;
 };

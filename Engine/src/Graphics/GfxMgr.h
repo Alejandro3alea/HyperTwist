@@ -51,7 +51,7 @@ class GraphicsManager
 
     void CleanupRenderables();
 
-    void RenderScene(Camera* cam, Shader* shader = nullptr);
+    void RenderScene(Camera* cam = nullptr, Shader* shader = nullptr);
 
   public:
     Camera mCam;

@@ -1,17 +1,23 @@
 #include "RenderPass.h"
-#include "GfxMgr.h"
+#include "Graphics/GfxMgr.h"
 
 void RenderPass::PreRender()
 {
     std::sort(mRenderables.begin(), mRenderables.end(),
               [](IRenderable* lhs, IRenderable* rhs) { return lhs->transform.pos.z < rhs->transform.pos.z; });
+
+    glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    const glm::uvec2 bufSize = mFramebuffer->BufferSize();
+    glViewport(0, 0, bufSize.x, bufSize.y);
 }
 
 void RenderPass::Execute()
 {
-    PreRender();
-
     mFramebuffer->BindFramebuffer();
+
+    PreRender();
 
     const glm::mat4 view_cam = GfxMgr->mCam.GetViewMtx();
     const glm::mat4 proj_cam = GfxMgr->mCam.GetProjMtx();

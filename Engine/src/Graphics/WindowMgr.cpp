@@ -3,6 +3,8 @@
 #include "Misc/ColorConsole.h"
 #include "Misc/Requires.h"
 
+#include <GL/gl.h>
+
 WindowManager* WindowManager::mpInstance;
 
 Window::Window(const std::string& winName, const unsigned winWidth, const unsigned winHeight)
@@ -66,3 +68,10 @@ void WindowManager::Initialize(const std::string& windowName)
 void WindowManager::Update() {}
 
 void WindowManager::Shutdown() {}
+
+void WindowManager::SetWindowViewport()
+{
+    const glm::uvec2 winSize = WindowMgr->mCurrentWindow->Size();
+
+    glViewport(0, 0, winSize.x, winSize.y);
+}

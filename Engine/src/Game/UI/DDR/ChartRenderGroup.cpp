@@ -9,13 +9,17 @@ ChartRenderGroup::ChartRenderGroup(Chart* inChart, RenderPass* renderPass)
     mDarkBackground->transform.scale = {280.0f, 1000.0f, 0.05f};
 
     mMeasureLines = std::make_unique<LineList>(inChart, renderPass);
-    mMeasureLines->transform.pos.z = 0.25f;
+    mMeasureLines->transform.pos.z = 1.25f;
 
     mNoteRenderer = std::make_shared<NoteRenderer>(inChart, renderPass);
+    mNoteRenderer->transform.pos.z = 1.5f;
 
     mHoldRenderer = std::make_shared<HoldNoteBodyRenderer>(inChart, renderPass);
+    mHoldRenderer->transform.pos.z = 1.4f;
 
     mMineRenderer = std::make_shared<MineRenderer>(inChart, renderPass);
+    mMineRenderer->transform.pos.z = 1.45f;
+
     mPlayerReceptor = std::make_shared<Receptors>(renderPass);
 
     mNoteRenderer->mTextureScale = glm::vec2(0.05f);

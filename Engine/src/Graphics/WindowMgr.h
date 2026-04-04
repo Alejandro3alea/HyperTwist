@@ -44,6 +44,8 @@ class WindowManager
     void Update();
     void Shutdown();
 
+    void SetWindowViewport();
+
   public:
     std::shared_ptr<Window> mCurrentWindow;
 };

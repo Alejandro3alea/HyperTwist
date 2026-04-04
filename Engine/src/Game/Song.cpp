@@ -1513,28 +1513,35 @@ std::vector<float> Song::GetBeatTimestamps()
     return result;
 }
 
-std::vector<float> Song::GetNoteTimestamps(const ChartDifficulty& diff)
+std::vector<float> Song::GetNoteTimestamps(const ChartDifficulty& difficulty)
 {
-    if (!mCharts.contains(diff))
+    if (!mCharts.contains(difficulty))
         return std::vector<float>();
 
     std::vector<float> result;
 
-    auto notes = mCharts[diff]->mNotes;
+    auto notes = mCharts[difficulty]->mNotes;
     for (auto& note : notes)
     {
-        result.push_back(note->mTimestampSeconds);
+        if (note->mType != Note::Type::MINE && note->mType != Note::Type::FAKE)
+            result.push_back(note->mTimestampSeconds);
     }
 
     return result;
 }
 
-std::vector<NoteCue> Song::GetNoteCues(const ChartDifficulty& diff)
+std::vector<NoteCue> Song::GetNoteCues(const ChartDifficulty& difficulty)
 {
-    if (!mCharts.contains(diff))
+    if (!mCharts.contains(difficulty))
         return std::vector<NoteCue>();
 
     std::vector<NoteCue> result;
+
+    auto notes = mCharts[difficulty]->mNotes;
+    for (auto& note : notes)
+    {
+        result.push_back(NoteCue{.mNote = note, .mTime = note->mTimestampSeconds});
+    }
 
     return result;
 }
@@ -1552,7 +1559,7 @@ f32 Song::GetPositionFromMusicTime(const f32 musicTimeSeconds)
         const f32 nextMeasure = it->first;
         const f32 nextBPM = it->second;
 
-        // @TODO: Check if use std::abs for negative measure diff
+        // @TODO: Check if use std::abs for negative measure difficulty
         f32 secondsForNextMeasure = secondsForCurrMeasure + (60.0f / currBPM * (nextMeasure - currMeasure));
 
         if (musicTimeSeconds > secondsForNextMeasure)
