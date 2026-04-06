@@ -4,10 +4,11 @@
 #include "Game/Song.h"
 #include "Game/UI/DDR/ChartRenderGroup.h"
 #include "Game/UI/DDR/Receptors.h"
+#include "Graphics/GameplayRenderQueue.h"
+#include "Graphics/PlayerGameplayUI.h"
 #include "Graphics/Renderables/Renderable.h"
 #include "Misc/DataTypes.h"
 
-#include "Graphics/GameplayRenderQueue.h"
 #include <memory>
 
 struct Audio;
@@ -41,6 +42,7 @@ struct GameplayPhase : public Phase
     GameplayState mState;
 
     std::array<std::unique_ptr<ChartRenderGroup>, MAX_PLAYER_COUNT> mChartRenderers;
+    std::array<std::unique_ptr<PlayerGameplayUI>, MAX_PLAYER_COUNT> mPlayerUIs;
     std::shared_ptr<GameplayRenderQueue> mRenderQueue;
 
     SongInfo* mSongInfo = nullptr;

@@ -31,6 +31,7 @@ void GameplayPhase::OnEnter()
         {
             mChartRenderers[i] = std::make_unique<ChartRenderGroup>(gGameVariables.mSelectedCharts[i],
                                                                     mRenderQueue->GetPassFromIdx(passIdx));
+            mPlayerUIs[i] = std::make_unique<PlayerGameplayUI>(gGameVariables.mSelectedCharts[i], i);
             passIdx++;
         }
     }
@@ -102,6 +103,10 @@ void GameplayPhase::GameplayUpdate(const float dt)
             GfxMgr->mCam.Move({0.0f, dt * 1000.0f, 0.0f});
         if (InputMgr->isKeyDown(SDL_SCANCODE_K))
             GfxMgr->mCam.Move({0.0f, -dt * 1000.0f, 0.0f});
+
+        // @TEMP
+        mPlayerUIs[i]->mTable->Update();
+        mPlayerUIs[i]->SetPositions();
     }
 }
 

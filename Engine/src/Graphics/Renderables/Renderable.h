@@ -19,6 +19,13 @@ struct Renderable : public IRenderable
     Resource<Texture>* SetTexture(const std::string& path);
     Resource<Texture>* SetTexture(Resource<Texture>* texture);
 
+    void FlipX() { mFlipX = !mFlipX; }
+    void FlipY() { mFlipY = !mFlipY; }
+
   public:
     Resource<Texture>* mTexture = nullptr;
+
+  protected:
+    bool mFlipX = false;
+    bool mFlipY = false;
 };

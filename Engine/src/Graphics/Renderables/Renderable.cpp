@@ -39,6 +39,9 @@ void Renderable::Render(Shader* shader)
     mTexture->get()->Bind();
     currShader->SetUniform("uTexture", 1);
 
+    currShader->SetUniform("uFlipX", mFlipX);
+    currShader->SetUniform("uFlipY", mFlipY);
+
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     GLuint quadVAO = GfxMgr->GetQuad();

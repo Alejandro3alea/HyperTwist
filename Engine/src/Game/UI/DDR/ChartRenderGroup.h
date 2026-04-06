@@ -1,4 +1,5 @@
 #pragma once
+#include "Graphics/Renderables/FontRenderer.h"
 #include "Graphics/Renderables/HoldNoteBodyRenderer.h"
 #include "Graphics/Renderables/LineList.h"
 #include "Graphics/Renderables/MineRenderer.h"
@@ -21,6 +22,6 @@ struct ChartRenderGroup
     std::shared_ptr<HoldNoteBodyRenderer> mHoldRenderer;
     std::shared_ptr<MineRenderer> mMineRenderer;
     std::shared_ptr<Receptors> mPlayerReceptor;
-    std::unique_ptr<Renderable> mDarkBackground;
+    std::unique_ptr<Renderable> mNotesBackground;
     std::unique_ptr<LineList> mMeasureLines;
 };

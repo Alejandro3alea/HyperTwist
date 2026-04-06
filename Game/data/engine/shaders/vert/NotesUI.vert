@@ -9,6 +9,8 @@ uniform mat4 view;
 uniform mat4 proj;
 
 uniform float uZoom;
+uniform bool uFlipX;
+uniform bool uFlipY;
 
 // --------------------- OUT ---------------------
 out OUT_IN_VARIABLES {
@@ -17,6 +19,6 @@ out OUT_IN_VARIABLES {
 
 void main()
 {
-    vs_out.TexUV = vTexCoord;
+    vs_out.TexUV = vec2(uFlipX ? 1.0 - vTexCoord.x : vTexCoord.x, uFlipY ? 1.0 - vTexCoord.y : vTexCoord.y);
     gl_Position = proj * view * model * vec4(vPos, 0.0, 1.0);
 }

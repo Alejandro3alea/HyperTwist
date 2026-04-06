@@ -2,11 +2,11 @@
 
 ChartRenderGroup::ChartRenderGroup(Chart* inChart, RenderPass* renderPass)
 {
-    mDarkBackground = std::make_unique<Renderable>(renderPass);
-    mDarkBackground->SetShader("engine/shaders/NotesUI.shader");
-    mDarkBackground->mColor = {0.0f, 0.0f, 0.0f, 0.75f};
-    mDarkBackground->transform.pos = {0.0f, 0.0f, 0.1f};
-    mDarkBackground->transform.scale = {280.0f, 1000.0f, 0.05f};
+    mNotesBackground = std::make_unique<Renderable>(renderPass);
+    mNotesBackground->SetShader("engine/shaders/NotesUI.shader");
+    mNotesBackground->mColor = {0.0f, 0.0f, 0.0f, 0.75f};
+    mNotesBackground->transform.pos = {0.0f, 0.0f, 0.1f};
+    mNotesBackground->transform.scale = {280.0f, 1000.0f, 0.05f};
 
     mMeasureLines = std::make_unique<LineList>(inChart, renderPass);
     mMeasureLines->transform.pos.z = 1.25f;
